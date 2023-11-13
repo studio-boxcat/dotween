@@ -33,6 +33,7 @@ namespace DG.DOTweenEditor.UI
         public static GUIStyle infoboxStyle;
         public static GUIStyle btTweenStyle, btSequenceStyle, btSequencedStyle, btPlayPauseStyle;
 
+        /*
         public static Texture2D logo
         {
             get
@@ -56,6 +57,7 @@ namespace DG.DOTweenEditor.UI
                 return _miniIcon;
             }
         }
+        */
         static Texture2D _miniIcon;
         static Texture2D _transparent {
             get {
@@ -147,10 +149,12 @@ namespace DG.DOTweenEditor.UI
                 : (Ease)Enum.Parse(typeof(Ease), FilteredEaseTypes[stringEaseId]);
         }
 
+        /*
         public static void InspectorLogo()
         {
             GUILayout.Box(logo, logoIconStyle);
         }
+        */
 
         // A button which works as a toggle
         public static bool ToggleButton(bool toggled, GUIContent content, bool alert = false, GUIStyle guiStyle = null, params GUILayoutOption[] options)

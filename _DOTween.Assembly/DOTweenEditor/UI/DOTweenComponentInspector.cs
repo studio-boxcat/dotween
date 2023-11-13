@@ -15,10 +15,11 @@ namespace DG.DOTweenEditor.UI
     [CustomEditor(typeof(DOTweenComponent))]
     public class DOTweenComponentInspector : Editor
     {
-        DOTweenSettings _settings;
+        static DOTweenSettings _settingsCache = null;
+        static DOTweenSettings _settings => _settingsCache ??= Resources.Load<DOTweenSettings>("DOTweenSettings");
         readonly StringBuilder _strb = new StringBuilder();
         bool _isRuntime;
-        Texture2D _headerImg;
+        // Texture2D _headerImg;
         string _playingTweensHex;
         string _pausedTweensHex;
         readonly GUIContent _gcPlay = new GUIContent("►");
@@ -41,10 +42,12 @@ namespace DG.DOTweenEditor.UI
             if (TweenManager.isDebugBuild) _strb.Append(" [Debug build]");
             else _strb.Append(" [Release build]");
 
+            /*
             if (EditorUtils.hasPro) _strb.Append("\nDOTweenPro v").Append(EditorUtils.proVersion);
             else _strb.Append("\nDOTweenPro not installed");
             if (EditorUtils.hasDOTweenTimeline) _strb.Append("\nDOTweenTimeline v").Append(EditorUtils.dotweenTimelineVersion);
             else _strb.Append("\nDOTweenTimeline not installed");
+            */
             _gcTitle = new GUIContent(_strb.ToString());
 
             _playingTweensHex = EditorGUIUtility.isProSkin ? "<color=#00c514>" : "<color=#005408>";
@@ -59,13 +62,13 @@ namespace DG.DOTweenEditor.UI
             EditorGUIUtils.SetGUIStyles();
 
             // Header img
-            GUILayout.Space(4);
-            GUILayout.BeginHorizontal();
-            Rect headeR = GUILayoutUtility.GetRect(0, 93, 18, 18);
-            GUI.DrawTexture(headeR, _headerImg, ScaleMode.ScaleToFit, true);
+            // GUILayout.Space(4);
+            // GUILayout.BeginHorizontal();
+            // Rect headeR = GUILayoutUtility.GetRect(0, 93, 18, 18);
+            // GUI.DrawTexture(headeR, _headerImg, ScaleMode.ScaleToFit, true);
             GUILayout.Label(_isRuntime ? "RUNTIME MODE" : "EDITOR MODE");
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
+            // GUILayout.FlexibleSpace();
+            // GUILayout.EndHorizontal();
 
             GUILayout.Label(_gcTitle, TweenManager.isDebugBuild ? EditorGUIUtils.redLabelStyle : EditorGUIUtils.boldLabelStyle);
             if (!DOTween.useSafeMode || !DOTween.debugMode || !DOTween.debugStoreTargetId) {
@@ -171,13 +174,15 @@ namespace DG.DOTweenEditor.UI
 
         void ConnectToSource(bool forceReconnection = false)
         {
-            _headerImg = AssetDatabase.LoadAssetAtPath("Assets/" + EditorUtils.editorADBDir + "Imgs/DOTweenIcon.png", typeof(Texture2D)) as Texture2D;
+            // _headerImg = AssetDatabase.LoadAssetAtPath("Assets/" + EditorUtils.editorADBDir + "Imgs/DOTweenIcon.png", typeof(Texture2D)) as Texture2D;
 
+            /*
             if (_settings == null || forceReconnection) {
                 _settings = _isRuntime
                     ? Resources.Load(DOTweenSettings.AssetName) as DOTweenSettings
                     : DOTweenUtilityWindow.GetDOTweenSettings();
             }
+            */
         }
 
         void DrawTweensButtons(int totPlayingTweens, int totPausedTweens)
