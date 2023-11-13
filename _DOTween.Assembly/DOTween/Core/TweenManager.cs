@@ -484,11 +484,6 @@ namespace DG.Tweening.Core
                     return true;
                 }
                 if (tDeltaTime <= 0) return false;
-                // Delay elapsed - call OnPlay if required
-                if (t.playedOnce && t.onPlay != null) {
-                    // Don't call in case it hasn't started because onStart routine will call it
-                    Tween.OnTweenCallback(t.onPlay, t);
-                }
             }
             // Startup (needs to be here other than in Tween.DoGoto in case of speed-based tweens, to calculate duration correctly)
             if (!t.startupDone) {
@@ -736,7 +731,6 @@ namespace DG.Tweening.Core
             } else if (toPosition >= t.duration) toPosition = 0;
             // If andPlay is FALSE manage onPause from here because DoGoto won't detect it (since t.isPlaying was already set from here)
             bool needsKilling = Tween.DoGoto(t, toPosition, toCompletedLoops, updateMode);
-            if (!andPlay && wasPlaying && !needsKilling && t.onPause != null) Tween.OnTweenCallback(t.onPause, t);
             return needsKilling;
         }
 
@@ -745,7 +739,6 @@ namespace DG.Tweening.Core
         {
             if (t.isPlaying) {
                 t.isPlaying = false;
-                if (t.onPause != null) Tween.OnTweenCallback(t.onPause, t);
                 return true;
             }
             return false;
@@ -756,10 +749,6 @@ namespace DG.Tweening.Core
         {
             if (!t.isPlaying && (!t.isBackwards && !t.isComplete || t.isBackwards && (t.completedLoops > 0 || t.position > 0))) {
                 t.isPlaying = true;
-                if (t.playedOnce && t.delayComplete && t.onPlay != null) {
-                    // Don't call in case there's a delay to run or if it hasn't started because onStart routine will call it
-                    Tween.OnTweenCallback(t.onPlay, t);
-                }
                 return true;
             }
             return false;
@@ -768,8 +757,6 @@ namespace DG.Tweening.Core
         internal static bool PlayBackwards(Tween t)
         {
             if (t.completedLoops == 0 && t.position <= 0) {
-                // Already rewinded, manage OnRewind callback
-                ManageOnRewindCallbackWhenAlreadyRewinded(t, true);
                 t.isBackwards = true;
                 t.isPlaying = false;
                 return false;
@@ -804,10 +791,6 @@ namespace DG.Tweening.Core
             if (changeDelayTo >= 0 && t.tweenType == TweenType.Tweener) t.delay = changeDelayTo;
             Rewind(t, includeDelay);
             t.isPlaying = true;
-            if (wasPaused && t.playedOnce && t.delayComplete && t.onPlay != null) {
-                // Don't call in case there's a delay to run or if it hasn't started because onStart routine will call it
-                Tween.OnTweenCallback(t.onPlay, t);
-            }
             return true;
         }
 
@@ -829,11 +812,7 @@ namespace DG.Tweening.Core
             }
             if (t.position > 0 || t.completedLoops > 0 || !t.startupDone) {
                 rewinded = true;
-                bool needsKilling = Tween.DoGoto(t, 0, 0, UpdateMode.Goto);
-                if (!needsKilling && wasPlaying && t.onPause != null) Tween.OnTweenCallback(t.onPause, t);
-            } else {
-                // Alread rewinded
-                ManageOnRewindCallbackWhenAlreadyRewinded(t, false);
+                Tween.DoGoto(t, 0, 0, UpdateMode.Goto);
             }
             return rewinded;
         }
@@ -856,7 +835,6 @@ namespace DG.Tweening.Core
             } else {
                 // Already rewinded
                 t.isPlaying = false;
-                ManageOnRewindCallbackWhenAlreadyRewinded(t, true);
             }
             return rewinded;
         }
@@ -1180,23 +1158,6 @@ namespace DG.Tweening.Core
             Array.Resize(ref _activeTweens, maxActive);
             if (killAdd > 0) _KillList.Capacity += killAdd;
         }
-
-        #region Helpers
-
-        // If isPlayBackwardsOrSmoothRewind is FALSE, it means this was a Rewind command
-        static void ManageOnRewindCallbackWhenAlreadyRewinded(Tween t, bool isPlayBackwardsOrSmoothRewind)
-        {
-            if (t.onRewind == null) return;
-            if (isPlayBackwardsOrSmoothRewind) {
-                // PlayBackwards or SmoothRewind
-                if (DOTween.rewindCallbackMode == RewindCallbackMode.FireAlways) t.onRewind();
-            } else {
-                // Rewind
-                if (DOTween.rewindCallbackMode != RewindCallbackMode.FireIfPositionChanged) t.onRewind();
-            }
-        }
-
-        #endregion
 
         #endregion
 

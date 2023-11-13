@@ -134,48 +134,6 @@ namespace DG.Tweening.Plugins
             setter(newPos);
 
             if (options.mode != PathMode.Ignore && options.orientType != OrientType.None) SetOrientation(options, t, changeValue, constantPathPerc, newPos, updateNotice);
-
-            // Determine if current waypoint changed and eventually dispatch callback
-            bool isForward = !usingInversePosition;
-            if (t.isBackwards) isForward = !isForward;
-            int newWaypointIndex = changeValue.GetWaypointIndexFromPerc(pathPerc, isForward);
-            if (newWaypointIndex != t.miscInt) {
-                int prevWPIndex = t.miscInt;
-                t.miscInt = newWaypointIndex;
-                if (t.onWaypointChange != null) {
-                    // If more than one waypoint changed, dispatch multiple callbacks
-//                    bool isBackwards = newWaypointIndex < prevWPIndex;
-                    bool isBackwards = t.isBackwards;
-                    if (t.hasLoops && t.loopType == LoopType.Yoyo) {
-                        isBackwards = !t.isBackwards && t.completedLoops % 2 != 0
-                                      || t.isBackwards && t.completedLoops % 2 == 0;
-                    }
-                    if (isBackwards) {
-//                        for (int i = prevWPIndex - 1; i > newWaypointIndex - 1; --i) Tween.OnTweenCallback(t.onWaypointChange, i);
-                        for (int i = prevWPIndex - 1; i > newWaypointIndex - 1; --i) {
-                            if (i != newWaypointIndex) Tween.OnTweenCallback(t.onWaypointChange, t, i);
-                        }
-                    } else {
-//                        for (int i = prevWPIndex + 1; i < newWaypointIndex + 1; ++i) Tween.OnTweenCallback(t.onWaypointChange, i);
-                        for (int i = prevWPIndex + 1; i < newWaypointIndex; ++i) 
-                            if (i != newWaypointIndex) Tween.OnTweenCallback(t.onWaypointChange, t, i);
-                    }
-                    if (newCompletedSteps > 0 && !t.isComplete) {
-                        int stepWaypointIndex;
-                        if (t.loopType == LoopType.Yoyo) {
-                            stepWaypointIndex = t.completedLoops % 2 != 0 && !t.isBackwards
-                                ? changeValue.wps.Length - 1
-                                : 0;
-                        } else {
-                            stepWaypointIndex = !t.isBackwards
-                                ? changeValue.wps.Length - 1
-                                : 0;
-                        }
-                        if (stepWaypointIndex != newWaypointIndex) Tween.OnTweenCallback(t.onWaypointChange, t, stepWaypointIndex);
-                    }
-                    Tween.OnTweenCallback(t.onWaypointChange, t, newWaypointIndex);
-                }
-            }
         }
 
         // Public so it can be called by GotoWaypoint

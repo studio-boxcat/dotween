@@ -92,8 +92,8 @@ namespace DG.DOTweenEditor
             if (preventAutoKill) t.SetAutoKill(false);
             if (clearCallbacks) {
                 t.OnComplete(null)
-                    .OnStart(null).OnPlay(null).OnPause(null).OnUpdate(null).OnWaypointChange(null)
-                    .OnStepComplete(null).OnRewind(null).OnKill(null);
+                    .OnStart(null).OnUpdate(null)
+                    .OnKill(null);
             }
             if (andPlay) t.Play();
         }

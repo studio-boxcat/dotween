@@ -40,27 +40,13 @@ namespace DG.Tweening
         internal UpdateType updateType;
         internal bool isIndependentUpdate;
 //        public TweenCallback onStart; // (in ABSSequentiable) When the tween is set in a PLAY state the first time, AFTER any eventual delay
-        /// <summary>Called when the tween is set in a playing state, after any eventual delay.
-        /// Also called each time the tween resumes playing from a paused state</summary>
-        public TweenCallback onPlay;
-        /// <summary>Called when the tween state changes from playing to paused.
-        /// If the tween has autoKill set to FALSE, this is called also when the tween reaches completion.</summary>
-        public TweenCallback onPause;
-        /// <summary>Called when the tween is rewinded,
-        /// either by calling <code>Rewind</code> or by reaching the start position while playing backwards.
-        /// Rewinding a tween that is already rewinded will not fire this callback</summary>
-        public TweenCallback onRewind;
         /// <summary>Called each time the tween updates</summary>
         public TweenCallback onUpdate;
-        /// <summary>Called the moment the tween completes one loop cycle</summary>
-        public TweenCallback onStepComplete;
         /// <summary>Called the moment the tween reaches completion (loops included)</summary>
         public TweenCallback onComplete;
         /// <summary>Called the moment the tween is killed</summary>
         public TweenCallback onKill;
-        /// <summary>Called when a path tween's current waypoint changes</summary>
-        public TweenCallback<int> onWaypointChange;
-        
+
         // Fixed after creation
         public bool isFrom; // Used to prevent settings like isRelative from being applied on From tweens
         internal bool isBlendable; // Set by blendable tweens, prevents isRelative to be applied
@@ -119,7 +105,6 @@ namespace DG.Tweening
         internal float elapsedDelay; // Amount of eventual delay elapsed (shared by Sequences only for compatibility reasons, otherwise not used)
         internal bool delayComplete = true; // TRUE when the delay has elapsed or isn't set, also set by Delay extension method (shared by Sequences only for compatibility reasons, otherwise not used)
         
-        internal int miscInt = -1; // Used by some plugins to store data (currently only by Paths to store current waypoint index)
 
         #region Abstracts + Overrideables
 
@@ -133,8 +118,7 @@ namespace DG.Tweening
             stringId = null;
             intId = -999;
             isIndependentUpdate = false;
-            onStart = onPlay = onRewind = onUpdate = onComplete = onStepComplete = onKill = null;
-            onWaypointChange = null;
+            onStart = onUpdate = onComplete = onKill = null;
 
             debugTargetId = null;
 
@@ -155,8 +139,6 @@ namespace DG.Tweening
             isPlaying = isComplete = false;
             elapsedDelay = 0;
             delayComplete = true;
-
-            miscInt = -1;
 
             // The following are set during a tween's Setup
 //            isRecyclable = DOTween.defaultRecyclable;
@@ -214,10 +196,6 @@ namespace DG.Tweening
                     OnTweenCallback(t.onStart, t);
                     if (!t.active) return true; // Tween might have been killed by onStart callback
                 }
-                if (t.onPlay != null) {
-                    OnTweenCallback(t.onPlay, t);
-                    if (!t.active) return true; // Tween might have been killed by onPlay callback
-                }
             }
 
             float prevPosition = t.position;
@@ -269,20 +247,8 @@ namespace DG.Tweening
             if (t.onUpdate != null && updateMode != UpdateMode.IgnoreOnUpdate) {
                 OnTweenCallback(t.onUpdate, t);
             }
-            if (t.position <= 0 && t.completedLoops <= 0 && !wasRewinded && t.onRewind != null) {
-                OnTweenCallback(t.onRewind, t);
-            }
-            if (newCompletedSteps > 0 && updateMode == UpdateMode.Update && t.onStepComplete != null) {
-                for (int i = 0; i < newCompletedSteps; ++i) {
-                    OnTweenCallback(t.onStepComplete, t);
-                    if (!t.active) break; // A stepComplete killed the tween
-                }
-            }
             if (t.isComplete && !wasComplete && updateMode != UpdateMode.IgnoreOnComplete && t.onComplete != null) {
                 OnTweenCallback(t.onComplete, t);
-            }
-            if (!t.isPlaying && wasPlaying && (!t.isComplete || !t.autoKill) && t.onPause != null) {
-                OnTweenCallback(t.onPause, t);
             }
 
             // Return

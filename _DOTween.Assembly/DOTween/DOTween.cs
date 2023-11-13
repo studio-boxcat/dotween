@@ -74,8 +74,6 @@ namespace DG.Tweening
         /// Setting this to TRUE will lead to smoother animations.
         /// <para>Default: FALSE</para></summary>
         public static float maxSmoothUnscaledTime = 0.15f;
-        // Internal ► Can only be set via DOTween's Utility Panel
-        internal static RewindCallbackMode rewindCallbackMode = RewindCallbackMode.FireIfPositionChanged;
         /// <summary>DOTween's log behaviour.
         /// <para>Default: LogBehaviour.ErrorsOnly</para></summary>
         public static LogBehaviour logBehaviour {
@@ -221,7 +219,6 @@ namespace DG.Tweening
                 DOTween.unscaledTimeScale = settings.unscaledTimeScale;
                 DOTween.useSmoothDeltaTime = settings.useSmoothDeltaTime;
                 DOTween.maxSmoothUnscaledTime = settings.maxSmoothUnscaledTime;
-                DOTween.rewindCallbackMode = settings.rewindCallbackMode;
                 DOTween.defaultRecyclable = recycleAllByDefault == null ? settings.defaultRecyclable : (bool)recycleAllByDefault;
                 DOTween.showUnityEditorReport = settings.showUnityEditorReport;
                 DOTween.drawGizmos = settings.drawGizmos;
@@ -287,7 +284,6 @@ namespace DG.Tweening
             unscaledTimeScale = 1;
             useSmoothDeltaTime = false;
             maxSmoothUnscaledTime = 0.15f;
-            rewindCallbackMode = RewindCallbackMode.FireIfPositionChanged;
             logBehaviour = LogBehaviour.ErrorsOnly;
             onWillLog = null;
             defaultEaseType = Ease.OutQuad;

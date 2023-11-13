@@ -288,40 +288,6 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Sets the <code>onPlay</code> callback for the tween, clearing any previous <code>onPlay</code> callback that was set.
-        /// Called when the tween is set in a playing state, after any eventual delay.
-        /// Also called each time the tween resumes playing from a paused state</summary>
-        public static T OnPlay<T>(this T t, TweenCallback action) where T : Tween
-        {
-            if (t == null || !t.active) return t;
-
-            t.onPlay = action;
-            return t;
-        }
-
-        /// <summary>Sets the <code>onPause</code> callback for the tween, clearing any previous <code>onPause</code> callback that was set.
-        /// Called when the tween state changes from playing to paused.
-        /// If the tween has autoKill set to FALSE, this is called also when the tween reaches completion.</summary>
-        public static T OnPause<T>(this T t, TweenCallback action) where T : Tween
-        {
-            if (t == null || !t.active) return t;
-
-            t.onPause = action;
-            return t;
-        }
-
-        /// <summary>Sets the <code>onRewind</code> callback for the tween, clearing any previous <code>onRewind</code> callback that was set.
-        /// Called when the tween is rewinded,
-        /// either by calling <code>Rewind</code> or by reaching the start position while playing backwards.
-        /// Rewinding a tween that is already rewinded will not fire this callback</summary>
-        public static T OnRewind<T>(this T t, TweenCallback action) where T : Tween
-        {
-            if (t == null || !t.active) return t;
-
-            t.onRewind = action;
-            return t;
-        }
-
         /// <summary>Sets the <code>onUpdate</code> callback for the tween, clearing any previous <code>onUpdate</code> callback that was set.
         /// Called each time the tween updates</summary>
         public static T OnUpdate<T>(this T t, TweenCallback action) where T : Tween
@@ -329,16 +295,6 @@ namespace DG.Tweening
             if (t == null || !t.active) return t;
 
             t.onUpdate = action;
-            return t;
-        }
-
-        /// <summary>Sets the <code>onStepComplete</code> callback for the tween, clearing any previous <code>onStepComplete</code> callback that was set.
-        /// Called the moment the tween completes one loop cycle, even when going backwards</summary>
-        public static T OnStepComplete<T>(this T t, TweenCallback action) where T : Tween
-        {
-            if (t == null || !t.active) return t;
-
-            t.onStepComplete = action;
             return t;
         }
 
@@ -362,16 +318,6 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Sets the <code>onWaypointChange</code> callback for the tween, clearing any previous <code>onWaypointChange</code> callback that was set.
-        /// Called when a path tween's current waypoint changes</summary>
-        public static T OnWaypointChange<T>(this T t, TweenCallback<int> action) where T : Tween
-        {
-            if (t == null || !t.active) return t;
-
-            t.onWaypointChange = action;
-            return t;
-        }
-
         /// <summary>Sets the parameters of the tween (id, ease, loops, delay, timeScale, callbacks, etc) as the parameters of the given one.
         /// Doesn't copy specific SetOptions settings: those will need to be applied manually each time.
         /// <para>Has no effect if the tween has already started.</para>
@@ -391,13 +337,9 @@ namespace DG.Tweening
             t.stringId = asTween.stringId;
             t.intId = asTween.intId;
             t.onStart = asTween.onStart;
-            t.onPlay = asTween.onPlay;
-            t.onRewind = asTween.onRewind;
             t.onUpdate = asTween.onUpdate;
-            t.onStepComplete = asTween.onStepComplete;
             t.onComplete = asTween.onComplete;
             t.onKill = asTween.onKill;
-            t.onWaypointChange = asTween.onWaypointChange;
 
             t.isRecyclable = asTween.isRecyclable;
             t.isSpeedBased = asTween.isSpeedBased;
@@ -432,13 +374,9 @@ namespace DG.Tweening
             t.stringId = tweenParams.stringId;
             t.intId = tweenParams.intId;
             t.onStart = tweenParams.onStart;
-            t.onPlay = tweenParams.onPlay;
-            t.onRewind = tweenParams.onRewind;
             t.onUpdate = tweenParams.onUpdate;
-            t.onStepComplete = tweenParams.onStepComplete;
             t.onComplete = tweenParams.onComplete;
             t.onKill = tweenParams.onKill;
-            t.onWaypointChange = tweenParams.onWaypointChange;
 
             t.isRecyclable = tweenParams.isRecyclable;
             t.isSpeedBased = tweenParams.isSpeedBased;

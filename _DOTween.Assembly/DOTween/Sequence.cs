@@ -412,8 +412,8 @@ namespace DG.Tweening
 
         static bool IsAnyCallbackSet(Sequence s)
         {
-            return s.onComplete != null || s.onKill != null || s.onPause != null || s.onPlay != null || s.onRewind != null
-                   || s.onStart != null || s.onStepComplete != null || s.onUpdate != null;
+            return s.onComplete != null || s.onKill != null
+                   || s.onStart != null || s.onUpdate != null;
         }
 
 //        // Quicker but doesn't implement stable sort
