@@ -58,8 +58,6 @@ namespace DG.DOTweenEditor.UI
             _isRuntime = EditorApplication.isPlaying;
             ConnectToSource();
 
-            EditorGUIUtils.SetGUIStyles();
-
             // Header img
             // GUILayout.Space(4);
             // GUILayout.BeginHorizontal();
@@ -69,21 +67,9 @@ namespace DG.DOTweenEditor.UI
             // GUILayout.FlexibleSpace();
             // GUILayout.EndHorizontal();
 
-            GUILayout.Label(_gcTitle, TweenManager.isDebugBuild ? EditorGUIUtils.redLabelStyle : EditorGUIUtils.boldLabelStyle);
+            GUILayout.Label(_gcTitle);
             if (!DOTween.useSafeMode || !DOTween.debugMode || !DOTween.debugStoreTargetId) {
-                GUILayout.Label(_gcDebugModeSuggest, EditorGUIUtils.wordWrapRichTextLabelStyle);
-            }
-
-            if (!_isRuntime) {
-                GUI.backgroundColor = new Color(0f, 0.31f, 0.48f);
-                GUI.contentColor = Color.white;
-                GUILayout.Label(
-                    "This component is <b>added automatically</b> by DOTween at runtime." +
-                    "\nAdding it yourself is <b>not recommended</b> unless you really know what you're doing:" +
-                    " you'll have to be sure it's <b>never destroyed</b> and that it's present <b>in every scene</b>.",
-                    EditorGUIUtils.infoboxStyle
-                );
-                GUI.backgroundColor = GUI.contentColor = GUI.contentColor = Color.white;
+                GUILayout.Label(_gcDebugModeSuggest);
             }
 
             GUILayout.Space(6);
@@ -116,7 +102,7 @@ namespace DG.DOTweenEditor.UI
                     .Append("/").Append(totActiveLateTweens)
                     .Append("/").Append(totActiveFixedTweens)
                     .Append("/").Append(totActiveManualTweens);
-                GUILayout.Label(_strb.ToString(), EditorGUIUtils.wordWrapRichTextLabelStyle);
+                GUILayout.Label(_strb.ToString());
 
                 GUILayout.Space(4);
                 // DrawSimpleTweensList();
@@ -127,14 +113,14 @@ namespace DG.DOTweenEditor.UI
                 _strb.Append("Pooled tweens: ").Append(TweenManager.TotalPooledTweens())
                     .Append(" (").Append(TweenManager.totPooledTweeners).Append(" TW, ")
                     .Append(TweenManager.totPooledSequences).Append(" SE)");
-                GUILayout.Label(_strb.ToString(), EditorGUIUtils.wordWrapRichTextLabelStyle);
+                GUILayout.Label(_strb.ToString());
 
                 GUILayout.Space(2);
                 _strb.Remove(0, _strb.Length);
                 _strb.Append("Tweens Capacity: ").Append(TweenManager.maxTweeners).Append(" TW, ").Append(TweenManager.maxSequences).Append(" SE")
                     .Append("\nMax Simultaneous Active Tweens: ").Append(DOTween.maxActiveTweenersReached).Append(" TW, ")
                     .Append(DOTween.maxActiveSequencesReached).Append(" SE");
-                GUILayout.Label(_strb.ToString(), EditorGUIUtils.wordWrapRichTextLabelStyle);
+                GUILayout.Label(_strb.ToString());
             }
 
             GUILayout.Space(8);
@@ -146,11 +132,9 @@ namespace DG.DOTweenEditor.UI
             _strb.Append("\nTimeScale (Unity/DOTween/DOTween-Unscaled): ").Append(Time.timeScale)
                 .Append("/").Append(_isRuntime ? DOTween.timeScale : _settings.timeScale)
                 .Append("/").Append(_isRuntime ? DOTween.unscaledTimeScale : _settings.unscaledTimeScale);
-            GUILayout.Label(_strb.ToString(), EditorGUIUtils.wordWrapRichTextLabelStyle);
+            GUILayout.Label(_strb.ToString());
             GUILayout.Label(
-                "NOTE: DOTween's TimeScale is not the same as Unity's Time.timeScale: it is actually multiplied by it except for tweens that are set to update independently",
-                EditorGUIUtils.wordWrapRichTextLabelStyle
-            );
+                "NOTE: DOTween's TimeScale is not the same as Unity's Time.timeScale: it is actually multiplied by it except for tweens that are set to update independently");
 
             GUILayout.Space(8);
             _strb.Remove(0, _strb.Length);
@@ -162,7 +146,7 @@ namespace DG.DOTweenEditor.UI
             _strb.Append("\ndefaultAutoPlay: ").Append(_isRuntime ? DOTween.defaultAutoPlay : _settings.defaultAutoPlay);
             _strb.Append("\ndefaultEaseType: ").Append(_isRuntime ? DOTween.defaultEaseType : _settings.defaultEaseType);
             _strb.Append("\ndefaultLoopType: ").Append(_isRuntime ? DOTween.defaultLoopType : _settings.defaultLoopType);
-            GUILayout.Label(_strb.ToString(), EditorGUIUtils.wordWrapRichTextLabelStyle);
+            GUILayout.Label(_strb.ToString());
 
             GUILayout.Space(10);
         }
@@ -230,12 +214,12 @@ namespace DG.DOTweenEditor.UI
             case TweenType.Tweener:
                 if (!isSequenced) {
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button(isPlaying ? _gcPause : _gcPlay, EditorGUIUtils.btPlayPauseStyle)) {
+                    if (GUILayout.Button(isPlaying ? _gcPause : _gcPlay)) {
                         if (isPlaying) TweenManager.Pause(tween);
                         else TweenManager.Play(tween);
                     }
                 }
-                if (GUILayout.Button(_strb.ToString(), isSequenced ? EditorGUIUtils.btSequencedStyle : EditorGUIUtils.btTweenStyle)) {
+                if (GUILayout.Button(_strb.ToString())) {
                     Object tweenTarget = tween.target as Object;
                     if (tweenTarget != null)  EditorGUIUtility.PingObject(tweenTarget);
                 }
@@ -244,12 +228,12 @@ namespace DG.DOTweenEditor.UI
             case TweenType.Sequence:
                 if (!isSequenced) {
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button(isPlaying ? _gcPause : _gcPlay, EditorGUIUtils.btPlayPauseStyle)) {
+                    if (GUILayout.Button(isPlaying ? _gcPause : _gcPlay)) {
                         if (isPlaying) TweenManager.Pause(tween);
                         else TweenManager.Play(tween);
                     }
                 }
-                GUILayout.Button(_strb.ToString(), isSequenced ? EditorGUIUtils.btSequencedStyle : EditorGUIUtils.btSequenceStyle);
+                GUILayout.Button(_strb.ToString());
                 if (!isSequenced) GUILayout.EndHorizontal();
                 Sequence s = (Sequence)tween;
                 sequencedDepth++;
