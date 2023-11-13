@@ -362,47 +362,6 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Sets the parameters of the tween (id, ease, loops, delay, timeScale, callbacks, etc) as the parameters of the given TweenParams.
-        /// <para>Has no effect if the tween has already started.</para></summary>
-        /// <param name="tweenParams">TweenParams from which to copy the parameters</param>
-        public static T SetAs<T>(this T t, TweenParams tweenParams) where T : Tween
-        {
-            if (t == null || !t.active || t.creationLocked) return t;
-
-            TweenManager.SetUpdateType(t, tweenParams.updateType, tweenParams.isIndependentUpdate);
-            t.id = tweenParams.id;
-            t.stringId = tweenParams.stringId;
-            t.intId = tweenParams.intId;
-            t.onStart = tweenParams.onStart;
-            t.onUpdate = tweenParams.onUpdate;
-            t.onComplete = tweenParams.onComplete;
-            t.onKill = tweenParams.onKill;
-
-            t.isRecyclable = tweenParams.isRecyclable;
-            t.isSpeedBased = tweenParams.isSpeedBased;
-            t.autoKill = tweenParams.autoKill;
-            t.loops = tweenParams.loops;
-            t.loopType = tweenParams.loopType;
-            if (t.tweenType == TweenType.Tweener) {
-                if (t.loops > -1) t.fullDuration = t.duration * t.loops;
-                else t.fullDuration = Mathf.Infinity;
-            }
-
-            t.delay = tweenParams.delay;
-            t.delayComplete = t.delay <= 0;
-            t.isRelative = tweenParams.isRelative;
-            if (tweenParams.easeType == Ease.Unset) {
-                if (t.tweenType == TweenType.Sequence) t.easeType = Ease.Linear;
-                else t.easeType = DOTween.defaultEaseType;
-//                t.easeType = t.tweenType == TweenType.Sequence ? Ease.Linear : DOTween.defaultEaseType; // Doesn't work w webplayer (why?)
-            } else t.easeType = tweenParams.easeType;
-            t.customEase = tweenParams.customEase;
-            t.easeOvershootOrAmplitude = tweenParams.easeOvershootOrAmplitude;
-            t.easePeriod = tweenParams.easePeriod;
-
-            return t;
-        }
-
         #endregion
 
         #region Sequences-only
