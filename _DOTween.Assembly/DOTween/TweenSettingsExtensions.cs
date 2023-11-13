@@ -438,27 +438,16 @@ namespace DG.Tweening
         /// <summary>Changes a TO tween into a FROM tween: sets the current target's position as the tween's endValue
         /// then immediately sends the target to the previously set endValue.</summary>
         public static T From<T>(this T t) where T : Tweener
-        { return From(t, true, false); }
+        { return From(t, false); }
         /// <summary>Changes a TO tween into a FROM tween: sets the current target's position as the tween's endValue
         /// then immediately sends the target to the previously set endValue.</summary>
         /// <param name="isRelative">If TRUE the FROM value will be calculated as relative to the current one</param>
         public static T From<T>(this T t, bool isRelative) where T : Tweener
-        { { return From(t, true, isRelative); } }
-        /// <summary>Changes a TO tween into a FROM tween: sets the current value of the target as the endValue,
-        /// and the previously passed endValue as the actual startValue.</summary>
-        /// <param name="setImmediately">If TRUE sets the target to from value immediately, otherwise waits for the tween to start</param>
-        /// <param name="isRelative">If TRUE the FROM value will be calculated as relative to the current one</param>
-        public static T From<T>(this T t, bool setImmediately, bool isRelative) where T : Tweener
         {
             if (t == null || !t.active || t.creationLocked || !t.isFromAllowed) return t;
 
             t.isFrom = true;
-            if (setImmediately) t.SetFrom(isRelative && !t.isBlendable);
-            else {
-                // Just mark the tween as relative (will be reset to FALSE once the From is applied at startup)
-                // and let the startup routine set the From values
-                t.isRelative = isRelative;
-            }
+            t.SetFrom(isRelative && !t.isBlendable);
             return t;
         }
 
