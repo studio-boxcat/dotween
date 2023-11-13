@@ -38,8 +38,6 @@ namespace DG.Tweening.Core
         static readonly Stack<Tween> _PooledSequences = new Stack<Tween>();
 
         static readonly List<Tween> _KillList = new List<Tween>(_DefaultMaxTweeners + _DefaultMaxSequences);
-        static readonly Dictionary<Tween,TweenLink> _TweenLinks = new Dictionary<Tween, TweenLink>(_DefaultMaxTweeners + _DefaultMaxSequences);
-        static int _totTweenLinks; // Used for quicker skip in case no TweenLinks were set
         static int _maxActiveLookupId = -1; // Highest full ID in _activeTweens
         static bool _requiresActiveReorganization; // True when _activeTweens need to be reorganized to fill empty spaces
         static int _reorganizeFromId = -1; // First null ID from which to reorganize
@@ -218,8 +216,6 @@ namespace DG.Tweening.Core
             totActiveTweeners = totActiveSequences = 0;
             _maxActiveLookupId = _reorganizeFromId = -1;
             _requiresActiveReorganization = false;
-            _TweenLinks.Clear();
-            _totTweenLinks = 0;
 
             if (isUpdateLoop) _despawnAllCalledFromUpdateLoopCallback = true;
 
@@ -321,39 +317,6 @@ namespace DG.Tweening.Core
             _PooledSequences.Clear();
             totPooledTweeners = totPooledSequences = 0;
             _minPooledTweenerId = _maxPooledTweenerId = -1;
-        }
-
-        internal static void AddTweenLink(Tween t, TweenLink tweenLink)
-        {
-            _totTweenLinks++;
-            if (_TweenLinks.ContainsKey(t)) _TweenLinks[t] = tweenLink;
-            else _TweenLinks.Add(t, tweenLink);
-            // Pause or play tween immediately depending on target's state
-            if (tweenLink.lastSeenActive) {
-                switch (tweenLink.behaviour) {
-                case LinkBehaviour.PauseOnDisablePlayOnEnable:
-                case LinkBehaviour.PauseOnDisableRestartOnEnable:
-                case LinkBehaviour.PlayOnEnable:
-                case LinkBehaviour.RestartOnEnable:
-                    Play(t);
-                    break;
-                }
-            } else {
-                switch (tweenLink.behaviour) {
-                case LinkBehaviour.PauseOnDisable:
-                case LinkBehaviour.PauseOnDisablePlayOnEnable:
-                case LinkBehaviour.PauseOnDisableRestartOnEnable:
-                    Pause(t);
-                    break;
-                }
-            }
-        }
-
-        static void RemoveTweenLink(Tween t)
-        {
-            if (!_TweenLinks.ContainsKey(t)) return;
-            _TweenLinks.Remove(t);
-            _totTweenLinks--;
         }
 
         internal static void ResetCapacities()
@@ -504,7 +467,6 @@ namespace DG.Tweening.Core
         // Returns TRUE if the tween should be killed
         internal static bool Update(Tween t, float deltaTime, float independentTime, bool isSingleTweenManualUpdate)
         {
-            if (_totTweenLinks > 0) EvaluateTweenLink(t); // TweenLinks
             if (!t.active) {
                 // Manually killed by another tween's callback or deactivated by the TweenLink evaluation
                 MarkForKilling(t, isSingleTweenManualUpdate);
@@ -1029,61 +991,6 @@ namespace DG.Tweening.Core
             }
         }
 
-        // Called by Update method
-        static void EvaluateTweenLink(Tween t)
-        {
-            // Check tween links
-            TweenLink tLink;
-            if (!_TweenLinks.TryGetValue(t, out tLink)) return;
-
-            if (tLink.target == null) {
-                t.active = false; // Will be killed by rest of Update loop
-            } else {
-                bool goActive = tLink.target.activeInHierarchy;
-                bool justEnabled = !tLink.lastSeenActive && goActive;
-                bool justDisabled = tLink.lastSeenActive && !goActive;
-                tLink.lastSeenActive = goActive;
-                switch (tLink.behaviour) {
-                case LinkBehaviour.KillOnDisable:
-                    if (!goActive) t.active = false; // Will be killed by rest of Update loop
-                    break;
-                case LinkBehaviour.CompleteAndKillOnDisable:
-                    if (goActive) break;
-                    if (!t.isComplete) t.Complete();
-                    t.active = false; // Will be killed by rest of Update loop
-                    break;
-                case LinkBehaviour.RewindAndKillOnDisable:
-                    if (goActive) break;
-                    t.Rewind(false);
-                    t.active = false; // Will be killed by rest of Update loop
-                    break;
-                case LinkBehaviour.CompleteOnDisable:
-                    if (justDisabled && !t.isComplete) t.Complete();
-                    break;
-                case LinkBehaviour.RewindOnDisable:
-                    if (justDisabled) t.Rewind(false);
-                    break;
-                case LinkBehaviour.PauseOnDisable:
-                    if (justDisabled && t.isPlaying) Pause(t);
-                    break;
-                case LinkBehaviour.PauseOnDisablePlayOnEnable:
-                    if (justDisabled) Pause(t);
-                    else if (justEnabled) Play(t);
-                    break;
-                case LinkBehaviour.PauseOnDisableRestartOnEnable:
-                    if (justDisabled) Pause(t);
-                    else if (justEnabled) Restart(t);
-                    break;
-                case LinkBehaviour.PlayOnEnable:
-                    if (justEnabled) Play(t);
-                    break;
-                case LinkBehaviour.RestartOnEnable:
-                    if (justEnabled) Restart(t);
-                    break;
-                }
-            }
-        }
-
         // Adds the given tween to the active tweens list (updateType is always Normal, but can be changed by SetUpdateType)
         static void AddActiveTween(Tween t)
         {
@@ -1172,8 +1079,6 @@ namespace DG.Tweening.Core
         static void RemoveActiveTween(Tween t)
         {
             int index = t.activeId;
-
-            if (_totTweenLinks > 0) RemoveTweenLink(t);
 
             t.activeId = -1;
             _requiresActiveReorganization = true;
