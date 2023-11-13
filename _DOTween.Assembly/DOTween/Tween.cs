@@ -62,7 +62,7 @@ namespace DG.Tweening
         public TweenCallback<int> onWaypointChange;
         
         // Fixed after creation
-        internal bool isFrom; // Used to prevent settings like isRelative from being applied on From tweens
+        public bool isFrom; // Used to prevent settings like isRelative from being applied on From tweens
         internal bool isBlendable; // Set by blendable tweens, prevents isRelative to be applied
         internal bool isRecyclable;
         internal bool isSpeedBased;
