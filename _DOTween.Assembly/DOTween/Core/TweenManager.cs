@@ -1134,8 +1134,16 @@ namespace DG.Tweening.Core
             
             for (int i = 0; i < _maxActiveLookupId + 1; ++i) {
                 Tween t = _activeTweens[i];
-                if (t == null) nullTweensWithinLookup++;
-                else if (!t.active) inactiveTweensWithinLookup++;
+                if (t == null)
+                {
+                    // Debug.LogWarning("[TweenManager] NULL tween found.");
+                    nullTweensWithinLookup++;
+                }
+                else if (!t.active)
+                {
+                    // Debug.LogWarning("[TweenManager] Inactive tween found: " + t.debugTargetId, t.target as UnityEngine.Object);
+                    inactiveTweensWithinLookup++;
+                }
             }
             int len = _activeTweens.Length;
             int firstNullIndex = -1;
