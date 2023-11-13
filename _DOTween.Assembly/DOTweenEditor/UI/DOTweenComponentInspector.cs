@@ -15,8 +15,7 @@ namespace DG.DOTweenEditor.UI
     [CustomEditor(typeof(DOTweenComponent))]
     public class DOTweenComponentInspector : Editor
     {
-        static DOTweenSettings _settingsCache = null;
-        static DOTweenSettings _settings => _settingsCache ??= Resources.Load<DOTweenSettings>("DOTweenSettings");
+        static DOTweenSettings _settings => DOTweenSettings.Instance;
         readonly StringBuilder _strb = new StringBuilder();
         bool _isRuntime;
         // Texture2D _headerImg;

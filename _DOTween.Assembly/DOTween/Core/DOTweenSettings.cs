@@ -10,8 +10,8 @@ namespace DG.Tweening.Core
 {
     public class DOTweenSettings : ScriptableObject
     {
-        public const string AssetName = "DOTweenSettings";
-        public const string AssetFullFilename = AssetName + ".asset";
+        static DOTweenSettings _instanceCache = null;
+        public static DOTweenSettings Instance => _instanceCache ??= Resources.Load<DOTweenSettings>("DOTweenSettings");
 
         public bool useSafeMode = true;
         public SafeModeOptions safeModeOptions = new SafeModeOptions();
@@ -40,17 +40,6 @@ namespace DG.Tweening.Core
         // Pro-only - accessed via DOTweenAnimationInspector
         public bool showPreviewPanel = true;
 
-        // Editor-only
-        public enum SettingsLocation
-        {
-            AssetsDirectory,
-            DOTweenDirectory,
-            DemigiantDirectory
-        }
-        public SettingsLocation storeSettingsLocation = SettingsLocation.AssetsDirectory;
-        public ModulesSetup modules = new ModulesSetup();
-        public bool createASMDEF = false;
-
         // Editor-Only ► DOTween Inspector
         public bool showPlayingTweens, showPausedTweens;
 
@@ -63,25 +52,6 @@ namespace DG.Tweening.Core
         {
             public SafeModeLogBehaviour logBehaviour = SafeModeLogBehaviour.Warning;
             public NestedTweenFailureBehaviour nestedTweenFailureBehaviour = NestedTweenFailureBehaviour.TryToPreserveSequence;
-        }
-
-        [Serializable]
-        public class ModulesSetup // Editor-only
-        {
-            public bool showPanel;
-
-            public bool audioEnabled = true;
-            public bool physicsEnabled = true;
-            public bool physics2DEnabled = true;
-            public bool spriteEnabled = true;
-            public bool uiEnabled = true;
-            //
-            public bool textMeshProEnabled;
-            public bool tk2DEnabled;
-            public bool deAudioEnabled;
-            public bool deUnityExtendedEnabled;
-            //
-            public bool epoOutlineEnabled; // For asset https://assetstore.unity.com/packages/vfx/easy-performant-outline-2d-3d-srp-lwrp-urp-default-renderer-157187
         }
     }
 }

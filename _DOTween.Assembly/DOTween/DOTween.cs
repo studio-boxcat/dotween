@@ -188,15 +188,13 @@ namespace DG.Tweening
             if (initialized) return instance;
             if (!Application.isPlaying || isQuitting) return null;
 
-            DOTweenSettings settings = Resources.Load(DOTweenSettings.AssetName) as DOTweenSettings;
-            return Init(settings, recycleAllByDefault, useSafeMode, logBehaviour);
+            return Init(DOTweenSettings.Instance, recycleAllByDefault, useSafeMode, logBehaviour);
         }
         // Auto-init
         static void AutoInit()
         {
             if (!Application.isPlaying || isQuitting) return;
-            DOTweenSettings settings = Resources.Load(DOTweenSettings.AssetName) as DOTweenSettings;
-            Init(settings, null, null, null);
+            Init(DOTweenSettings.Instance, null, null, null);
         }
         // Full init
         static IDOTweenInit Init(DOTweenSettings settings, bool? recycleAllByDefault, bool? useSafeMode, LogBehaviour? logBehaviour)
