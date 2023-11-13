@@ -23,6 +23,7 @@ using DG.Tweening.Plugins;
 using DG.Tweening.Plugins.Core.PathCore;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 #pragma warning disable 1573
 namespace DG.Tweening
@@ -59,8 +60,8 @@ namespace DG.Tweening
         /// <param name="intId">The int ID to assign to this tween.</param>
         public static T SetId<T>(this T t, int intId) where T : Tween
         {
-            if (t == null || !t.active) return t;
-
+            Assert.IsNotNull(t);
+            Assert.IsTrue(t.active);
             t.id = intId;
             return t;
         }
@@ -296,48 +297,6 @@ namespace DG.Tweening
             if (t == null || !t.active) return t;
 
             t.onKill = action;
-            return t;
-        }
-
-        /// <summary>Sets the parameters of the tween (id, ease, loops, delay, timeScale, callbacks, etc) as the parameters of the given one.
-        /// Doesn't copy specific SetOptions settings: those will need to be applied manually each time.
-        /// <para>Has no effect if the tween has already started.</para>
-        /// NOTE: the tween's <code>target</code> will not be changed</summary>
-        /// <param name="asTween">Tween from which to copy the parameters</param>
-        public static T SetAs<T>(this T t, Tween asTween) where T : Tween
-        {
-            if (t == null || !t.active || t.creationLocked) return t;
-
-//            t.isFrom = asTween.isFrom;
-//            t.target = asTween.target;
-
-            t.timeScale = asTween.timeScale;
-            t.isBackwards = asTween.isBackwards;
-            TweenManager.SetUpdateType(t, asTween.updateType, asTween.isIndependentUpdate);
-            t.id = asTween.id;
-            t.onStart = asTween.onStart;
-            t.onUpdate = asTween.onUpdate;
-            t.onComplete = asTween.onComplete;
-            t.onKill = asTween.onKill;
-
-            t.isRecyclable = asTween.isRecyclable;
-            t.isSpeedBased = asTween.isSpeedBased;
-            t.autoKill = asTween.autoKill;
-            t.loops = asTween.loops;
-            t.loopType = asTween.loopType;
-            if (t.tweenType == TweenType.Tweener) {
-                if (t.loops > -1) t.fullDuration = t.duration * t.loops;
-                else t.fullDuration = Mathf.Infinity;
-            }
-
-            t.delay = asTween.delay;
-            t.delayComplete = t.delay <= 0;
-            t.isRelative = asTween.isRelative;
-            t.easeType = asTween.easeType;
-            t.customEase = asTween.customEase;
-            t.easeOvershootOrAmplitude = asTween.easeOvershootOrAmplitude;
-            t.easePeriod = asTween.easePeriod;
-
             return t;
         }
 

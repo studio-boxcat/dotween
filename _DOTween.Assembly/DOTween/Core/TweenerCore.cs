@@ -32,8 +32,8 @@ namespace DG.Tweening.Core
         internal ABSTweenPlugin<T1, T2, TPlugOptions> tweenPlugin;
 
         const string _TxtCantChangeSequencedValues = "You cannot change the values of a tween contained inside a Sequence";
-        Type _colorType = typeof(Color);
-        Type _color32Type = typeof(Color32);
+        static readonly Type _colorType = typeof(Color);
+        static readonly Type _color32Type = typeof(Color32);
 
         #region Constructor
 
