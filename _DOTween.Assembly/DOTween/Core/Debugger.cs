@@ -37,7 +37,7 @@ namespace DG.Tweening.Core
             if (DOTween.debugMode) txt = _LogPrefix + GetDebugDataMessage(t) + message;
             else txt = _LogPrefix + message;
             if (DOTween.onWillLog != null && !DOTween.onWillLog(LogType.Warning, txt)) return;
-            Debug.LogWarning(txt);
+            Debug.LogWarning(txt, t?.target as Object);
         }
         public static void LogError(object message, Tween t = null)
         {
@@ -45,7 +45,7 @@ namespace DG.Tweening.Core
             if (DOTween.debugMode) txt = _LogPrefix + GetDebugDataMessage(t) + message;
             else txt = _LogPrefix + message;
             if (DOTween.onWillLog != null && !DOTween.onWillLog(LogType.Error, txt)) return;
-            Debug.LogError(txt);
+            Debug.LogError(txt, t?.target as Object);
         }
         public static void LogSafeModeCapturedError(object message, Tween t = null)
         {
@@ -55,13 +55,13 @@ namespace DG.Tweening.Core
             if (DOTween.onWillLog != null && !DOTween.onWillLog(LogType.Log, txt)) return;
             switch (DOTween.safeModeLogBehaviour) {
             case SafeModeLogBehaviour.Normal:
-                Debug.Log(txt);
+                Debug.Log(txt, t?.target as Object);
                 break;
             case SafeModeLogBehaviour.Warning:
-                Debug.LogWarning(txt);
+                Debug.LogWarning(txt, t?.target as Object);
                 break;
             case SafeModeLogBehaviour.Error:
-                Debug.LogError(txt);
+                Debug.LogError(txt, t?.target as Object);
                 break;
             }
         }
