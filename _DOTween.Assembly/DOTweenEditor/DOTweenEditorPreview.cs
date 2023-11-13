@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace DG.DOTweenEditor
@@ -91,9 +92,11 @@ namespace DG.DOTweenEditor
             _previewTime = EditorApplication.timeSinceStartup;
             float elapsed = (float)(_previewTime - currTime);
             DOTween.ManualUpdate(elapsed, elapsed);
+
             // Force visual refresh of UI objects
             // (a simple SceneView.RepaintAll won't work with UI elements)
             Canvas.ForceUpdateCanvases();
+            InternalEditorUtility.RepaintAllViews();
 
             if (_onPreviewUpdated != null) _onPreviewUpdated();
         }
