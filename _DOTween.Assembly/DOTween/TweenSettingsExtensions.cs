@@ -63,16 +63,6 @@ namespace DG.Tweening
             t.id = objectId;
             return t;
         }
-        /// <summary>Sets a string ID for the tween (<see cref="Tween.stringId"/>), which can then be used as a filter with DOTween's static methods.<para/>
-        /// Filtering via string is 2X faster than using an object as an ID (using the alternate obejct overload)</summary>
-        /// <param name="stringId">The string ID to assign to this tween.</param>
-        public static T SetId<T>(this T t, string stringId) where T : Tween
-        {
-            if (t == null || !t.active) return t;
-
-            t.stringId = stringId;
-            return t;
-        }
         /// <summary>Sets an int ID for the tween (<see cref="Tween.intId"/>), which can then be used as a filter with DOTween's static methods.<para/>
         /// Filtering via int is 4X faster than via object, 2X faster than via string (using the alternate object/string overloads)</summary>
         /// <param name="intId">The int ID to assign to this tween.</param>
@@ -334,7 +324,6 @@ namespace DG.Tweening
             t.isBackwards = asTween.isBackwards;
             TweenManager.SetUpdateType(t, asTween.updateType, asTween.isIndependentUpdate);
             t.id = asTween.id;
-            t.stringId = asTween.stringId;
             t.intId = asTween.intId;
             t.onStart = asTween.onStart;
             t.onUpdate = asTween.onUpdate;

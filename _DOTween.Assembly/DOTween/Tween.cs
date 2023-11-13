@@ -29,8 +29,6 @@ namespace DG.Tweening
         /// <summary>Object ID (usable for filtering with DOTween static methods). Can be anything except a string or an int
         /// (use <see cref="stringId"/> or <see cref="intId"/> for those)</summary>
         public object id;
-        /// <summary>String ID (usable for filtering with DOTween static methods). 2X faster than using an object id</summary>
-        public string stringId;
         /// <summary>Int ID (usable for filtering with DOTween static methods). 4X faster than using an object id, 2X faster than using a string id.
         /// Default is -999 so avoid using an ID like that or it will capture all unset intIds</summary>
         public int intId = -999;
@@ -115,7 +113,6 @@ namespace DG.Tweening
             timeScale = 1;
             isBackwards = false;
             id = null;
-            stringId = null;
             intId = -999;
             isIndependentUpdate = false;
             onStart = onUpdate = onComplete = onKill = null;

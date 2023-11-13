@@ -244,8 +244,7 @@ namespace DG.DOTweenEditor.UI
 
         void AppendTweenIdLabel(StringBuilder strb, Tween t)
         {
-            if (!string.IsNullOrEmpty(t.stringId)) strb.Append("ID:\"<b>").Append(t.stringId).Append("</b>\" ");
-            else if (t.intId != -999) strb.Append("ID:\"<b>").Append(t.intId).Append("</b>\" ");
+            if (t.intId != -999) strb.Append("ID:\"<b>").Append(t.intId).Append("</b>\" ");
             else if (t.id != null) strb.Append("ID:\"<b>").Append(t.id).Append("</b>\" ");
         }
 

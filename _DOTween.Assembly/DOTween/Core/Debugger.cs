@@ -171,12 +171,10 @@ namespace DG.Tweening.Core
         {
             if (t == null) return;
             bool hasDebugTargetId = t.debugTargetId != null;
-            bool hasStringId = t.stringId != null;
             bool hasIntId = t.intId != -999;
-            if (hasDebugTargetId || hasStringId || hasIntId) {
+            if (hasDebugTargetId || hasIntId) {
                 message += "DEBUG MODE INFO ► ";
                 if (hasDebugTargetId) message += string.Format("[tween target: {0}]", t.debugTargetId);
-                if (hasStringId) message += string.Format("[stringId: {0}]", t.stringId);
                 if (hasIntId) message += string.Format("[intId: {0}]", t.intId);
                 message += "\n";
             }

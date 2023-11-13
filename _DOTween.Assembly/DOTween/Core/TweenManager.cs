@@ -531,22 +531,17 @@ namespace DG.Tweening.Core
             return false;
         }
 
-        internal static int FilteredOperation(OperationType operationType, FilterType filterType, object id, bool optionalBool, float optionalFloat, object optionalObj = null, object[] optionalArray = null)
+        internal static int FilteredOperation(OperationType operationType, FilterType filterType, object id, bool optionalBool, float optionalFloat, object optionalObj = null)
         {
             int totInvolved = 0;
             bool hasDespawned = false;
             // Determine if ID is required, and if it's stringId
-            bool useStringId = false;
-            string stringId = null;
             bool useIntId = false;
             int intId = 0;
             switch (filterType) {
             case FilterType.TargetOrId:
             case FilterType.TargetAndId:
-                if (id is string) {
-                    useStringId = true;
-                    stringId = (string)id;
-                } else if (id is int) {
+                if (id is int) {
                     useIntId = true;
                     intId = (int)id;
                 }
@@ -559,13 +554,11 @@ namespace DG.Tweening.Core
                 bool isFilterCompliant = false;
                 switch (filterType) {
                 case FilterType.TargetOrId:
-                    if (useStringId) isFilterCompliant = t.stringId != null && t.stringId == stringId;
-                    else if (useIntId) isFilterCompliant = t.intId == intId;
+                    if (useIntId) isFilterCompliant = t.intId == intId;
                     else isFilterCompliant = t.id != null && id.Equals(t.id) || t.target != null && id.Equals(t.target);
                     break;
                 case FilterType.TargetAndId:
-                    if (useStringId) isFilterCompliant = t.target != null && t.stringId == stringId && optionalObj != null && optionalObj.Equals(t.target);
-                    else if (useIntId) isFilterCompliant = t.target != null && t.intId == intId && optionalObj != null && optionalObj.Equals(t.target);
+                    if (useIntId) isFilterCompliant = t.target != null && t.intId == intId && optionalObj != null && optionalObj.Equals(t.target);
                     else isFilterCompliant = t.id != null && t.target != null && optionalObj != null && id.Equals(t.id) && optionalObj.Equals(t.target);
                     break;
                 }
@@ -880,14 +873,10 @@ namespace DG.Tweening.Core
         {
             int result = 0;
             // Determine ID to use
-            bool useStringId = false;
             string stringId = null;
             bool useIntId = false;
             int intId = 0;
-            if (id is string) {
-                useStringId = true;
-                stringId = (string)id;
-            } else if (id is int) {
+            if (id is int) {
                 useIntId = true;
                 intId = (int)id;
             }
@@ -896,9 +885,7 @@ namespace DG.Tweening.Core
             for (int i = 0; i < len; ++i) {
                 Tween t = _activeTweens[i];
                 if (t == null) continue;
-                if (useStringId) {
-                    if (t.stringId == null || t.stringId != stringId) continue;
-                } else if (useIntId) {
+                if (useIntId) {
                     if (t.intId != intId) continue;
                 } else if (t.id == null || !Equals(id, t.id)) continue;
                 if (!playingOnly || t.isPlaying) {
