@@ -1,4 +1,5 @@
-﻿// Author: Daniele Giardini - http://www.demigiant.com
+﻿#if UNITY_EDITOR
+// Author: Daniele Giardini - http://www.demigiant.com
 // Created: 2014/06/29 20:37
 // 
 // License Copyright (c) Daniele Giardini.
@@ -245,3 +246,4 @@ namespace DG.DOTweenEditor.UI
         #endregion
     }
 }
+#endif
