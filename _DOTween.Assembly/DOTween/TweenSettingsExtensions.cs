@@ -54,23 +54,14 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Sets an ID for the tween (<see cref="Tween.id"/>), which can then be used as a filter with DOTween's static methods.</summary>
-        /// <param name="objectId">The ID to assign to this tween. Can be an int, a string, an object or anything else.</param>
-        public static T SetId<T>(this T t, object objectId) where T : Tween
-        {
-            if (t == null || !t.active) return t;
-
-            t.id = objectId;
-            return t;
-        }
-        /// <summary>Sets an int ID for the tween (<see cref="Tween.intId"/>), which can then be used as a filter with DOTween's static methods.<para/>
+        /// <summary>Sets an int ID for the tween (<see cref="Tween.id"/>), which can then be used as a filter with DOTween's static methods.<para/>
         /// Filtering via int is 4X faster than via object, 2X faster than via string (using the alternate object/string overloads)</summary>
         /// <param name="intId">The int ID to assign to this tween.</param>
         public static T SetId<T>(this T t, int intId) where T : Tween
         {
             if (t == null || !t.active) return t;
 
-            t.intId = intId;
+            t.id = intId;
             return t;
         }
 
@@ -84,7 +75,7 @@ namespace DG.Tweening
             if (t == null || !t.active) return t;
 
             if (DOTween.debugStoreTargetId) {
-                Component comp = target as Component;
+                var comp = target as Object;
                 t.debugTargetId = comp != null ? comp.name : target.ToString();
             }
             t.target = target;
@@ -324,7 +315,6 @@ namespace DG.Tweening
             t.isBackwards = asTween.isBackwards;
             TweenManager.SetUpdateType(t, asTween.updateType, asTween.isIndependentUpdate);
             t.id = asTween.id;
-            t.intId = asTween.intId;
             t.onStart = asTween.onStart;
             t.onUpdate = asTween.onUpdate;
             t.onComplete = asTween.onComplete;

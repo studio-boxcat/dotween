@@ -7,7 +7,6 @@
 using System;
 using DG.Tweening.Core;
 using DG.Tweening.Core.Enums;
-using UnityEngine;
 
 namespace DG.Tweening
 {
@@ -16,6 +15,8 @@ namespace DG.Tweening
     /// </summary>
     public abstract class Tween : ABSSequentiable
     {
+        public const int invalidId = -999;
+
         // OPTIONS ///////////////////////////////////////////////////
 
         // Modifiable at runtime
@@ -26,12 +27,9 @@ namespace DG.Tweening
         /// <summary>If TRUE the tween is completely inverted but without playing it backwards
         /// (play backwards will actually play the tween in the original direction)</summary>
         internal bool isInverted;
-        /// <summary>Object ID (usable for filtering with DOTween static methods). Can be anything except a string or an int
-        /// (use <see cref="stringId"/> or <see cref="intId"/> for those)</summary>
-        public object id;
         /// <summary>Int ID (usable for filtering with DOTween static methods). 4X faster than using an object id, 2X faster than using a string id.
         /// Default is -999 so avoid using an ID like that or it will capture all unset intIds</summary>
-        public int intId = -999;
+        public int id = invalidId;
         /// <summary>Tween target (usable for filtering with DOTween static methods). Automatically set by tween creation shortcuts</summary>
         public object target; // Automatically set by DO shortcuts using SetTarget extension. Also used during Tweener.DoStartup in some special cases
         // Update type and eventual independence (changed via TweenManager.SetUpdateType)
@@ -112,8 +110,7 @@ namespace DG.Tweening
         {
             timeScale = 1;
             isBackwards = false;
-            id = null;
-            intId = -999;
+            id = invalidId;
             isIndependentUpdate = false;
             onStart = onUpdate = onComplete = onKill = null;
 

@@ -8,7 +8,9 @@ using System;
 using System.Collections.Generic;
 using DG.Tweening.Core.Enums;
 using DG.Tweening.Plugins.Options;
+using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace DG.Tweening.Core
 {
@@ -531,37 +533,31 @@ namespace DG.Tweening.Core
             return false;
         }
 
-        internal static int FilteredOperation(OperationType operationType, FilterType filterType, object id, bool optionalBool, float optionalFloat, object optionalObj = null)
+        internal static int FilteredOperation(OperationType operationType, [NotNull] object targetOrId, bool optionalBool, float optionalFloat)
         {
             int totInvolved = 0;
             bool hasDespawned = false;
-            // Determine if ID is required, and if it's stringId
-            bool useIntId = false;
-            int intId = 0;
-            switch (filterType) {
-            case FilterType.TargetOrId:
-            case FilterType.TargetAndId:
-                if (id is int) {
-                    useIntId = true;
-                    intId = (int)id;
-                }
-                break;
+            // Determine if ID is required.
+            bool useId = false;
+            int id = 0;
+            if (targetOrId is int) {
+                useId = true;
+                id = (int)targetOrId;
+                Assert.AreNotEqual(Tween.invalidId, id, "Cannot filter by invalid id");
             }
+            else
+            {
+                Assert.IsTrue(targetOrId is not null, "Target cannot be null");
+            }
+
             for (int i = _maxActiveLookupId; i > -1; --i) {
                 Tween t = _activeTweens[i];
                 if (t == null || !t.active) continue;
 
                 bool isFilterCompliant = false;
-                switch (filterType) {
-                case FilterType.TargetOrId:
-                    if (useIntId) isFilterCompliant = t.intId == intId;
-                    else isFilterCompliant = t.id != null && id.Equals(t.id) || t.target != null && id.Equals(t.target);
-                    break;
-                case FilterType.TargetAndId:
-                    if (useIntId) isFilterCompliant = t.target != null && t.intId == intId && optionalObj != null && optionalObj.Equals(t.target);
-                    else isFilterCompliant = t.id != null && t.target != null && optionalObj != null && id.Equals(t.id) && optionalObj.Equals(t.target);
-                    break;
-                }
+                if (useId) isFilterCompliant = t.id == id;
+                else isFilterCompliant = IsTargetsFilterCompliant(targetOrId, t.target);
+
                 if (isFilterCompliant) {
                     switch (operationType) {
                     case OperationType.Despawn:
@@ -640,6 +636,14 @@ namespace DG.Tweening.Core
             }
 
             return totInvolved;
+
+            static bool IsTargetsFilterCompliant([NotNull] object a, [CanBeNull] object b)
+            {
+                if (b is null) return false; // Any of the two is null, consider them different.
+                if (a is UnityEngine.Object) return ReferenceEquals(a, b); // a is a UnityObject, so compare references.
+                if (b is UnityEngine.Object) return false; // a is not a UnityObject, so they can't be equal.
+                return a.Equals(b); // Neither is a UnityObject, so compare values.
+            }
         }
 
         #endregion
@@ -886,8 +890,8 @@ namespace DG.Tweening.Core
                 Tween t = _activeTweens[i];
                 if (t == null) continue;
                 if (useIntId) {
-                    if (t.intId != intId) continue;
-                } else if (t.id == null || !Equals(id, t.id)) continue;
+                    if (t.id != intId) continue;
+                }
                 if (!playingOnly || t.isPlaying) {
                     result++;
                     if (addToList) fillableList.Add(t);
