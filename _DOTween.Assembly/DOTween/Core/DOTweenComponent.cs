@@ -6,7 +6,6 @@
 
 using System;
 using System.Collections;
-using System.Reflection;
 using UnityEngine;
 
 #pragma warning disable 1591
@@ -47,14 +46,11 @@ namespace DG.Tweening.Core
             inspectorUpdater = 0;
             _unscaledTime = Time.realtimeSinceStartup;
 
-            // Initialize DOTweenModuleUtils via Reflection
-            Type modules = DOTweenUtils.GetLooseScriptType("DG.Tweening.DOTweenModuleUtils");
-            if (modules == null) {
-                Debugger.LogError("Couldn't load Modules system");
-                return;
-            }
-            MethodInfo mi = modules.GetMethod("Init", BindingFlags.Static | BindingFlags.Public);
-            mi.Invoke(null, null);
+            // From DOTweenModuleUtils.
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.playModeStateChanged +=
+                _ => OnApplicationPause(UnityEditor.EditorApplication.isPaused);
+#endif
         }
 
         void Start()

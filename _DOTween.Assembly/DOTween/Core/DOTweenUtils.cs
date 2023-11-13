@@ -4,8 +4,6 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
-using System;
-using System.Reflection;
 using UnityEngine;
 
 namespace DG.Tweening.Core
@@ -15,11 +13,6 @@ namespace DG.Tweening.Core
     /// </summary>
     public static class DOTweenUtils
     {
-        static Assembly[] _loadedAssemblies;
-        static readonly string[] _defAssembliesToQuery = new[] { // First assemblies to look into before checking all of them
-            "DOTween.Modules", "Assembly-CSharp", "Assembly-CSharp-firstpass"
-        };
-
         /// <summary>
         /// Returns a Vector3 with z = 0
         /// </summary>
@@ -72,39 +65,5 @@ namespace DG.Tweening.Core
                    && Mathf.Approximately(a.y, b.y)
                    && Mathf.Approximately(a.z, b.z);
         }
-
-        /// <summary>
-        /// Looks for the type within all possible project assembly names
-        /// </summary>
-        internal static Type GetLooseScriptType(string typeName)
-        {
-            // Check in default assemblies (Unity 2017 and later)
-            for (int i = 0; i < _defAssembliesToQuery.Length; ++i) {
-                Type result = Type.GetType(string.Format("{0}, {1}", typeName, _defAssembliesToQuery[i]));
-                if (result == null) continue;
-                return result;
-            }
-            // Check in all assemblies
-            if (_loadedAssemblies == null) _loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-            for (int i = 0; i < _loadedAssemblies.Length; ++i) {
-                Type result = Type.GetType(string.Format("{0}, {1}", typeName, _loadedAssemblies[i].GetName()));
-                if (result == null) continue;
-                return result;
-            }
-            return null;
-        }
-
-        // █████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
-        // ███ INTERNAL CLASSES ████████████████████████████████████████████████████████████████████████████████████████████████
-        // █████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
-
-        // Uses code from BK > http://stackoverflow.com/a/1280832
-        // (scrapped > doesn't work with IL2CPP)
-//        public class InstanceCreator<T> where T : new()
-//        {
-//            static readonly Expression<Func<T>> _TExpression = () => new T();
-//            static readonly Func<T> _TBuilder = _TExpression.Compile();
-//            public static T Create() { return _TBuilder(); }
-//        }
     }
 }
