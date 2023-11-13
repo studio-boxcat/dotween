@@ -19,8 +19,6 @@ namespace DG.DOTweenEditor.UI
         readonly StringBuilder _strb = new StringBuilder();
         bool _isRuntime;
         // Texture2D _headerImg;
-        string _playingTweensHex;
-        string _pausedTweensHex;
         readonly GUIContent _gcPlay = new GUIContent("►");
         readonly GUIContent _gcPause = new GUIContent("❚❚");
         GUIContent _gcTitle;
@@ -48,9 +46,6 @@ namespace DG.DOTweenEditor.UI
             else _strb.Append("\nDOTweenTimeline not installed");
             */
             _gcTitle = new GUIContent(_strb.ToString());
-
-            _playingTweensHex = EditorGUIUtility.isProSkin ? "<color=#00c514>" : "<color=#005408>";
-            _pausedTweensHex = EditorGUIUtility.isProSkin ? "<color=#ff832a>" : "<color=#873600>";
         }
 
         public override void OnInspectorGUI()
@@ -119,7 +114,7 @@ namespace DG.DOTweenEditor.UI
 
             GUILayout.Space(8);
             _strb.Remove(0, _strb.Length);
-            _strb.Append("<b>SETTINGS ▼</b>");
+            _strb.Append("SETTINGS ▼");
             _strb.Append("\nSafe Mode: ").Append((_isRuntime ? DOTween.useSafeMode : _settings.useSafeMode) ? "ON" : "OFF");
             _strb.Append("\nLog Behaviour: ").Append(_isRuntime ? DOTween.logBehaviour : _settings.logBehaviour);
             _strb.Append("\nShow Unity Editor Report: ").Append(_isRuntime ? DOTween.showUnityEditorReport : _settings.showUnityEditorReport);
@@ -132,7 +127,7 @@ namespace DG.DOTweenEditor.UI
 
             GUILayout.Space(8);
             _strb.Remove(0, _strb.Length);
-            _strb.Append("<b>DEFAULTS ▼</b>");
+            _strb.Append("DEFAULTS ▼");
             _strb.Append("\ndefaultRecyclable: ").Append(_isRuntime ? DOTween.defaultRecyclable : _settings.defaultRecyclable);
             _strb.Append("\ndefaultUpdateType: ").Append(_isRuntime ? DOTween.defaultUpdateType : _settings.defaultUpdateType);
             _strb.Append("\ndefaultTSIndependent: ").Append(_isRuntime ? DOTween.defaultTimeScaleIndependent : _settings.defaultTimeScaleIndependent);
@@ -184,56 +179,49 @@ namespace DG.DOTweenEditor.UI
             }
         }
 
-        void DrawTweenButton(Tween tween, bool isPlaying, bool isSequenced = false, int sequencedDepth = 0)
+        void DrawTweenButton(Tween tween, bool isPlaying, bool isSequenced = false)
         {
             _strb.Length = 0;
-            if (!isSequenced) {
-                _strb.Append(isPlaying ? _playingTweensHex : _pausedTweensHex);
-                _strb.Append(tween.isPlaying ? "► </color>" : "❚❚ </color>");
-            }
-            else {
-                int spaces = 0;
-                while (spaces < sequencedDepth) {
-                    if (spaces == 0) _strb.Append("         ");
-                    else _strb.Append("   ");
-                    spaces++;
-                }
-                _strb.Append("└ ");
-            }
-            if (tween.tweenType == TweenType.Sequence) _strb.Append("[SEQUENCE] ");
-            AppendTweenIdLabel(_strb, tween);
-            AppendDebugTargetIdLabel(_strb, tween);
-            AppendTargetTypeLabel(_strb, tween.target);
+
             switch (tween.tweenType) {
             case TweenType.Tweener:
                 if (!isSequenced) {
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button(isPlaying ? _gcPause : _gcPlay)) {
+                    if (GUILayout.Button(isPlaying ? _gcPause : _gcPlay, GUILayout.Width(30))) {
                         if (isPlaying) TweenManager.Pause(tween);
                         else TweenManager.Play(tween);
                     }
                 }
-                if (GUILayout.Button(_strb.ToString())) {
-                    Object tweenTarget = tween.target as Object;
-                    if (tweenTarget != null)  EditorGUIUtility.PingObject(tweenTarget);
+
+                if (tween.target is Object obj && obj != null)
+                {
+                    EditorGUI.BeginDisabledGroup(true);
+                    EditorGUILayout.ObjectField(obj, obj.GetType(), true);
+                    EditorGUI.EndDisabledGroup();
                 }
+                else
+                {
+                    BuildTweenButtonLabel(tween, _strb);
+                    GUILayout.Label(_strb.ToString());
+                }
+
                 if (!isSequenced) GUILayout.EndHorizontal();
                 break;
             case TweenType.Sequence:
                 if (!isSequenced) {
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button(isPlaying ? _gcPause : _gcPlay)) {
+                    if (GUILayout.Button(isPlaying ? _gcPause : _gcPlay, GUILayout.Width(30))) {
                         if (isPlaying) TweenManager.Pause(tween);
                         else TweenManager.Play(tween);
                     }
                 }
-                GUILayout.Button(_strb.ToString());
+                BuildTweenButtonLabel(tween, _strb);
+                GUILayout.Label(_strb.ToString());
                 if (!isSequenced) GUILayout.EndHorizontal();
-                Sequence s = (Sequence)tween;
-                sequencedDepth++;
-                foreach (Tween t in s.sequencedTweens) {
-                    DrawTweenButton(t, isPlaying, true, sequencedDepth);
-                }
+
+                var s = (Sequence)tween;
+                foreach (var t in s.sequencedTweens)
+                    DrawTweenButton(t, isPlaying, true);
                 break;
             }
         }
@@ -242,34 +230,16 @@ namespace DG.DOTweenEditor.UI
 
         #region Helpers
 
-        void AppendTweenIdLabel(StringBuilder strb, Tween t)
+        static void BuildTweenButtonLabel(Tween t, StringBuilder sb)
         {
-            if (t.id != Tween.invalidId) strb.Append("ID:\"<b>").Append(t.id).Append("</b>\" ");
-        }
+            if (t.tweenType == TweenType.Sequence)
+                sb.Append("[SEQUENCE] ");
 
-        void AppendDebugTargetIdLabel(StringBuilder strb, Tween t)
-        {
-            if (string.IsNullOrEmpty(t.debugTargetId)) return;
-            strb.Append("GO name: \"<b>").Append(t.debugTargetId).Append("</b>\"");
-        }
-
-        void AppendTargetTypeLabel(StringBuilder strb, object tweenTarget)
-        {
-            if (tweenTarget == null) return;
-            strb.Append(' ');
-            string s = tweenTarget.ToString();
-            if (s == "null") {
-                _strb.Append("<b><color=#ff0000>NULL TARGET</color></b>");
-            } else {
-                strb.Append("<i>(");
-                int dotIndex = s.LastIndexOf('.');
-                if (dotIndex == -1) {
-                    strb.Append(s).Append(')');
-                } else {
-                    strb.Append(s.Substring(dotIndex + 1));
-                }
-                strb.Append("</i>");
-            }
+            if (string.IsNullOrEmpty(t.debugTargetId) == false)
+                sb.Append(t.debugTargetId).Append(';');
+            if (t.id != Tween.invalidId)
+                sb.Append(t.id).Append(";");
+            sb.Append(t.target ?? "null");
         }
 
         #endregion
