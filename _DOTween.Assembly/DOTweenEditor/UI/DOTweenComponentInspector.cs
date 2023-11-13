@@ -79,12 +79,6 @@ namespace DG.DOTweenEditor.UI
             GUILayout.EndHorizontal();
 
             if (_isRuntime) {
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Play all")) DOTween.PlayAll();
-                if (GUILayout.Button("Pause all")) DOTween.PauseAll();
-                if (GUILayout.Button("Kill all")) DOTween.KillAll();
-                GUILayout.EndHorizontal();
-
                 int totActiveTweens = TweenManager.totActiveTweens;
                 int totPlayingTweens = TweenManager.TotalPlayingTweens();
                 int totPausedTweens = totActiveTweens - totPlayingTweens;

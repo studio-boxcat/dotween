@@ -8,10 +8,7 @@ namespace DG.Tweening.Core.Enums
 {
     internal enum FilterType
     {
-        All,
         TargetOrId, // Check both for id and target
         TargetAndId, // Check for both id and target on the same tween
-        AllExceptTargetsOrIds, // Excludes given targets or ids
-        DOGetter
     }
 }
