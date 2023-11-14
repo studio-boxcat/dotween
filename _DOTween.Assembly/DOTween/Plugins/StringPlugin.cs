@@ -20,7 +20,7 @@ using Random = UnityEngine.Random;
 namespace DG.Tweening.Plugins
 {
     // USING THIS PLUGIN WILL GENERATE GC ALLOCATIONS
-    public class StringPlugin : ABSTweenPlugin<string, string, StringOptions>
+    public class StringPlugin : ABSTweenPlugin<string, StringOptions>
     {
         static readonly StringBuilder _Buffer = new StringBuilder();
         static readonly List<char> _OpenedTags = new List<char>(); // Opened tags that need to be closed at the end, stored by first character required in closing tag
@@ -46,11 +46,6 @@ namespace DG.Tweening.Plugins
         public override void Reset(TweenerCore<string, string, StringOptions> t)
         {
             t.startValue = t.endValue = t.changeValue = "";
-        }
-
-        public override string ConvertToStartValue(TweenerCore<string, string, StringOptions> t, string value)
-        {
-            return value;
         }
 
         public override void SetRelativeEndValue(TweenerCore<string, string, StringOptions> t)

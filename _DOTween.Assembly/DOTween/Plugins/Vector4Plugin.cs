@@ -16,10 +16,8 @@ using UnityEngine;
 #pragma warning disable 1591
 namespace DG.Tweening.Plugins
 {
-    public class Vector4Plugin : ABSTweenPlugin<Vector4, Vector4, VectorOptions>
+    public class Vector4Plugin : ABSTweenPlugin<Vector4, VectorOptions>
     {
-        public override void Reset(TweenerCore<Vector4, Vector4, VectorOptions> t) { }
-
         public override void SetFrom(TweenerCore<Vector4, Vector4, VectorOptions> t, bool isRelative)
         {
             Vector4 prevEndVal = t.endValue;
@@ -91,11 +89,6 @@ namespace DG.Tweening.Plugins
                 }
                 t.setter(to);
             }
-        }
-
-        public override Vector4 ConvertToStartValue(TweenerCore<Vector4, Vector4, VectorOptions> t, Vector4 value)
-        {
-            return value;
         }
 
         public override void SetRelativeEndValue(TweenerCore<Vector4, Vector4, VectorOptions> t)

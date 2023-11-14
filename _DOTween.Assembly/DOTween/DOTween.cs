@@ -441,22 +441,6 @@ namespace DG.Tweening
         /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
         public static TweenerCore<DOColor, DOColor, ColorOptions> To(DOGetter<DOColor> getter, DOSetter<DOColor> setter, Color endValue, float duration)
         { return ApplyTo<DOColor, DOColor, ColorOptions>(getter, setter, endValue, duration); }
-        /// <summary>Tweens a property or field to the given value using default plugins</summary>
-        /// <param name="getter">A getter for the field or property to tween.
-        /// <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-        /// <param name="setter">A setter for the field or property to tween
-        /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        public static TweenerCore<Rect, Rect, RectOptions> To(DOGetter<Rect> getter, DOSetter<Rect> setter, Rect endValue, float duration)
-        { return ApplyTo<Rect, Rect, RectOptions>(getter, setter, endValue, duration); }
-        /// <summary>Tweens a property or field to the given value using default plugins</summary>
-        /// <param name="getter">A getter for the field or property to tween.
-        /// <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-        /// <param name="setter">A setter for the field or property to tween
-        /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        public static Tweener To(DOGetter<RectOffset> getter, DOSetter<RectOffset> setter, RectOffset endValue, float duration)
-        { return ApplyTo<RectOffset, RectOffset, NoOptions>(getter, setter, endValue, duration); }
 
         /// <summary>Tweens a property or field to the given value using a custom plugin</summary>
         /// <param name="plugin">The plugin to use. Each custom plugin implements a static <code>Get()</code> method

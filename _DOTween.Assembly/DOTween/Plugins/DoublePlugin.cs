@@ -13,10 +13,8 @@ using DG.Tweening.Plugins.Options;
 #pragma warning disable 1591
 namespace DG.Tweening.Plugins
 {
-    public class DoublePlugin : ABSTweenPlugin<double, double, NoOptions>
+    public class DoublePlugin : ABSTweenPlugin<double, NoOptions>
     {
-        public override void Reset(TweenerCore<double, double, NoOptions> t) { }
-
         public override void SetFrom(TweenerCore<double, double, NoOptions> t, bool isRelative)
         {
             double prevEndVal = t.endValue;
@@ -33,11 +31,6 @@ namespace DG.Tweening.Plugins
             }
             t.startValue = fromValue;
             if (setImmediately) t.setter(fromValue);
-        }
-
-        public override double ConvertToStartValue(TweenerCore<double, double, NoOptions> t, double value)
-        {
-            return value;
         }
 
         public override void SetRelativeEndValue(TweenerCore<double, double, NoOptions> t)

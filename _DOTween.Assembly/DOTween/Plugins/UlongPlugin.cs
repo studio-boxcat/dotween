@@ -12,10 +12,8 @@ using UnityEngine;
 #pragma warning disable 1591
 namespace DG.Tweening.Plugins
 {
-    public class UlongPlugin : ABSTweenPlugin<ulong, ulong, NoOptions>
+    public class UlongPlugin : ABSTweenPlugin<ulong, NoOptions>
     {
-        public override void Reset(TweenerCore<ulong, ulong, NoOptions> t) { }
-
         public override void SetFrom(TweenerCore<ulong, ulong, NoOptions> t, bool isRelative)
         {
             ulong prevEndVal = t.endValue;
@@ -32,11 +30,6 @@ namespace DG.Tweening.Plugins
             }
             t.startValue = fromValue;
             if (setImmediately) t.setter(fromValue);
-        }
-
-        public override ulong ConvertToStartValue(TweenerCore<ulong, ulong, NoOptions> t, ulong value)
-        {
-            return value;
         }
 
         public override void SetRelativeEndValue(TweenerCore<ulong, ulong, NoOptions> t)

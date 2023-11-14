@@ -50,7 +50,6 @@ namespace DG.Tweening.Plugins.Core
         static ITweenPlugin _quaternionPlugin;
         static ITweenPlugin _colorPlugin;
         static ITweenPlugin _rectPlugin;
-        static ITweenPlugin _rectOffsetPlugin;
         static ITweenPlugin _stringPlugin;
         static ITweenPlugin _vector3ArrayPlugin;
         static ITweenPlugin _color2Plugin;
@@ -97,9 +96,6 @@ namespace DG.Tweening.Plugins.Core
             } else if (t1 == typeof(Rect)) {
                 if (_rectPlugin == null) _rectPlugin = new RectPlugin();
                 plugin = _rectPlugin;
-            } else if (t1 == typeof(RectOffset)) {
-                if (_rectOffsetPlugin == null) _rectOffsetPlugin = new RectOffsetPlugin();
-                plugin = _rectOffsetPlugin;
             } else if (t1 == typeof(uint)) {
                 if (_uintPlugin == null) _uintPlugin = new UintPlugin();
                 plugin = _uintPlugin;
@@ -155,7 +151,6 @@ namespace DG.Tweening.Plugins.Core
             _quaternionPlugin = null;
             _colorPlugin = null;
             _rectPlugin = null;
-            _rectOffsetPlugin = null;
             _stringPlugin = null;
             _vector3ArrayPlugin = null;
             _color2Plugin = null;

@@ -1,20 +1,16 @@
 ﻿// Author: Daniele Giardini - http://www.demigiant.com
 // Created: 2014/12/25 12:40
 
-using System;
 using DG.Tweening.Core;
 using DG.Tweening.Core.Easing;
 using DG.Tweening.Core.Enums;
 using DG.Tweening.Plugins.Core;
 using DG.Tweening.Plugins.Options;
-using UnityEngine;
 
 namespace DG.Tweening.Plugins
 {
-    internal class Color2Plugin : ABSTweenPlugin<Color2, Color2, ColorOptions>
+    internal class Color2Plugin : ABSTweenPlugin<Color2, ColorOptions>
     {
-        public override void Reset(TweenerCore<Color2, Color2, ColorOptions> t) { }
-
         public override void SetFrom(TweenerCore<Color2, Color2, ColorOptions> t, bool isRelative)
         {
             Color2 prevEndVal = t.endValue;
@@ -46,11 +42,6 @@ namespace DG.Tweening.Plugins
                 }
                 t.setter(to);
             }
-        }
-
-        public override Color2 ConvertToStartValue(TweenerCore<Color2, Color2, ColorOptions> t, Color2 value)
-        {
-            return value;
         }
 
         public override void SetRelativeEndValue(TweenerCore<Color2, Color2, ColorOptions> t)

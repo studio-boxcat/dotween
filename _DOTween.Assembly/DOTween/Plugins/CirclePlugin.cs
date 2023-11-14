@@ -50,10 +50,8 @@ namespace DG.Tweening.Plugins
     /// EndValue represents the center of the circle, start and end value degrees are inside options
     /// ChangeValue x is changeValue°, y is unused
     /// </summary>
-    public class CirclePlugin : ABSTweenPlugin<Vector2, Vector2, CircleOptions>
+    public class CirclePlugin : ABSTweenPlugin<Vector2, CircleOptions>
     {
-        public override void Reset(TweenerCore<Vector2, Vector2, CircleOptions> t) { }
-
         public override void SetFrom(TweenerCore<Vector2, Vector2, CircleOptions> t, bool isRelative)
         {
             if (!t.plugOptions.initialized) {
@@ -87,11 +85,6 @@ namespace DG.Tweening.Plugins
         public static ABSTweenPlugin<Vector2, Vector2, CircleOptions> Get()
         {
             return PluginsManager.GetCustomPlugin<CirclePlugin, Vector2, Vector2, CircleOptions>();
-        }
-
-        public override Vector2 ConvertToStartValue(TweenerCore<Vector2, Vector2, CircleOptions> t, Vector2 value)
-        {
-            return value;
         }
 
         public override void SetRelativeEndValue(TweenerCore<Vector2, Vector2, CircleOptions> t)

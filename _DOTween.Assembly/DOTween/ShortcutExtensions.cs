@@ -93,26 +93,6 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Tweens a Camera's <code>pixelRect</code> to the given value.
-        /// Also stores the camera as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Rect, Rect, RectOptions> DOPixelRect(this Camera target, Rect endValue, float duration)
-        {
-            TweenerCore<Rect, Rect, RectOptions> t = DOTween.To(() => target.pixelRect, x => target.pixelRect = x, endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
-
-        /// <summary>Tweens a Camera's <code>rect</code> to the given value.
-        /// Also stores the camera as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Rect, Rect, RectOptions> DORect(this Camera target, Rect endValue, float duration)
-        {
-            TweenerCore<Rect, Rect, RectOptions> t = DOTween.To(() => target.rect, x => target.rect = x, endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
-
         /// <summary>Shakes a Camera's localPosition along its relative X Y axes with the given values.
         /// Also stores the camera as the tween's target so it can be used for filtered operations</summary>
         /// <param name="duration">The duration of the tween</param>

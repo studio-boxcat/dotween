@@ -11,7 +11,6 @@ using System;
 using DG.Tweening.Core.Enums;
 using DG.Tweening.Plugins.Core;
 using DG.Tweening.Plugins.Options;
-using UnityEngine;
 
 #pragma warning disable 1591
 namespace DG.Tweening.Core
@@ -32,8 +31,6 @@ namespace DG.Tweening.Core
         internal ABSTweenPlugin<T1, T2, TPlugOptions> tweenPlugin;
 
         const string _TxtCantChangeSequencedValues = "You cannot change the values of a tween contained inside a Sequence";
-        static readonly Type _colorType = typeof(Color);
-        static readonly Type _color32Type = typeof(Color32);
 
         #region Constructor
 
@@ -50,86 +47,7 @@ namespace DG.Tweening.Core
 
         #region Public Methods
 
-        // No generics because T to T2 conversion isn't compatible with AOT
-        public override Tweener ChangeStartValue(object newStartValue, float newDuration = -1)
-        {
-            if (isSequenced) {
-                Debugger.LogError(_TxtCantChangeSequencedValues, this);
-                return this;
-            }
-#if COMPATIBLE
-            ConvertToWrapper(ref newStartValue);
-#endif
-            Type valT = newStartValue.GetType();
-            if (!ValidateChangeValueType(valT, out bool isColor32ToColor)) {
-                Debugger.LogError("ChangeStartValue: incorrect newStartValue type (is " + valT + ", should be " + typeofT2 + ")", this);
-                return this;
-            }
-            if (isColor32ToColor) return DoChangeStartValue(this, (T2)(object)(Color)(Color32)newStartValue, newDuration);
-            return DoChangeStartValue(this, (T2)newStartValue, newDuration);
-        }
-
-        // No generics because T to T2 conversion isn't compatible with AOT
-        public override Tweener ChangeEndValue(object newEndValue, bool snapStartValue)
-        { return ChangeEndValue(newEndValue, -1, snapStartValue); }
-        // No generics because T to T2 conversion isn't compatible with AOT
-        public override Tweener ChangeEndValue(object newEndValue, float newDuration = -1, bool snapStartValue = false)
-        {
-            if (isSequenced) {
-                Debugger.LogError(_TxtCantChangeSequencedValues, this);
-                return this;
-            }
-#if COMPATIBLE
-            ConvertToWrapper(ref newEndValue);
-#endif
-            Type valT = newEndValue.GetType();
-            if (!ValidateChangeValueType(valT, out bool isColor32ToColor)) {
-                Debugger.LogError("ChangeEndValue: incorrect newEndValue type (is " + valT + ", should be " + typeofT2 + ")", this);
-                return this;
-            }
-            if (isColor32ToColor) return DoChangeEndValue(this, (T2)(object)(Color)(Color32)newEndValue, newDuration, snapStartValue);
-            return DoChangeEndValue(this, (T2)newEndValue, newDuration, snapStartValue);
-        }
-
-        // No generics because T to T2 conversion isn't compatible with AOT
-        public override Tweener ChangeValues(object newStartValue, object newEndValue, float newDuration = -1)
-        {
-            if (isSequenced) {
-                Debugger.LogError(_TxtCantChangeSequencedValues, this);
-                return this;
-            }
-#if COMPATIBLE
-            ConvertToWrapper(ref newStartValue);
-            ConvertToWrapper(ref newEndValue);
-#endif
-            Type valT0 = newStartValue.GetType();
-            Type valT1 = newEndValue.GetType();
-            if (!ValidateChangeValueType(valT0, out bool isColor32ToColor)) {
-                Debugger.LogError("ChangeValues: incorrect value type (is " + valT0 + ", should be " + typeofT2 + ")", this);
-                return this;
-            }
-            if (!ValidateChangeValueType(valT1, out isColor32ToColor)) {
-                Debugger.LogError("ChangeValues: incorrect value type (is " + valT1 + ", should be " + typeofT2 + ")", this);
-                return this;
-            }
-            if (isColor32ToColor) return DoChangeValues(this, (T2)(object)(Color)(Color32)newStartValue, (T2)(object)(Color)(Color32)newEndValue, newDuration);
-            return DoChangeValues(this, (T2)newStartValue, (T2)newEndValue, newDuration);
-        }
-
         #region Advanced Usage (direct from TweenerCore reference)
-
-        /// <summary>NO-GC METHOD: changes the start value of a tween and rewinds it (without pausing it).
-        /// Has no effect with tweens that are inside Sequences</summary>
-        /// <param name="newStartValue">The new start value</param>
-        /// <param name="newDuration">If bigger than 0 applies it as the new tween duration</param>
-        public TweenerCore<T1,T2,TPlugOptions> ChangeStartValue(T2 newStartValue, float newDuration = -1)
-        {
-            if (isSequenced) {
-                Debugger.LogError(_TxtCantChangeSequencedValues, this);
-                return this;
-            }
-            return DoChangeStartValue(this, newStartValue, newDuration);
-        }
 
         /// <summary>NO-GC METHOD: changes the end value of a tween and rewinds it (without pausing it).
         /// Has no effect with tweens that are inside Sequences</summary>
@@ -217,21 +135,6 @@ namespace DG.Tweening.Core
                 return false;
             }
             return true;
-        }
-
-        // Validates if a ChangeEnd/StartValue passed type is compatible with the current one
-        bool ValidateChangeValueType(Type newType, out bool isColor32ToColor)
-        {
-            if (newType == typeofT2) {
-                isColor32ToColor = false;
-                return true;
-            }
-            if (typeofT2 == _colorType && newType == _color32Type) {
-                isColor32ToColor = true;
-                return true;
-            }
-            isColor32ToColor = false;
-            return false;
         }
 
         // CALLED BY TweenManager at each update.

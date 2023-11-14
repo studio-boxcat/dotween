@@ -19,7 +19,7 @@ namespace DG.Tweening.CustomPlugins
     /// (do not use any of the other public PureQuaternionPlugin methods):</para>
     /// <code>DOTween.To(PureQuaternionPlugin.Plug(), ()=> myQuaternionProperty, x=> myQuaternionProperty = x, myQuaternionEndValue, duration);</code>
     /// </summary>
-    public class PureQuaternionPlugin : ABSTweenPlugin<Quaternion, Quaternion, NoOptions>
+    public class PureQuaternionPlugin : ABSTweenPlugin<Quaternion, NoOptions>
     {
         static PureQuaternionPlugin _plug;
         /// <summary>
@@ -32,9 +32,6 @@ namespace DG.Tweening.CustomPlugins
             if (_plug == null) _plug = new PureQuaternionPlugin();
             return _plug;
         }
-
-        /// <summary>INTERNAL: do not use</summary>
-        public override void Reset(TweenerCore<Quaternion, Quaternion, NoOptions> t) { }
 
         /// <summary>INTERNAL: do not use</summary>
         public override void SetFrom(TweenerCore<Quaternion, Quaternion, NoOptions> t, bool isRelative)
@@ -54,12 +51,6 @@ namespace DG.Tweening.CustomPlugins
             }
             t.startValue = fromValue;
             if (setImmediately) t.setter(fromValue);
-        }
-
-        /// <summary>INTERNAL: do not use</summary>
-        public override Quaternion ConvertToStartValue(TweenerCore<Quaternion, Quaternion, NoOptions> t, Quaternion value)
-        {
-            return value;
         }
 
         /// <summary>INTERNAL: do not use</summary>

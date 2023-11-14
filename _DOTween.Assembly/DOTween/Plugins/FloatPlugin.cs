@@ -10,15 +10,12 @@ using DG.Tweening.Core.Easing;
 using DG.Tweening.Core.Enums;
 using DG.Tweening.Plugins.Core;
 using DG.Tweening.Plugins.Options;
-using UnityEngine;
 
 #pragma warning disable 1591
 namespace DG.Tweening.Plugins
 {
-    public class FloatPlugin : ABSTweenPlugin<float,float,FloatOptions>
+    public class FloatPlugin : ABSTweenPlugin<float,FloatOptions>
     {
-        public override void Reset(TweenerCore<float, float, FloatOptions> t) { }
-
         public override void SetFrom(TweenerCore<float, float, FloatOptions> t, bool isRelative)
         {
             float prevEndVal = t.endValue;
@@ -35,11 +32,6 @@ namespace DG.Tweening.Plugins
             }
             t.startValue = fromValue;
             if (setImmediately) t.setter(!t.plugOptions.snapping ? fromValue : (float)Math.Round(fromValue));
-        }
-
-        public override float ConvertToStartValue(TweenerCore<float, float, FloatOptions> t, float value)
-        {
-            return value;
         }
 
         public override void SetRelativeEndValue(TweenerCore<float, float, FloatOptions> t)
