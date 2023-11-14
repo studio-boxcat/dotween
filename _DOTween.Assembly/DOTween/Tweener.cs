@@ -39,6 +39,8 @@ namespace DG.Tweening
 
         internal abstract Tweener SetFrom(bool relative);
 
+        public abstract void ApplyOriginal();
+
         // ===================================================================================
         // INTERNAL METHODS ------------------------------------------------------------------
 

@@ -11,6 +11,7 @@ using DG.Tweening.Core.Enums;
 using DG.Tweening.Plugins.Core;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 #pragma warning disable 1591
 namespace DG.Tweening.Plugins
@@ -53,6 +54,12 @@ namespace DG.Tweening.Plugins
             int len = t.endValue.Length;
             t.changeValue = new Vector3[len];
             for (int i = 0; i < len; ++i) t.changeValue[i] = t.endValue[i] - t.startValue[i];
+        }
+
+        public override void ApplyOriginal(TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> t)
+        {
+            Assert.IsFalse(t.isFromAllowed);
+            t.setter(t.startValue[0]);
         }
 
         public override void EvaluateAndApply(

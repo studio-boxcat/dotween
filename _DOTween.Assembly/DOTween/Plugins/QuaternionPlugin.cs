@@ -93,6 +93,12 @@ namespace DG.Tweening.Plugins
             // Debug.Log("   ► " + Quaternion.Euler(t.startValue).eulerAngles + " - " + Quaternion.Euler(t.endValue).eulerAngles + " ► " + Quaternion.Euler(t.changeValue).eulerAngles);
         }
 
+        public override void ApplyOriginal(TweenerCore<Quaternion, Vector3, QuaternionOptions> t)
+        {
+            var value = t.isFrom ? t.endValue : t.startValue;
+            t.setter(Quaternion.Euler(value));
+        }
+
         public override void EvaluateAndApply(
             QuaternionOptions options, Tween t, bool isRelative, DOGetter<Quaternion> getter, DOSetter<Quaternion> setter,
             float elapsed, Vector3 startValue, Vector3 changeValue, float duration, bool usingInversePosition, int newCompletedSteps,

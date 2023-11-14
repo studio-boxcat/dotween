@@ -112,6 +112,14 @@ namespace DG.Tweening.Plugins
             t.changeValue = t.endValue;
         }
 
+        public override void ApplyOriginal(TweenerCore<Vector3, Path, PathOptions> t)
+        {
+            var path = t.isFrom ? t.endValue : t.startValue;
+            Vector3 newPos = path.GetPoint(0);
+            path.targetPosition = newPos; // Used to draw editor gizmos
+            t.setter(newPos);
+        }
+
         public override void EvaluateAndApply(
             PathOptions options, Tween t, bool isRelative, DOGetter<Vector3> getter, DOSetter<Vector3> setter,
             float elapsed, Path startValue, Path changeValue, float duration, bool usingInversePosition, int newCompletedSteps,

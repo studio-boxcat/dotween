@@ -153,6 +153,11 @@ namespace DG.Tweening.Core
             return DoStartup(this);
         }
 
+        public override void ApplyOriginal()
+        {
+            tweenPlugin.ApplyOriginal(this);
+        }
+
         // Applies the tween set by DoGoto.
         // Returns TRUE if the tween needs to be killed
         internal override bool ApplyTween(float prevPosition, int prevCompletedLoops, int newCompletedSteps, bool useInversePosition, UpdateMode updateMode, UpdateNotice updateNotice)

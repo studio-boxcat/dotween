@@ -20,6 +20,7 @@ namespace DG.Tweening.Plugins.Core
         public abstract T2 ConvertToStartValue(TweenerCore<T1, T2, TPlugOptions> t, T1 value);
         public abstract void SetRelativeEndValue(TweenerCore<T1, T2, TPlugOptions> t);
         public abstract void SetChangeValue(TweenerCore<T1, T2, TPlugOptions> t);
+        public abstract void ApplyOriginal(TweenerCore<T1, T2, TPlugOptions> t);
         // usingInversePosition is used by PathPlugin to calculate correctly the current waypoint reached
         public abstract void EvaluateAndApply(TPlugOptions options, Tween t, bool isRelative, DOGetter<T1> getter, DOSetter<T1> setter, float elapsed, T2 startValue, T2 changeValue, float duration, bool usingInversePosition, int newCompletedSteps, UpdateNotice updateNotice);
     }
@@ -27,5 +28,6 @@ namespace DG.Tweening.Plugins.Core
     public abstract class ABSTweenPlugin<T1, TPlugOptions> : ABSTweenPlugin<T1, T1, TPlugOptions> where TPlugOptions : struct, IPlugOptions
     {
         public override T1 ConvertToStartValue(TweenerCore<T1, T1, TPlugOptions> t, T1 value) => value;
+        public override void ApplyOriginal(TweenerCore<T1, T1, TPlugOptions> t) => t.setter(t.isFrom ? t.endValue : t.startValue);
     }
 }

@@ -787,6 +787,20 @@ namespace DG.Tweening.Core
             return rewinded;
         }
 
+        internal static void PauseAndRestoreToOriginal(Tweener t)
+        {
+            if (!t.active)
+                return;
+
+            t.isPlaying = false;
+            t.elapsedDelay = 0;
+            t.delayComplete = false;
+            t.completedLoops = 0;
+            t.isComplete = false;
+            t.position = 0;
+            t.ApplyOriginal();
+        }
+
         internal static bool SmoothRewind(Tween t)
         {
             bool rewinded = false;
