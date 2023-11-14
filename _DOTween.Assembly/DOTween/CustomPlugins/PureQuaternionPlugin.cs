@@ -70,12 +70,6 @@ namespace DG.Tweening.CustomPlugins
         }
 
         /// <summary>INTERNAL: do not use</summary>
-        public override float GetSpeedBasedDuration(NoOptions options, float unitsXSecond, Quaternion changeValue)
-        {
-            return changeValue.eulerAngles.magnitude / unitsXSecond;
-        }
-
-        /// <summary>INTERNAL: do not use</summary>
         public override void EvaluateAndApply(
             NoOptions options, Tween t, bool isRelative, DOGetter<Quaternion> getter, DOSetter<Quaternion> setter,
             float elapsed, Quaternion startValue, Quaternion changeValue, float duration, bool usingInversePosition, int newCompletedSteps,

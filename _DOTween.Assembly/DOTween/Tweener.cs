@@ -271,7 +271,6 @@ namespace DG.Tweening
         }
         static void DOStartupDurationBased<T1, T2, TPlugOptions>(TweenerCore<T1, T2, TPlugOptions> t) where TPlugOptions : struct, IPlugOptions
         {
-            if (t.isSpeedBased) t.duration = t.tweenPlugin.GetSpeedBasedDuration(t.plugOptions, t.duration, t.changeValue);
             t.fullDuration = t.loops > -1 ? t.duration * t.loops : Mathf.Infinity;
         }
     }

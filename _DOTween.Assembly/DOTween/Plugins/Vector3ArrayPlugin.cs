@@ -55,18 +55,6 @@ namespace DG.Tweening.Plugins
             for (int i = 0; i < len; ++i) t.changeValue[i] = t.endValue[i] - t.startValue[i];
         }
 
-        public override float GetSpeedBasedDuration(Vector3ArrayOptions options, float unitsXSecond, Vector3[] changeValue)
-        {
-            float totDuration = 0;
-            int len = changeValue.Length;
-            for (int i = 0; i < len; ++i) {
-                float duration = changeValue[i].magnitude / options.durations[i];
-                options.durations[i] = duration;
-                totDuration += duration;
-            }
-            return totDuration;
-        }
-
         public override void EvaluateAndApply(
             Vector3ArrayOptions options, Tween t, bool isRelative, DOGetter<Vector3> getter, DOSetter<Vector3> setter,
             float elapsed, Vector3[] startValue, Vector3[] changeValue, float duration, bool usingInversePosition, int newCompletedSteps,

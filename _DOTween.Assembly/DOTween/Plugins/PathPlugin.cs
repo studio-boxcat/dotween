@@ -112,11 +112,6 @@ namespace DG.Tweening.Plugins
             t.changeValue = t.endValue;
         }
 
-        public override float GetSpeedBasedDuration(PathOptions options, float unitsXSecond, Path changeValue)
-        {
-            return changeValue.length / unitsXSecond;
-        }
-
         public override void EvaluateAndApply(
             PathOptions options, Tween t, bool isRelative, DOGetter<Vector3> getter, DOSetter<Vector3> setter,
             float elapsed, Path startValue, Path changeValue, float duration, bool usingInversePosition, int newCompletedSteps,

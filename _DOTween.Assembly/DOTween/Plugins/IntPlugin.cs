@@ -44,13 +44,6 @@ namespace DG.Tweening.Plugins
             t.changeValue = t.endValue - t.startValue;
         }
 
-        public override float GetSpeedBasedDuration(NoOptions options, float unitsXSecond, int changeValue)
-        {
-            float res = changeValue / unitsXSecond;
-            if (res < 0) res = -res;
-            return res;
-        }
-
         public override void EvaluateAndApply(NoOptions options, Tween t, bool isRelative, DOGetter<int> getter, DOSetter<int> setter,
             float elapsed, int startValue, int changeValue, float duration, bool usingInversePosition, int newCompletedSteps,
             UpdateNotice updateNotice

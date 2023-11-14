@@ -575,27 +575,6 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>If isSpeedBased is TRUE sets the tween as speed based
-        /// (the duration will represent the number of units the tween moves x second).
-        /// <para>Has no effect on Sequences, nested tweens, or if the tween has already started</para></summary>
-        public static T SetSpeedBased<T>(this T t) where T : Tween
-        {
-            if (t == null || !t.active || t.creationLocked) return t;
-
-            t.isSpeedBased = true;
-            return t;
-        }
-        /// <summary>If isSpeedBased is TRUE sets the tween as speed based
-        /// (the duration will represent the number of units the tween moves x second).
-        /// <para>Has no effect on Sequences, nested tweens, or if the tween has already started</para></summary>
-        public static T SetSpeedBased<T>(this T t, bool isSpeedBased) where T : Tween
-        {
-            if (t == null || !t.active || t.creationLocked) return t;
-
-            t.isSpeedBased = isSpeedBased;
-            return t;
-        }
-
         #endregion
 
         #region Tweeners Extra Options

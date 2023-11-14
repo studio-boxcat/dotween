@@ -93,11 +93,6 @@ namespace DG.Tweening.Plugins
             // Debug.Log("   ► " + Quaternion.Euler(t.startValue).eulerAngles + " - " + Quaternion.Euler(t.endValue).eulerAngles + " ► " + Quaternion.Euler(t.changeValue).eulerAngles);
         }
 
-        public override float GetSpeedBasedDuration(QuaternionOptions options, float unitsXSecond, Vector3 changeValue)
-        {
-            return changeValue.magnitude / unitsXSecond;
-        }
-
         public override void EvaluateAndApply(
             QuaternionOptions options, Tween t, bool isRelative, DOGetter<Quaternion> getter, DOSetter<Quaternion> setter,
             float elapsed, Vector3 startValue, Vector3 changeValue, float duration, bool usingInversePosition, int newCompletedSteps,

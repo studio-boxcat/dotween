@@ -99,11 +99,6 @@ namespace DG.Tweening.Plugins
             t.changeValue = new Vector2(t.plugOptions.endValueDegrees - t.plugOptions.startValueDegrees, 0);
         }
 
-        public override float GetSpeedBasedDuration(CircleOptions options, float unitsXSecond, Vector2 changeValue)
-        {
-            return changeValue.x / unitsXSecond;
-        }
-
         public override void EvaluateAndApply(
             CircleOptions options, Tween t, bool isRelative, DOGetter<Vector2> getter, DOSetter<Vector2> setter,
             float elapsed, Vector2 startValue, Vector2 changeValue, float duration, bool usingInversePosition, int newCompletedSteps,

@@ -73,10 +73,6 @@ namespace DG.Tweening
             t.autoKill = false;
             t.delay = t.elapsedDelay = 0;
             t.delayComplete = true;
-            if (t.isSpeedBased) {
-                t.isSpeedBased = false;
-                Debugger.LogWarning("SpeedBased tweens are not allowed inside a Sequence: interpreting speed as duration", t);
-            }
             t.sequencedPosition = atPosition;
             t.sequencedEndPosition = atPosition + tFullTime;
 

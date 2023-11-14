@@ -51,7 +51,7 @@ namespace DG.Tweening.Plugins.Core
             } catch { return false; }
 
             // Force specific settings
-            t.isRelative = t.isSpeedBased = false;
+            t.isRelative = false;
             t.easeType = Ease.OutQuad;
             t.customEase = null;
 
