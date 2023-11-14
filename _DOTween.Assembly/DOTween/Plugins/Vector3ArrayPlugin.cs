@@ -59,7 +59,7 @@ namespace DG.Tweening.Plugins
         public override void ApplyOriginal(TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> t)
         {
             Assert.IsFalse(t.isFromAllowed);
-            t.setter(t.startValue[0]);
+            t.setter(t.endValue[^1]);
         }
 
         public override void EvaluateAndApply(
