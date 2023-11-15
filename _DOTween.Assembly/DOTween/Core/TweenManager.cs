@@ -787,25 +787,18 @@ namespace DG.Tweening.Core
             return rewinded;
         }
 
-        internal static void PauseAndRestoreToOriginal(Tweener t)
+        internal static void RestoreToOriginal(Tweener t)
         {
-            if (!t.active)
-            {
-                Assert.IsFalse(t.isPlaying);
-                Assert.IsFalse(t.playedOnce);
-                Assert.AreEqual(0, t.position);
-                return;
-            }
+            Assert.IsTrue(t.active);
 
             if (!t.startupDone)
             {
                 Assert.IsFalse(t.playedOnce);
                 Assert.AreEqual(0, t.position);
-                t.isPlaying = false;
+                if (t.isFrom) t.ApplyOriginal(); // When the tween is isFrom, the setter immediately sets the endValue to the original one.
                 return;
             }
 
-            t.isPlaying = false;
             t.elapsedDelay = 0;
             t.delayComplete = false;
             t.completedLoops = 0;

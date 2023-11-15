@@ -160,6 +160,19 @@ namespace DG.Tweening
             } else TweenManager.Despawn(t);
         }
 
+        public static void KillRewind(this Tweener t)
+        {
+            if (!DOTween.initialized) return;
+            if (t == null || !t.active) return;
+
+            TweenManager.RestoreToOriginal(t);
+
+            if (TweenManager.isUpdateLoop) {
+                // Just mark it for killing, so the update loop will take care of it
+                t.active = false;
+            } else TweenManager.Despawn(t);
+        }
+
         /// <summary>
         /// Forces this tween to update manually, regardless of the <see cref="UpdateType"/> set via SetUpdate.
         /// Note that the tween will still be subject to normal tween rules, so if for example it's paused this method will do nothing.<para/>
@@ -268,19 +281,6 @@ namespace DG.Tweening
             }
 
             TweenManager.Rewind(t, includeDelay);
-        }
-
-        public static void PauseAndRestoreToOriginal(this Tweener t)
-        {
-            if (t == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNullTween(t); return;
-            } else if (!t.active) {
-                if (Debugger.logPriority > 1) Debugger.LogInvalidTween(t); return;
-            } else if (t.isSequenced) {
-                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t); return;
-            }
-
-            TweenManager.PauseAndRestoreToOriginal(t);
         }
 
         /// <summary>Smoothly rewinds the tween (delays excluded).

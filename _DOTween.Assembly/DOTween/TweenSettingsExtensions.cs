@@ -467,55 +467,6 @@ namespace DG.Tweening
             return t;
         }
 
-        #region FROM Extra Overloads
-
-        /// <summary>Changes a TO tween into a FROM tween: sets the tween's starting value to the given one
-        /// and eventually sets the tween's target to that value immediately.</summary>
-        /// <param name="fromAlphaValue">Alpha value to start from (in case of Fade tweens)</param>
-        /// <param name="setImmediately">If TRUE sets the target to from value immediately, otherwise waits for the tween to start</param>
-        /// <param name="isRelative">If TRUE the FROM/TO values will be calculated as relative to the current ones</param>
-        public static TweenerCore<DOColor, DOColor, NoOptions> From(
-            this TweenerCore<DOColor, DOColor, NoOptions> t, float fromAlphaValue, bool setImmediately = true, bool isRelative = false
-        ){
-            if (t == null || !t.active || t.creationLocked || !t.isFromAllowed) return t;
-
-            t.isFrom = true;
-            t.SetFrom(new Color(0,0,0,fromAlphaValue), setImmediately, isRelative);
-            return t;
-        }
-
-        /// <summary>Changes a TO tween into a FROM tween: sets the tween's starting value to the given one
-        /// and eventually sets the tween's target to that value immediately.</summary>
-        /// <param name="fromValue">Value to start from (in case of Vector tweens that act on a single coordinate or scale tweens)</param>
-        /// <param name="setImmediately">If TRUE sets the target to from value immediately, otherwise waits for the tween to start</param>
-        /// <param name="isRelative">If TRUE the FROM/TO values will be calculated as relative to the current ones</param>
-        public static TweenerCore<DOVector3, DOVector3, VectorOptions> From(
-            this TweenerCore<DOVector3, DOVector3, VectorOptions> t, float fromValue, bool setImmediately = true, bool isRelative = false
-        ){
-            if (t == null || !t.active || t.creationLocked || !t.isFromAllowed) return t;
-
-            t.isFrom = true;
-            t.SetFrom(new Vector3(fromValue, fromValue, fromValue), setImmediately, isRelative);
-            return t;
-        }
-
-        /// <summary>Changes a TO tween into a FROM tween: sets the tween's starting value to the given one
-        /// and eventually sets the tween's target to that value immediately.</summary>
-        /// <param name="fromValueDegrees">Value to start from (in case of Vector tweens that act on a single coordinate or scale tweens)</param>
-        /// <param name="setImmediately">If TRUE sets the target to from value immediately, otherwise waits for the tween to start</param>
-        /// <param name="isRelative">If TRUE the FROM/TO values will be calculated as relative to the current ones</param>
-        public static TweenerCore<DOVector2, DOVector2, CircleOptions> From(
-            this TweenerCore<DOVector2, DOVector2, CircleOptions> t, float fromValueDegrees, bool setImmediately = true, bool isRelative = false
-        ){
-            if (t == null || !t.active || t.creationLocked || !t.isFromAllowed) return t;
-
-            t.isFrom = true;
-            t.SetFrom(new Vector2(fromValueDegrees, 0), setImmediately, isRelative);
-            return t;
-        }
-
-        #endregion
-
         #endregion
 
         /// <summary>Sets a delayed startup for the tween.<para/>
