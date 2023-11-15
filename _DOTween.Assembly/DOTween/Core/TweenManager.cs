@@ -789,11 +789,19 @@ namespace DG.Tweening.Core
 
         internal static void PauseAndRestoreToOriginal(Tweener t)
         {
-            if (!t.active || !t.startupDone)
+            if (!t.active)
             {
                 Assert.IsFalse(t.isPlaying);
                 Assert.IsFalse(t.playedOnce);
                 Assert.AreEqual(0, t.position);
+                return;
+            }
+
+            if (!t.startupDone)
+            {
+                Assert.IsFalse(t.playedOnce);
+                Assert.AreEqual(0, t.position);
+                t.isPlaying = false;
                 return;
             }
 
