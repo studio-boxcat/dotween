@@ -14,16 +14,16 @@ using DG.Tweening.Plugins.Options;
 #pragma warning disable 1591
 namespace DG.Tweening.Plugins
 {
-    public class FloatPlugin : ABSTweenPlugin<float,FloatOptions>
+    public class FloatPlugin : ABSTweenPlugin<float,NoOptions>
     {
-        public override void SetFrom(TweenerCore<float, float, FloatOptions> t, bool isRelative)
+        public override void SetFrom(TweenerCore<float, float, NoOptions> t, bool isRelative)
         {
             float prevEndVal = t.endValue;
             t.endValue = t.getter();
             t.startValue = isRelative ? t.endValue + prevEndVal : prevEndVal;
-            t.setter(!t.plugOptions.snapping ? t.startValue : (float)Math.Round(t.startValue));
+            t.setter(t.startValue);
         }
-        public override void SetFrom(TweenerCore<float, float, FloatOptions> t, float fromValue, bool setImmediately, bool isRelative)
+        public override void SetFrom(TweenerCore<float, float, NoOptions> t, float fromValue, bool setImmediately, bool isRelative)
         {
             if (isRelative) {
                 float currVal = t.getter();
@@ -31,21 +31,21 @@ namespace DG.Tweening.Plugins
                 fromValue += currVal;
             }
             t.startValue = fromValue;
-            if (setImmediately) t.setter(!t.plugOptions.snapping ? fromValue : (float)Math.Round(fromValue));
+            if (setImmediately) t.setter(fromValue);
         }
 
-        public override void SetRelativeEndValue(TweenerCore<float, float, FloatOptions> t)
+        public override void SetRelativeEndValue(TweenerCore<float, float, NoOptions> t)
         {
             t.endValue += t.startValue;
         }
 
-        public override void SetChangeValue(TweenerCore<float, float, FloatOptions> t)
+        public override void SetChangeValue(TweenerCore<float, float, NoOptions> t)
         {
             t.changeValue = t.endValue - t.startValue;
         }
 
         public override void EvaluateAndApply(
-            FloatOptions options, Tween t, bool isRelative, DOGetter<float> getter, DOSetter<float> setter,
+            NoOptions options, Tween t, bool isRelative, DOGetter<float> getter, DOSetter<float> setter,
             float elapsed, float startValue, float changeValue, float duration, bool usingInversePosition, int newCompletedSteps,
             UpdateNotice updateNotice
         ){
@@ -55,11 +55,7 @@ namespace DG.Tweening.Plugins
                     * (t.sequenceParent.isComplete ? t.sequenceParent.completedLoops - 1 : t.sequenceParent.completedLoops);
             }
 
-            setter(
-                !options.snapping
-                ? startValue + changeValue * EaseManager.Evaluate(t.easeType, t.customEase, elapsed, duration, t.easeOvershootOrAmplitude, t.easePeriod)
-                : (float)Math.Round(startValue + changeValue * EaseManager.Evaluate(t.easeType, t.customEase, elapsed, duration, t.easeOvershootOrAmplitude, t.easePeriod))
-            );
+            setter(startValue + changeValue * EaseManager.Evaluate(t.easeType, t.customEase, elapsed, duration, t.easeOvershootOrAmplitude, t.easePeriod));
         }
     }
 }

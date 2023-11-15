@@ -474,8 +474,8 @@ namespace DG.Tweening
         /// <param name="fromAlphaValue">Alpha value to start from (in case of Fade tweens)</param>
         /// <param name="setImmediately">If TRUE sets the target to from value immediately, otherwise waits for the tween to start</param>
         /// <param name="isRelative">If TRUE the FROM/TO values will be calculated as relative to the current ones</param>
-        public static TweenerCore<DOColor, DOColor, ColorOptions> From(
-            this TweenerCore<DOColor, DOColor, ColorOptions> t, float fromAlphaValue, bool setImmediately = true, bool isRelative = false
+        public static TweenerCore<DOColor, DOColor, NoOptions> From(
+            this TweenerCore<DOColor, DOColor, NoOptions> t, float fromAlphaValue, bool setImmediately = true, bool isRelative = false
         ){
             if (t == null || !t.active || t.creationLocked || !t.isFromAllowed) return t;
 
@@ -579,16 +579,6 @@ namespace DG.Tweening
 
         #region Tweeners Extra Options
 
-        /// <summary>Options for float tweens</summary>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static Tweener SetOptions(this TweenerCore<float, float, FloatOptions> t, bool snapping)
-        {
-            if (t == null || !t.active) return t;
-
-            t.plugOptions.snapping = snapping;
-            return t;
-        }
-
         /// <summary>Options for Vector2 tweens</summary>
         /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         public static Tweener SetOptions(this TweenerCore<DOVector2, DOVector2, VectorOptions> t, bool snapping)
@@ -660,16 +650,6 @@ namespace DG.Tweening
             if (t == null || !t.active) return t;
 
             t.plugOptions.rotateMode = useShortest360Route ? RotateMode.Fast : RotateMode.FastBeyond360;
-            return t;
-        }
-
-        /// <summary>Options for Color tweens</summary>
-        /// <param name="alphaOnly">If TRUE only the alpha value of the color will be tweened</param>
-        public static Tweener SetOptions(this TweenerCore<DOColor, DOColor, ColorOptions> t, bool alphaOnly)
-        {
-            if (t == null || !t.active) return t;
-
-            t.plugOptions.alphaOnly = alphaOnly;
             return t;
         }
 

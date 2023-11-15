@@ -15,19 +15,18 @@ using UnityEngine;
 #pragma warning disable 1591
 namespace DG.Tweening.Plugins
 {
-    public class ColorPlugin : ABSTweenPlugin<Color, ColorOptions>
+    public class ColorPlugin : ABSTweenPlugin<Color, NoOptions>
     {
-        public override void SetFrom(TweenerCore<Color, Color, ColorOptions> t, bool isRelative)
+        public override void SetFrom(TweenerCore<Color, Color, NoOptions> t, bool isRelative)
         {
             Color prevEndVal = t.endValue;
             t.endValue = t.getter();
             t.startValue = isRelative ? t.endValue + prevEndVal : prevEndVal;
             Color to = t.endValue;
-            if (!t.plugOptions.alphaOnly) to = t.startValue;
-            else to.a = t.startValue.a;
+            to = t.startValue;
             t.setter(to);
         }
-        public override void SetFrom(TweenerCore<Color, Color, ColorOptions> t, Color fromValue, bool setImmediately, bool isRelative)
+        public override void SetFrom(TweenerCore<Color, Color, NoOptions> t, Color fromValue, bool setImmediately, bool isRelative)
         {
             if (isRelative) {
                 Color currVal = t.getter();
@@ -36,27 +35,22 @@ namespace DG.Tweening.Plugins
             }
             t.startValue = fromValue;
             if (setImmediately) {
-                Color to = fromValue;
-                if (t.plugOptions.alphaOnly) {
-                    to = t.getter();
-                    to.a = fromValue.a;
-                }
-                t.setter(to);
+                t.setter(fromValue);
             }
         }
 
-        public override void SetRelativeEndValue(TweenerCore<Color, Color, ColorOptions> t)
+        public override void SetRelativeEndValue(TweenerCore<Color, Color, NoOptions> t)
         {
             t.endValue += t.startValue;
         }
 
-        public override void SetChangeValue(TweenerCore<Color, Color, ColorOptions> t)
+        public override void SetChangeValue(TweenerCore<Color, Color, NoOptions> t)
         {
             t.changeValue = t.endValue - t.startValue;
         }
 
         public override void EvaluateAndApply(
-            ColorOptions options, Tween t, bool isRelative, DOGetter<Color> getter, DOSetter<Color> setter,
+            NoOptions options, Tween t, bool isRelative, DOGetter<Color> getter, DOSetter<Color> setter,
             float elapsed, Color startValue, Color changeValue, float duration, bool usingInversePosition, int newCompletedSteps,
             UpdateNotice updateNotice
         ){
@@ -67,19 +61,11 @@ namespace DG.Tweening.Plugins
             }
 
             float easeVal = EaseManager.Evaluate(t.easeType, t.customEase, elapsed, duration, t.easeOvershootOrAmplitude, t.easePeriod);
-            if (!options.alphaOnly) {
-                startValue.r += changeValue.r * easeVal;
-                startValue.g += changeValue.g * easeVal;
-                startValue.b += changeValue.b * easeVal;
-                startValue.a += changeValue.a * easeVal;
-                setter(startValue);
-                return;
-            }
-
-            // Alpha only
-            Color res = getter();
-            res.a = startValue.a + changeValue.a * easeVal;
-            setter(res);
+            startValue.r += changeValue.r * easeVal;
+            startValue.g += changeValue.g * easeVal;
+            startValue.b += changeValue.b * easeVal;
+            startValue.a += changeValue.a * easeVal;
+            setter(startValue);
         }
     }
 }

@@ -351,8 +351,8 @@ namespace DG.Tweening
         /// <param name="setter">A setter for the field or property to tween
         /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
         /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        public static TweenerCore<float, float, FloatOptions> To(DOGetter<float> getter, DOSetter<float> setter, float endValue, float duration)
-        { return ApplyTo<float, float, FloatOptions>(getter, setter, endValue, duration); }
+        public static TweenerCore<float, float, NoOptions> To(DOGetter<float> getter, DOSetter<float> setter, float endValue, float duration)
+        { return ApplyTo<float, float, NoOptions>(getter, setter, endValue, duration); }
         /// <summary>Tweens a property or field to the given value using default plugins</summary>
         /// <param name="getter">A getter for the field or property to tween.
         /// <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
@@ -439,8 +439,8 @@ namespace DG.Tweening
         /// <param name="setter">A setter for the field or property to tween
         /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
         /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        public static TweenerCore<DOColor, DOColor, ColorOptions> To(DOGetter<DOColor> getter, DOSetter<DOColor> setter, Color endValue, float duration)
-        { return ApplyTo<DOColor, DOColor, ColorOptions>(getter, setter, endValue, duration); }
+        public static TweenerCore<DOColor, DOColor, NoOptions> To(DOGetter<DOColor> getter, DOSetter<DOColor> setter, Color endValue, float duration)
+        { return ApplyTo<DOColor, DOColor, NoOptions>(getter, setter, endValue, duration); }
 
         /// <summary>Tweens a property or field to the given value using a custom plugin</summary>
         /// <param name="plugin">The plugin to use. Each custom plugin implements a static <code>Get()</code> method
@@ -477,10 +477,17 @@ namespace DG.Tweening
         /// <param name="setter">A setter for the field or property to tween
         /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
         /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        public static TweenerCore<Color, Color, ColorOptions> ToAlpha(DOGetter<DOColor> getter, DOSetter<DOColor> setter, float endValue, float duration)
+        public static TweenerCore<float, float, NoOptions> ToAlpha(DOGetter<Color> getter, DOSetter<Color> setter, float endValue, float duration)
         {
-            TweenerCore<Color, Color, ColorOptions> t = ApplyTo<DOColor, DOColor, ColorOptions>(getter, setter, new Color(0, 0, 0, endValue), duration);
-            t.SetOptions(true);
+            TweenerCore<float, float, NoOptions> t = ApplyTo<float, float, NoOptions>(
+                () => getter().a,
+                x =>
+                {
+                    var c = getter();
+                    c.a = x;
+                    setter(c);
+                },
+                endValue, duration);
             return t;
         }
 
@@ -687,13 +694,6 @@ namespace DG.Tweening
             t.plugOptions.durations = durationsClone;
             return t;
         }
-
-        #endregion
-
-        #region Special TOs (INTERNAL)
-
-        internal static TweenerCore<Color2, Color2, ColorOptions> To(DOGetter<Color2> getter, DOSetter<Color2> setter, Color2 endValue, float duration)
-        { return ApplyTo<Color2, Color2, ColorOptions>(getter, setter, endValue, duration); }
 
         #endregion
 

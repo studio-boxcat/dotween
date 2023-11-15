@@ -52,7 +52,6 @@ namespace DG.Tweening.Plugins.Core
         static ITweenPlugin _rectPlugin;
         static ITweenPlugin _stringPlugin;
         static ITweenPlugin _vector3ArrayPlugin;
-        static ITweenPlugin _color2Plugin;
 
         // Advanced and custom plugins
         const int _MaxCustomPlugins = 20;
@@ -102,9 +101,6 @@ namespace DG.Tweening.Plugins.Core
             } else if (t1 == typeof(string)) {
                 if (_stringPlugin == null) _stringPlugin = new StringPlugin();
                 plugin = _stringPlugin;
-            } else if (t1 == typeof(Color2)) {
-                if (_color2Plugin == null) _color2Plugin = new Color2Plugin();
-                plugin = _color2Plugin;
             } else if (t1 == typeof(long)) {
                 if (_longPlugin == null) _longPlugin = new LongPlugin();
                 plugin = _longPlugin;
@@ -153,7 +149,6 @@ namespace DG.Tweening.Plugins.Core
             _rectPlugin = null;
             _stringPlugin = null;
             _vector3ArrayPlugin = null;
-            _color2Plugin = null;
 
             if (_customPlugins != null) _customPlugins.Clear();
         }

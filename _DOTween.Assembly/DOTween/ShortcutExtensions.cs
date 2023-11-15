@@ -36,9 +36,9 @@ namespace DG.Tweening
         /// <summary>Tweens a Camera's <code>aspect</code> to the given value.
         /// Also stores the camera as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float, float, FloatOptions> DOAspect(this Camera target, float endValue, float duration)
+        public static TweenerCore<float, float, NoOptions> DOAspect(this Camera target, float endValue, float duration)
         {
-            TweenerCore<float, float, FloatOptions> t = DOTween.To(() => target.aspect, x => target.aspect = x, endValue, duration);
+            TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.aspect, x => target.aspect = x, endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -46,9 +46,9 @@ namespace DG.Tweening
         /// <summary>Tweens a Camera's backgroundColor to the given value.
         /// Also stores the camera as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Color, Color, ColorOptions> DOColor(this Camera target, Color endValue, float duration)
+        public static TweenerCore<Color, Color, NoOptions> DOColor(this Camera target, Color endValue, float duration)
         {
-            TweenerCore<Color, Color, ColorOptions> t = DOTween.To(() => target.backgroundColor, x => target.backgroundColor = x, endValue, duration);
+            TweenerCore<Color, Color, NoOptions> t = DOTween.To(() => target.backgroundColor, x => target.backgroundColor = x, endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -56,9 +56,9 @@ namespace DG.Tweening
         /// <summary>Tweens a Camera's <code>farClipPlane</code> to the given value.
         /// Also stores the camera as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float, float, FloatOptions> DOFarClipPlane(this Camera target, float endValue, float duration)
+        public static TweenerCore<float, float, NoOptions> DOFarClipPlane(this Camera target, float endValue, float duration)
         {
-            TweenerCore<float, float, FloatOptions> t = DOTween.To(() => target.farClipPlane, x => target.farClipPlane = x, endValue, duration);
+            TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.farClipPlane, x => target.farClipPlane = x, endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -66,9 +66,9 @@ namespace DG.Tweening
         /// <summary>Tweens a Camera's <code>fieldOfView</code> to the given value.
         /// Also stores the camera as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float, float, FloatOptions> DOFieldOfView(this Camera target, float endValue, float duration)
+        public static TweenerCore<float, float, NoOptions> DOFieldOfView(this Camera target, float endValue, float duration)
         {
-            TweenerCore<float, float, FloatOptions> t = DOTween.To(() => target.fieldOfView, x => target.fieldOfView = x, endValue, duration);
+            TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.fieldOfView, x => target.fieldOfView = x, endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -76,9 +76,9 @@ namespace DG.Tweening
         /// <summary>Tweens a Camera's <code>nearClipPlane</code> to the given value.
         /// Also stores the camera as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float, float, FloatOptions> DONearClipPlane(this Camera target, float endValue, float duration)
+        public static TweenerCore<float, float, NoOptions> DONearClipPlane(this Camera target, float endValue, float duration)
         {
-            TweenerCore<float, float, FloatOptions> t = DOTween.To(() => target.nearClipPlane, x => target.nearClipPlane = x, endValue, duration);
+            TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.nearClipPlane, x => target.nearClipPlane = x, endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -86,9 +86,9 @@ namespace DG.Tweening
         /// <summary>Tweens a Camera's <code>orthographicSize</code> to the given value.
         /// Also stores the camera as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float, float, FloatOptions> DOOrthoSize(this Camera target, float endValue, float duration)
+        public static TweenerCore<float, float, NoOptions> DOOrthoSize(this Camera target, float endValue, float duration)
         {
-            TweenerCore<float, float, FloatOptions> t = DOTween.To(() => target.orthographicSize, x => target.orthographicSize = x, endValue, duration);
+            TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.orthographicSize, x => target.orthographicSize = x, endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -174,9 +174,9 @@ namespace DG.Tweening
         /// <summary>Tweens a Light's color to the given value.
         /// Also stores the light as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Color, Color, ColorOptions> DOColor(this Light target, Color endValue, float duration)
+        public static TweenerCore<Color, Color, NoOptions> DOColor(this Light target, Color endValue, float duration)
         {
-            TweenerCore<Color, Color, ColorOptions> t = DOTween.To(() => target.color, x => target.color = x, endValue, duration);
+            TweenerCore<Color, Color, NoOptions> t = DOTween.To(() => target.color, x => target.color = x, endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -184,9 +184,9 @@ namespace DG.Tweening
         /// <summary>Tweens a Light's intensity to the given value.
         /// Also stores the light as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float, float, FloatOptions> DOIntensity(this Light target, float endValue, float duration)
+        public static TweenerCore<float, float, NoOptions> DOIntensity(this Light target, float endValue, float duration)
         {
-            TweenerCore<float, float, FloatOptions> t = DOTween.To(() => target.intensity, x => target.intensity = x, endValue, duration);
+            TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.intensity, x => target.intensity = x, endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -194,26 +194,11 @@ namespace DG.Tweening
         /// <summary>Tweens a Light's shadowStrength to the given value.
         /// Also stores the light as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float, float, FloatOptions> DOShadowStrength(this Light target, float endValue, float duration)
+        public static TweenerCore<float, float, NoOptions> DOShadowStrength(this Light target, float endValue, float duration)
         {
-            TweenerCore<float, float, FloatOptions> t = DOTween.To(() => target.shadowStrength, x => target.shadowStrength = x, endValue, duration);
+            TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.shadowStrength, x => target.shadowStrength = x, endValue, duration);
             t.SetTarget(target);
             return t;
-        }
-
-        #endregion
-
-        #region LineRenderer
-
-        /// <summary>Tweens a LineRenderer's color to the given value.
-        /// Also stores the LineRenderer as the tween's target so it can be used for filtered operations.
-        /// <para>Note that this method requires to also insert the start colors for the tween, 
-        /// since LineRenderers have no way to get them.</para></summary>
-        /// <param name="startValue">The start value to tween from</param>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static Tweener DOColor(this LineRenderer target, Color2 startValue, Color2 endValue, float duration)
-        {
-            return DOTween.To(() => startValue, x => { target.startColor = x.ca; target.endColor = x.cb; }, endValue, duration).SetTarget(target);
         }
 
         #endregion
@@ -223,9 +208,9 @@ namespace DG.Tweening
         /// <summary>Tweens a Material's color to the given value.
         /// Also stores the material as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Color, Color, ColorOptions> DOColor(this Material target, Color endValue, float duration)
+        public static TweenerCore<Color, Color, NoOptions> DOColor(this Material target, Color endValue, float duration)
         {
-            TweenerCore<Color, Color, ColorOptions> t = DOTween.To(() => target.color, x => target.color = x, endValue, duration);
+            TweenerCore<Color, Color, NoOptions> t = DOTween.To(() => target.color, x => target.color = x, endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -234,13 +219,13 @@ namespace DG.Tweening
         /// <param name="endValue">The end value to reach</param>
         /// <param name="property">The name of the material property to tween (like _Tint or _SpecColor)</param>
         /// <param name="duration">The duration of the tween</param>
-        public static TweenerCore<Color, Color, ColorOptions> DOColor(this Material target, Color endValue, string property, float duration)
+        public static TweenerCore<Color, Color, NoOptions> DOColor(this Material target, Color endValue, string property, float duration)
         {
             if (!target.HasProperty(property)) {
                 if (Debugger.logPriority > 0) Debugger.LogMissingMaterialProperty(property);
                 return null;
             }
-            TweenerCore<Color, Color, ColorOptions> t = DOTween.To(() => target.GetColor(property), x => target.SetColor(property, x), endValue, duration);
+            TweenerCore<Color, Color, NoOptions> t = DOTween.To(() => target.GetColor(property), x => target.SetColor(property, x), endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -249,13 +234,13 @@ namespace DG.Tweening
         /// <param name="endValue">The end value to reach</param>
         /// <param name="propertyID">The ID of the material property to tween (also called nameID in Unity's manual)</param>
         /// <param name="duration">The duration of the tween</param>
-        public static TweenerCore<Color, Color, ColorOptions> DOColor(this Material target, Color endValue, int propertyID, float duration)
+        public static TweenerCore<Color, Color, NoOptions> DOColor(this Material target, Color endValue, int propertyID, float duration)
         {
             if (!target.HasProperty(propertyID)) {
                 if (Debugger.logPriority > 0) Debugger.LogMissingMaterialProperty(propertyID);
                 return null;
             }
-            TweenerCore<Color, Color, ColorOptions> t = DOTween.To(() => target.GetColor(propertyID), x => target.SetColor(propertyID, x), endValue, duration);
+            TweenerCore<Color, Color, NoOptions> t = DOTween.To(() => target.GetColor(propertyID), x => target.SetColor(propertyID, x), endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -264,9 +249,9 @@ namespace DG.Tweening
         /// (will have no effect unless your material supports transparency).
         /// Also stores the material as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Color, Color, ColorOptions> DOFade(this Material target, float endValue, float duration)
+        public static TweenerCore<float, float, NoOptions> DOFade(this Material target, float endValue, float duration)
         {
-            TweenerCore<Color, Color, ColorOptions> t = DOTween.ToAlpha(() => target.color, x => target.color = x, endValue, duration);
+            var t = DOTween.ToAlpha(() => target.color, x => target.color = x, endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -276,13 +261,13 @@ namespace DG.Tweening
         /// <param name="endValue">The end value to reach</param>
         /// <param name="property">The name of the material property to tween (like _Tint or _SpecColor)</param>
         /// <param name="duration">The duration of the tween</param>
-        public static TweenerCore<Color, Color, ColorOptions> DOFade(this Material target, float endValue, string property, float duration)
+        public static TweenerCore<float, float, NoOptions> DOFade(this Material target, float endValue, string property, float duration)
         {
             if (!target.HasProperty(property)) {
                 if (Debugger.logPriority > 0) Debugger.LogMissingMaterialProperty(property);
                 return null;
             }
-            TweenerCore<Color, Color, ColorOptions> t = DOTween.ToAlpha(() => target.GetColor(property), x => target.SetColor(property, x), endValue, duration);
+            var t = DOTween.ToAlpha(() => target.GetColor(property), x => target.SetColor(property, x), endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -292,13 +277,13 @@ namespace DG.Tweening
         /// <param name="endValue">The end value to reach</param>
         /// <param name="propertyID">The ID of the material property to tween (also called nameID in Unity's manual)</param>
         /// <param name="duration">The duration of the tween</param>
-        public static TweenerCore<Color, Color, ColorOptions> DOFade(this Material target, float endValue, int propertyID, float duration)
+        public static TweenerCore<float, float, NoOptions> DOFade(this Material target, float endValue, int propertyID, float duration)
         {
             if (!target.HasProperty(propertyID)) {
                 if (Debugger.logPriority > 0) Debugger.LogMissingMaterialProperty(propertyID);
                 return null;
             }
-            TweenerCore<Color, Color, ColorOptions> t = DOTween.ToAlpha(() => target.GetColor(propertyID), x => target.SetColor(propertyID, x), endValue, duration);
+            var t = DOTween.ToAlpha(() => target.GetColor(propertyID), x => target.SetColor(propertyID, x), endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -308,13 +293,13 @@ namespace DG.Tweening
         /// <param name="endValue">The end value to reach</param>
         /// <param name="property">The name of the material property to tween</param>
         /// <param name="duration">The duration of the tween</param>
-        public static TweenerCore<float, float, FloatOptions> DOFloat(this Material target, float endValue, string property, float duration)
+        public static TweenerCore<float, float, NoOptions> DOFloat(this Material target, float endValue, string property, float duration)
         {
             if (!target.HasProperty(property)) {
                 if (Debugger.logPriority > 0) Debugger.LogMissingMaterialProperty(property);
                 return null;
             }
-            TweenerCore<float, float, FloatOptions> t = DOTween.To(() => target.GetFloat(property), x => target.SetFloat(property, x), endValue, duration);
+            TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.GetFloat(property), x => target.SetFloat(property, x), endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -323,13 +308,13 @@ namespace DG.Tweening
         /// <param name="endValue">The end value to reach</param>
         /// <param name="propertyID">The ID of the material property to tween (also called nameID in Unity's manual)</param>
         /// <param name="duration">The duration of the tween</param>
-        public static TweenerCore<float, float, FloatOptions> DOFloat(this Material target, float endValue, int propertyID, float duration)
+        public static TweenerCore<float, float, NoOptions> DOFloat(this Material target, float endValue, int propertyID, float duration)
         {
             if (!target.HasProperty(propertyID)) {
                 if (Debugger.logPriority > 0) Debugger.LogMissingMaterialProperty(propertyID);
                 return null;
             }
-            TweenerCore<float, float, FloatOptions> t = DOTween.To(() => target.GetFloat(propertyID), x => target.SetFloat(propertyID, x), endValue, duration);
+            TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.GetFloat(propertyID), x => target.SetFloat(propertyID, x), endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -442,9 +427,9 @@ namespace DG.Tweening
         /// <summary>Tweens a TrailRenderer's time to the given value.
         /// Also stores the TrailRenderer as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float, float, FloatOptions> DOTime(this TrailRenderer target, float endValue, float duration)
+        public static TweenerCore<float, float, NoOptions> DOTime(this TrailRenderer target, float endValue, float duration)
         {
-            TweenerCore<float, float, FloatOptions> t = DOTween.To(() => target.time, x => target.time = x, endValue, duration);
+            TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.time, x => target.time = x, endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -1051,9 +1036,9 @@ namespace DG.Tweening
         /// <summary>Tweens a Tween's timeScale to the given value.
         /// Also stores the Tween as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float, float, FloatOptions> DOTimeScale(this Tween target, float endValue, float duration)
+        public static TweenerCore<float, float, NoOptions> DOTimeScale(this Tween target, float endValue, float duration)
         {
-            TweenerCore<float, float, FloatOptions> t = DOTween.To(() => target.timeScale, x => target.timeScale = x, endValue, duration);
+            TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.timeScale, x => target.timeScale = x, endValue, duration);
             t.SetTarget(target);
             return t;
         }
