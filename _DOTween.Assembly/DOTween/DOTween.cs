@@ -22,7 +22,6 @@ using DOColor = UnityEngine.Color;
 using System.Collections.Generic;
 using DG.Tweening.Core;
 using DG.Tweening.Core.Enums;
-using DG.Tweening.Plugins;
 using DG.Tweening.Plugins.Core;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
@@ -44,16 +43,9 @@ namespace DG.Tweening
         /// (like targets becoming null while a tween is playing).
         /// <para>Default: TRUE</para></summary>
         public static bool useSafeMode = true;
-        /// <summary>Log type when safe mode reports capturing an error and preventing it</summary>
-        public static SafeModeLogBehaviour safeModeLogBehaviour = SafeModeLogBehaviour.Warning;
         /// <summary>Behaviour in case a tween nested inside a Sequence fails (and is caught by safe mode).
         /// <para>Default: NestedTweenFailureBehaviour.TryToPreserveSequence</para></summary>
         public static NestedTweenFailureBehaviour nestedTweenFailureBehaviour = NestedTweenFailureBehaviour.TryToPreserveSequence;
-        /// <summary>If TRUE you will get a DOTween report when exiting play mode (only in the Editor).
-        /// Useful to know how many max Tweeners and Sequences you reached and optimize your final project accordingly.
-        /// Beware, this will slightly slow down your tweens while inside Unity Editor.
-        /// <para>Default: FALSE</para></summary>
-        public static bool showUnityEditorReport = false;
         /// <summary>Global DOTween global timeScale (default: 1).<para/>
         /// The final timeScale of a non-timeScaleIndependent tween is:<para/>
         /// <code>Unity's Time.timeScale * DOTween.timeScale * tween.timeScale</code><para/>
@@ -74,32 +66,20 @@ namespace DG.Tweening
         /// Setting this to TRUE will lead to smoother animations.
         /// <para>Default: FALSE</para></summary>
         public static float maxSmoothUnscaledTime = 0.15f;
-        /// <summary>DOTween's log behaviour.
-        /// <para>Default: LogBehaviour.ErrorsOnly</para></summary>
-        public static LogBehaviour logBehaviour {
-            get { return _logBehaviour; }
-            set { _logBehaviour = value; Debugger.SetLogPriority(_logBehaviour); }
-        }
-        static LogBehaviour _logBehaviour = LogBehaviour.ErrorsOnly;
-        /// <summary>Used to intercept DOTween's logs. If this method isn't NULL, DOTween will call it before writing a log via Unity's own Debug log methods.<para/>
-        /// Return TRUE if you want DOTween to proceed with the log, FALSE otherwise.<para/>
-        /// This method must return a <code>bool</code> and accept two parameters:<para/>
-        /// - <code>LogType</code>: the type of Unity log that DOTween is trying to log<para/>
-        /// - <code>object</code>: the log message that DOTween wants to log</summary>
-        public static Func<LogType, object, bool> onWillLog;
         /// <summary>If TRUE draws path gizmos in Unity Editor (if the gizmos button is active).
         /// Deactivate this if you want to avoid gizmos overhead while in Unity Editor</summary>
         public static bool drawGizmos = true;
         // DEBUG OPTIONS
         /// <summary>If TRUE activates various debug options</summary>
-        public static bool debugMode = false;
+        public const bool debugMode =
+#if DEBUG
+            true;
+#else
+            false;
+#endif
         /// <summary>Stores the target id so it can be used to give more info in case of safeMode error capturing.
         /// Only active if both <code>debugMode</code> and <code>useSafeMode</code> are TRUE</summary>
-        public static bool debugStoreTargetId {
-            get { return debugMode && useSafeMode && _fooDebugStoreTargetId; }
-            set { _fooDebugStoreTargetId = value; }
-        }
-        static bool _fooDebugStoreTargetId = true;
+        public const bool debugStoreTargetId = debugMode;
 
         ///////////////////////////////////////////////
         // Default options for Tweens /////////////////
@@ -151,7 +131,6 @@ namespace DG.Tweening
         }
         static bool _foo_isQuitting;
         internal static int maxActiveTweenersReached, maxActiveSequencesReached; // Controlled by DOTweenInspector if showUnityEditorReport is active
-        internal static SafeModeReport safeModeReport; // Used to store how many safe mode errors are captured in the editor
         internal static readonly List<TweenCallback> GizmosDelegates = new List<TweenCallback>(); // Can be used by other classes to call internal gizmo draw methods
         internal static bool initialized; // Can be set to false by DOTweenComponent OnDestroy
         static int _isQuittingFrame = -1; // Frame when isQuitting was set. Sets isQuitting to false after this frame (so no-domain-reload playmode can work)
@@ -183,42 +162,38 @@ namespace DG.Tweening
         /// <param name="logBehaviour">Type of logging to use.
         /// You can change this setting at any time by changing the static <see cref="DOTween.logBehaviour"/> property.
         /// <para>Default: ErrorsOnly</para></param>
-        public static IDOTweenInit Init(bool? recycleAllByDefault = null, bool? useSafeMode = null, LogBehaviour? logBehaviour = null)
+        public static IDOTweenInit Init(bool? recycleAllByDefault = null, bool? useSafeMode = null)
         {
             if (initialized) return instance;
             if (!Application.isPlaying || isQuitting) return null;
 
-            return Init(DOTweenSettings.Instance, recycleAllByDefault, useSafeMode, logBehaviour);
+            return Init(DOTweenSettings.Instance, recycleAllByDefault, useSafeMode);
         }
         // Auto-init
         static void AutoInit()
         {
             if (!Application.isPlaying || isQuitting) return;
-            Init(DOTweenSettings.Instance, null, null, null);
+            Init(DOTweenSettings.Instance, null, null);
         }
         // Full init
-        static IDOTweenInit Init(DOTweenSettings settings, bool? recycleAllByDefault, bool? useSafeMode, LogBehaviour? logBehaviour)
+        static IDOTweenInit Init(DOTweenSettings settings, bool? recycleAllByDefault, bool? useSafeMode)
         {
             initialized = true;
             // Options
             if (recycleAllByDefault != null) DOTween.defaultRecyclable = (bool)recycleAllByDefault;
             if (useSafeMode != null) DOTween.useSafeMode = (bool)useSafeMode;
-            if (logBehaviour != null) DOTween.logBehaviour = (LogBehaviour)logBehaviour;
             // Gameobject - also assign instance
             DOTweenComponent.Create();
             // Assign settings
             if (settings != null) {
                 if (useSafeMode == null) DOTween.useSafeMode = settings.useSafeMode;
-                if (logBehaviour == null) DOTween.logBehaviour = settings.logBehaviour;
                 if (recycleAllByDefault == null) DOTween.defaultRecyclable = settings.defaultRecyclable;
-                DOTween.safeModeLogBehaviour = settings.safeModeOptions.logBehaviour;
                 DOTween.nestedTweenFailureBehaviour = settings.safeModeOptions.nestedTweenFailureBehaviour;
                 DOTween.timeScale = settings.timeScale;
                 DOTween.unscaledTimeScale = settings.unscaledTimeScale;
                 DOTween.useSmoothDeltaTime = settings.useSmoothDeltaTime;
                 DOTween.maxSmoothUnscaledTime = settings.maxSmoothUnscaledTime;
                 DOTween.defaultRecyclable = recycleAllByDefault == null ? settings.defaultRecyclable : (bool)recycleAllByDefault;
-                DOTween.showUnityEditorReport = settings.showUnityEditorReport;
                 DOTween.drawGizmos = settings.drawGizmos;
                 DOTween.defaultAutoPlay = settings.defaultAutoPlay;
                 DOTween.defaultUpdateType = settings.defaultUpdateType;
@@ -228,12 +203,9 @@ namespace DG.Tweening
                 DOTween.defaultEasePeriod = settings.defaultEasePeriod;
                 DOTween.defaultAutoKill = settings.defaultAutoKill;
                 DOTween.defaultLoopType = settings.defaultLoopType;
-                // Debug options
-                DOTween.debugMode = settings.debugMode;
-                DOTween.debugStoreTargetId = settings.debugStoreTargetId;
             }
             // Log
-            if (Debugger.logPriority >= 2) Debugger.Log("DOTween initialization (useSafeMode: " + DOTween.useSafeMode + ", recycling: " + (DOTween.defaultRecyclable ? "ON" : "OFF") + ", logBehaviour: " + DOTween.logBehaviour + ")");
+            if (Debugger.logPriority >= 2) Debugger.Log("DOTween initialization (useSafeMode: " + DOTween.useSafeMode + ", recycling: " + (DOTween.defaultRecyclable ? "ON" : "OFF"));
 
             return instance;
         }
@@ -274,16 +246,12 @@ namespace DG.Tweening
 
             initialized = false;
             useSafeMode = false;
-            safeModeLogBehaviour = SafeModeLogBehaviour.Warning;
             nestedTweenFailureBehaviour = NestedTweenFailureBehaviour.TryToPreserveSequence;
-            showUnityEditorReport = false;
             drawGizmos = true;
             timeScale = 1;
             unscaledTimeScale = 1;
             useSmoothDeltaTime = false;
             maxSmoothUnscaledTime = 0.15f;
-            logBehaviour = LogBehaviour.ErrorsOnly;
-            onWillLog = null;
             defaultEaseType = Ease.OutQuad;
             defaultEaseOvershootOrAmplitude = 1.70158f;
             defaultEasePeriod = 0;

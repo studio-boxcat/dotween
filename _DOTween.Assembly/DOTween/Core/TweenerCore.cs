@@ -169,12 +169,9 @@ namespace DG.Tweening.Core
                     tweenPlugin.EvaluateAndApply(plugOptions, this, isRelative, getter, setter, updatePosition, startValue, changeValue, duration, useInversePosition, newCompletedSteps, updateNotice);
                 } catch (Exception e) {
                     // Target/field doesn't exist anymore: kill tween
-                    if (Debugger.ShouldLogSafeModeCapturedError()) {
-                        Debugger.LogSafeModeCapturedError(string.Format(
-                            "Target or field is missing/null ({0}) ► {1}\n\n{2}\n\n", e.TargetSite, e.Message, e.StackTrace
-                        ), this);
-                    }
-                    DOTween.safeModeReport.Add(SafeModeReport.SafeModeReportType.TargetOrFieldMissing);
+                    Debugger.LogSafeModeCapturedError(string.Format(
+                        "Target or field is missing/null ({0}) ► {1}\n\n{2}\n\n", e.TargetSite, e.Message, e.StackTrace
+                    ), this);
                     return true;
                 }
             } else {

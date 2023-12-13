@@ -116,12 +116,9 @@ namespace DG.Tweening
                             t.isRelative = false;
                         } else t.startValue = t.tweenPlugin.ConvertToStartValue(t, t.getter());
                     } catch (Exception e) {
-                        if (Debugger.ShouldLogSafeModeCapturedError()) {
-                            Debugger.LogSafeModeCapturedError(string.Format(
-                                "Tween startup failed (NULL target/property - {0}): the tween will now be killed ► {1}", e.TargetSite, e.Message
-                            ), t);
-                        }
-                        DOTween.safeModeReport.Add(SafeModeReport.SafeModeReportType.StartupFailure);
+                        Debugger.LogSafeModeCapturedError(string.Format(
+                            "Tween startup failed (NULL target/property - {0}): the tween will now be killed ► {1}", e.TargetSite, e.Message
+                        ), t);
                         return false; // Target/field doesn't exist: kill tween
                     }
                 } else {
@@ -193,13 +190,10 @@ namespace DG.Tweening
                             t.startValue = t.tweenPlugin.ConvertToStartValue(t, t.getter());
                         } catch (Exception e) {
                             // Target/field doesn't exist: kill tween
-                            if (Debugger.ShouldLogSafeModeCapturedError()) {
-                                Debugger.LogSafeModeCapturedError(string.Format(
-                                    "Target or field is missing/null ({0}) ► {1}\n\n{2}\n\n", e.TargetSite, e.Message, e.StackTrace
-                                ), t);
-                            }
+                            Debugger.LogSafeModeCapturedError(string.Format(
+                                "Target or field is missing/null ({0}) ► {1}\n\n{2}\n\n", e.TargetSite, e.Message, e.StackTrace
+                            ), t);
                             TweenManager.Despawn(t);
-                            DOTween.safeModeReport.Add(SafeModeReport.SafeModeReportType.TargetOrFieldMissing);
                             return null;
                         }
                     } else t.startValue = t.tweenPlugin.ConvertToStartValue(t, t.getter());

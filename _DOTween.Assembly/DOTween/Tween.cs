@@ -255,12 +255,9 @@ namespace DG.Tweening
                 try {
                     callback();
                 } catch (Exception e) {
-                    if (Debugger.ShouldLogSafeModeCapturedError()) {
-                        Debugger.LogSafeModeCapturedError(string.Format(
-                            "An error inside a tween callback was taken care of ({0}) ► {1}\n\n{2}\n\n", e.TargetSite, e.Message, e.StackTrace
-                        ), t);
-                    }
-                    DOTween.safeModeReport.Add(SafeModeReport.SafeModeReportType.Callback);
+                    Debugger.LogSafeModeCapturedError(string.Format(
+                        "An error inside a tween callback was taken care of ({0}) ► {1}\n\n{2}\n\n", e.TargetSite, e.Message, e.StackTrace
+                    ), t);
                     return false; // Callback error
                 }
             } else callback();
@@ -272,12 +269,9 @@ namespace DG.Tweening
                 try {
                     callback(param);
                 } catch (Exception e) {
-                    if (Debugger.ShouldLogSafeModeCapturedError()) {
-                        Debugger.LogSafeModeCapturedError(string.Format(
-                            "An error inside a tween callback was taken care of ({0}) ► {1}", e.TargetSite, e.Message
-                        ), t);
-                    }
-                    DOTween.safeModeReport.Add(SafeModeReport.SafeModeReportType.Callback);
+                    Debugger.LogSafeModeCapturedError(string.Format(
+                        "An error inside a tween callback was taken care of ({0}) ► {1}", e.TargetSite, e.Message
+                    ), t);
                     return false; // Callback error
                 }
             } else callback(param);

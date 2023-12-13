@@ -19,8 +19,6 @@ namespace DG.Tweening.Core
         public float unscaledTimeScale = 1;
         public bool useSmoothDeltaTime;
         public float maxSmoothUnscaledTime = 0.15f; // Used if useSmoothDeltaTime is TRUE
-        public bool showUnityEditorReport;
-        public LogBehaviour logBehaviour = LogBehaviour.Default;
         public bool drawGizmos = true;
         public bool defaultRecyclable;
         public AutoPlay defaultAutoPlay = AutoPlay.All;
@@ -32,11 +30,6 @@ namespace DG.Tweening.Core
         public bool defaultAutoKill = true;
         public LoopType defaultLoopType = LoopType.Restart;
 
-        // Debug
-        public bool debugMode = false;
-        // Stores the target id so it can be used to give more info in case of safeMode error capturing
-        public bool debugStoreTargetId = true;
-
         // Editor-Only ► DOTween Inspector
         public bool showPlayingTweens, showPausedTweens;
 
@@ -47,7 +40,6 @@ namespace DG.Tweening.Core
         [Serializable]
         public class SafeModeOptions
         {
-            public SafeModeLogBehaviour logBehaviour = SafeModeLogBehaviour.Warning;
             public NestedTweenFailureBehaviour nestedTweenFailureBehaviour = NestedTweenFailureBehaviour.TryToPreserveSequence;
         }
     }

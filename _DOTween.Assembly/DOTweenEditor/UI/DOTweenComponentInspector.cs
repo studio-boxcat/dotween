@@ -117,8 +117,6 @@ namespace DG.DOTweenEditor.UI
             _strb.Remove(0, _strb.Length);
             _strb.Append("SETTINGS ▼");
             _strb.Append("\nSafe Mode: ").Append((_isRuntime ? DOTween.useSafeMode : _settings.useSafeMode) ? "ON" : "OFF");
-            _strb.Append("\nLog Behaviour: ").Append(_isRuntime ? DOTween.logBehaviour : _settings.logBehaviour);
-            _strb.Append("\nShow Unity Editor Report: ").Append(_isRuntime ? DOTween.showUnityEditorReport : _settings.showUnityEditorReport);
             _strb.Append("\nTimeScale (Unity/DOTween/DOTween-Unscaled): ").Append(Time.timeScale)
                 .Append("/").Append(_isRuntime ? DOTween.timeScale : _settings.timeScale)
                 .Append("/").Append(_isRuntime ? DOTween.unscaledTimeScale : _settings.unscaledTimeScale);
