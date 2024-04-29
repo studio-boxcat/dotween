@@ -1,1 +1,0 @@
-This folder contains stubs that allow DOTween Pro shortcuts for external plugins to work even if the external plugins are not truly here. This allows to test code without having to recompile all the plugins each time something changes.
