@@ -4,18 +4,6 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
-#if COMPATIBLE
-using DOVector2 = DG.Tweening.Core.Surrogates.Vector2Wrapper;
-using DOVector3 = DG.Tweening.Core.Surrogates.Vector3Wrapper;
-using DOVector4 = DG.Tweening.Core.Surrogates.Vector4Wrapper;
-using DOQuaternion = DG.Tweening.Core.Surrogates.QuaternionWrapper;
-using DOColor = DG.Tweening.Core.Surrogates.ColorWrapper;
-using DOVector2Plugin = DG.Tweening.Plugins.Vector2WrapperPlugin;
-using DOVector3Plugin = DG.Tweening.Plugins.Vector3WrapperPlugin;
-using DOVector4Plugin = DG.Tweening.Plugins.Vector4WrapperPlugin;
-using DOQuaternionPlugin = DG.Tweening.Plugins.QuaternionWrapperPlugin;
-using DOColorPlugin = DG.Tweening.Plugins.ColorWrapperPlugin;
-#else
 using DOVector2 = UnityEngine.Vector2;
 using DOVector3 = UnityEngine.Vector3;
 using DOVector4 = UnityEngine.Vector4;
@@ -26,7 +14,6 @@ using DOVector3Plugin = DG.Tweening.Plugins.Vector3Plugin;
 using DOVector4Plugin = DG.Tweening.Plugins.Vector4Plugin;
 using DOQuaternionPlugin = DG.Tweening.Plugins.QuaternionPlugin;
 using DOColorPlugin = DG.Tweening.Plugins.ColorPlugin;
-#endif
 using System;
 using System.Collections.Generic;
 using DG.Tweening.Core;
@@ -50,7 +37,6 @@ namespace DG.Tweening.Plugins.Core
         static ITweenPlugin _quaternionPlugin;
         static ITweenPlugin _colorPlugin;
         static ITweenPlugin _rectPlugin;
-        static ITweenPlugin _stringPlugin;
         static ITweenPlugin _vector3ArrayPlugin;
 
         // Advanced and custom plugins
@@ -98,9 +84,6 @@ namespace DG.Tweening.Plugins.Core
             } else if (t1 == typeof(uint)) {
                 if (_uintPlugin == null) _uintPlugin = new UintPlugin();
                 plugin = _uintPlugin;
-            } else if (t1 == typeof(string)) {
-                if (_stringPlugin == null) _stringPlugin = new StringPlugin();
-                plugin = _stringPlugin;
             } else if (t1 == typeof(long)) {
                 if (_longPlugin == null) _longPlugin = new LongPlugin();
                 plugin = _longPlugin;
@@ -147,7 +130,6 @@ namespace DG.Tweening.Plugins.Core
             _quaternionPlugin = null;
             _colorPlugin = null;
             _rectPlugin = null;
-            _stringPlugin = null;
             _vector3ArrayPlugin = null;
 
             if (_customPlugins != null) _customPlugins.Clear();

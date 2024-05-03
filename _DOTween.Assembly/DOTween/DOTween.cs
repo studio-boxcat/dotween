@@ -367,14 +367,6 @@ namespace DG.Tweening
         /// <param name="setter">A setter for the field or property to tween
         /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
         /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        public static TweenerCore<string, string, StringOptions> To(DOGetter<string> getter, DOSetter<string> setter, string endValue, float duration)
-        { return ApplyTo<string, string, StringOptions>(getter, setter, endValue, duration); }
-        /// <summary>Tweens a property or field to the given value using default plugins</summary>
-        /// <param name="getter">A getter for the field or property to tween.
-        /// <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-        /// <param name="setter">A setter for the field or property to tween
-        /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
         public static TweenerCore<DOVector2, DOVector2, VectorOptions> To(DOGetter<DOVector2> getter, DOSetter<DOVector2> setter, Vector2 endValue, float duration)
         { return ApplyTo<DOVector2, DOVector2, VectorOptions>(getter, setter, endValue, duration); }
         /// <summary>Tweens a property or field to the given value using default plugins</summary>
@@ -424,20 +416,6 @@ namespace DG.Tweening
         )
             where TPlugOptions : struct, IPlugOptions
         { return ApplyTo(getter, setter, endValue, duration, plugin); }
-
-        /// <summary>Tweens only one axis of a Vector3 to the given value using default plugins.</summary>
-        /// <param name="getter">A getter for the field or property to tween.
-        /// <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-        /// <param name="setter">A setter for the field or property to tween
-        /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        /// <param name="axisConstraint">The axis to tween</param>
-        public static TweenerCore<DOVector3, DOVector3, VectorOptions> ToAxis(DOGetter<DOVector3> getter, DOSetter<DOVector3> setter, float endValue, float duration, AxisConstraint axisConstraint = AxisConstraint.X)
-        {
-            TweenerCore<DOVector3, DOVector3, VectorOptions> t = ApplyTo<DOVector3, DOVector3, VectorOptions>(getter, setter, new Vector3(endValue, endValue, endValue), duration);
-            t.plugOptions.axisConstraint = axisConstraint;
-            return t;
-        }
 
         /// <summary>Tweens only the alpha of a Color to the given value using default plugins</summary>
         /// <param name="getter">A getter for the field or property to tween.

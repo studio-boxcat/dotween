@@ -4,23 +4,13 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
-#if COMPATIBLE
-using DOVector2 = DG.Tweening.Core.Surrogates.Vector2Wrapper;
-using DOVector3 = DG.Tweening.Core.Surrogates.Vector3Wrapper;
-using DOVector4 = DG.Tweening.Core.Surrogates.Vector4Wrapper;
-using DOQuaternion = DG.Tweening.Core.Surrogates.QuaternionWrapper;
-using DOColor = DG.Tweening.Core.Surrogates.ColorWrapper;
-#else
 using DOVector2 = UnityEngine.Vector2;
 using DOVector3 = UnityEngine.Vector3;
 using DOVector4 = UnityEngine.Vector4;
 using DOQuaternion = UnityEngine.Quaternion;
-using DOColor = UnityEngine.Color;
-#endif
 using DG.Tweening.Core;
 using DG.Tweening.Core.Easing;
 using DG.Tweening.Plugins;
-using DG.Tweening.Plugins.Core.PathCore;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -614,27 +604,6 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Options for Vector4 tweens</summary>
-        /// <param name="richTextEnabled">If TRUE, rich text will be interpreted correctly while animated,
-        /// otherwise all tags will be considered as normal text</param>
-        /// <param name="scrambleMode">The type of scramble to use, if any</param>
-        /// <param name="scrambleChars">A string containing the characters to use for scrambling.
-        /// Use as many characters as possible (minimum 10) because DOTween uses a fast scramble mode which gives better results with more characters.
-        /// Leave it to NULL to use default ones</param>
-        public static Tweener SetOptions(this TweenerCore<string, string, StringOptions> t, bool richTextEnabled, ScrambleMode scrambleMode = ScrambleMode.None, string scrambleChars = null)
-        {
-            if (t == null || !t.active) return t;
-
-            t.plugOptions.richTextEnabled = richTextEnabled;
-            t.plugOptions.scrambleMode = scrambleMode;
-            if (!string.IsNullOrEmpty(scrambleChars)) {
-                if (scrambleChars.Length <= 1) scrambleChars += scrambleChars;
-                t.plugOptions.scrambledChars = scrambleChars.ToCharArray();
-                t.plugOptions.scrambledChars.ScrambleChars();
-            }
-            return t;
-        }
-
         /// <summary>Options for Vector3Array tweens</summary>
         /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         public static Tweener SetOptions(this TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> t, bool snapping)
@@ -644,165 +613,6 @@ namespace DG.Tweening
             t.plugOptions.snapping = snapping;
             return t;
         }
-        /// <summary>Options for Vector3Array tweens</summary>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static Tweener SetOptions(this TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> t, AxisConstraint axisConstraint, bool snapping = false)
-        {
-            if (t == null || !t.active) return t;
-
-            t.plugOptions.axisConstraint = axisConstraint;
-            t.plugOptions.snapping = snapping;
-            return t;
-        }
-        /// <summary>Options for ShapeCircle tweens</summary>
-        /// <param name="relativeCenter">If TRUE the center you set in the DOTween.To method will be considered as relative
-        /// to the starting position of the target</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static Tweener SetOptions(this TweenerCore<DOVector2, DOVector2, CircleOptions> t, float endValueDegrees, bool relativeCenter = true, bool snapping = false)
-        {
-            if (t == null || !t.active) return t;
-
-            t.plugOptions.endValueDegrees = endValueDegrees;
-            t.plugOptions.relativeCenter = relativeCenter;
-            t.plugOptions.snapping = snapping;
-            return t;
-        }
-
-        #region Path Options
-
-        /// <summary>Options for Path tweens (created via the <code>DOPath</code> shortcut)</summary>
-        /// <param name="lockPosition">The eventual movement axis to lock. You can input multiple axis if you separate them like this:
-        /// <para>AxisConstrain.X | AxisConstraint.Y</para></param>
-        /// <param name="lockRotation">The eventual rotation axis to lock. You can input multiple axis if you separate them like this:
-        /// <para>AxisConstrain.X | AxisConstraint.Y</para></param>
-        public static TweenerCore<Vector3, Path, PathOptions> SetOptions(
-            this TweenerCore<Vector3, Path, PathOptions> t,
-            AxisConstraint lockPosition, AxisConstraint lockRotation = AxisConstraint.None
-        )
-        {
-            return SetOptions(t, false, lockPosition, lockRotation);
-        }
-        /// <summary>Options for Path tweens (created via the <code>DOPath</code> shortcut)</summary>
-        /// <param name="closePath">If TRUE the path will be automatically closed</param>
-        /// <param name="lockPosition">The eventual movement axis to lock. You can input multiple axis if you separate them like this:
-        /// <para>AxisConstrain.X | AxisConstraint.Y</para></param>
-        /// <param name="lockRotation">The eventual rotation axis to lock. You can input multiple axis if you separate them like this:
-        /// <para>AxisConstrain.X | AxisConstraint.Y</para></param>
-        public static TweenerCore<Vector3, Path, PathOptions> SetOptions(
-            this TweenerCore<Vector3, Path, PathOptions> t,
-            bool closePath, AxisConstraint lockPosition = AxisConstraint.None, AxisConstraint lockRotation = AxisConstraint.None
-        )
-        {
-            if (t == null || !t.active) return t;
-
-            t.plugOptions.isClosedPath = closePath;
-            t.plugOptions.lockPositionAxis = lockPosition;
-            t.plugOptions.lockRotationAxis = lockRotation;
-            return t;
-        }
-
-        /// <summary>Additional LookAt options for Path tweens (created via the <code>DOPath</code> shortcut).
-        /// Orients the target towards the given position.
-        /// Must be chained directly to the tween creation method or to a <code>SetOptions</code></summary>
-        /// <param name="lookAtPosition">The position to look at</param>
-        /// <param name="forwardDirection">The eventual direction to consider as "forward".
-        /// If left to NULL defaults to the regular forward side of the transform</param>
-        /// <param name="up">The vector that defines in which direction up is (default: Vector3.up)</param>
-        public static TweenerCore<Vector3, Path, PathOptions> SetLookAt(
-            this TweenerCore<Vector3, Path, PathOptions> t, Vector3 lookAtPosition, Vector3? forwardDirection = null, Vector3? up = null
-        )
-        { return SetLookAt(t, OrientType.LookAtPosition, lookAtPosition, null, -1, forwardDirection, up); }
-        /// <summary>Additional LookAt options for Path tweens (created via the <code>DOPath</code> shortcut).
-        /// Orients the target towards the given position with options to keep the Z rotation stable.
-        /// Must be chained directly to the tween creation method or to a <code>SetOptions</code></summary>
-        /// <param name="lookAtPosition">The position to look at</param>
-        /// <param name="stableZRotation">If TRUE doesn't rotate the target along the Z axis</param>
-        public static TweenerCore<Vector3, Path, PathOptions> SetLookAt(
-            this TweenerCore<Vector3, Path, PathOptions> t, Vector3 lookAtPosition, bool stableZRotation
-        )
-        { return SetLookAt(t, OrientType.LookAtPosition, lookAtPosition, null, -1, null, null, stableZRotation); }
-        /// <summary>Additional LookAt options for Path tweens (created via the <code>DOPath</code> shortcut).
-        /// Orients the target towards another transform.
-        /// Must be chained directly to the tween creation method or to a <code>SetOptions</code></summary>
-        /// <param name="lookAtTransform">The transform to look at</param>
-        /// <param name="forwardDirection">The eventual direction to consider as "forward".
-        /// If left to NULL defaults to the regular forward side of the transform</param>
-        /// <param name="up">The vector that defines in which direction up is (default: Vector3.up)</param>
-        public static TweenerCore<Vector3, Path, PathOptions> SetLookAt(
-            this TweenerCore<Vector3, Path, PathOptions> t, Transform lookAtTransform, Vector3? forwardDirection = null, Vector3? up = null
-        )
-        { return SetLookAt(t, OrientType.LookAtTransform, Vector3.zero, lookAtTransform, -1, forwardDirection, up); }
-        /// <summary>Additional LookAt options for Path tweens (created via the <code>DOPath</code> shortcut).
-        /// Orients the target towards another transform with options to keep the Z rotation stable.
-        /// Must be chained directly to the tween creation method or to a <code>SetOptions</code></summary>
-        /// <param name="lookAtTransform">The transform to look at</param>
-        /// <param name="stableZRotation">If TRUE doesn't rotate the target along the Z axis</param>
-        public static TweenerCore<Vector3, Path, PathOptions> SetLookAt(
-            this TweenerCore<Vector3, Path, PathOptions> t, Transform lookAtTransform, bool stableZRotation
-        )
-        { return SetLookAt(t, OrientType.LookAtTransform, Vector3.zero, lookAtTransform, -1, null, null, stableZRotation); }
-        /// <summary>Additional LookAt options for Path tweens (created via the <code>DOPath</code> shortcut).
-        /// Orients the target to the path, with the given lookAhead.
-        /// Must be chained directly to the tween creation method or to a <code>SetOptions</code></summary>
-        /// <param name="lookAhead">The percentage of lookAhead to use (0 to 1)</param>
-        /// <param name="forwardDirection">The eventual direction to consider as "forward".
-        /// If left to NULL defaults to the regular forward side of the transform</param>
-        /// <param name="up">The vector that defines in which direction up is (default: Vector3.up)</param>
-        public static TweenerCore<Vector3, Path, PathOptions> SetLookAt(
-            this TweenerCore<Vector3, Path, PathOptions> t, float lookAhead, Vector3? forwardDirection = null, Vector3? up = null
-        )
-        { return SetLookAt(t, OrientType.ToPath, Vector3.zero, null, lookAhead, forwardDirection, up); }
-        /// <summary>Additional LookAt options for Path tweens (created via the <code>DOPath</code> shortcut).
-        /// Orients the path with options to keep the Z rotation stable.
-        /// Must be chained directly to the tween creation method or to a <code>SetOptions</code></summary>
-        /// <param name="lookAhead">The percentage of lookAhead to use (0 to 1)</param>
-        /// <param name="stableZRotation">If TRUE doesn't rotate the target along the Z axis</param>
-        public static TweenerCore<Vector3, Path, PathOptions> SetLookAt(
-            this TweenerCore<Vector3, Path, PathOptions> t, float lookAhead, bool stableZRotation
-        )
-        { return SetLookAt(t, OrientType.ToPath, Vector3.zero, null, lookAhead, null, null, stableZRotation); }
-        static TweenerCore<Vector3, Path, PathOptions> SetLookAt(
-            this TweenerCore<Vector3, Path, PathOptions> t,
-            OrientType orientType, Vector3 lookAtPosition, Transform lookAtTransform, float lookAhead,
-            Vector3? forwardDirection = null, Vector3? up = null, bool stableZRotation = false
-        )
-        {
-            if (t == null || !t.active) return t;
-
-            t.plugOptions.orientType = orientType;
-            switch (orientType) {
-            case OrientType.LookAtPosition:
-                t.plugOptions.lookAtPosition = lookAtPosition;
-                break;
-            case OrientType.LookAtTransform:
-                t.plugOptions.lookAtTransform = lookAtTransform;
-                break;
-            case OrientType.ToPath:
-                if (lookAhead < PathPlugin.MinLookAhead) lookAhead = PathPlugin.MinLookAhead;
-                t.plugOptions.lookAhead = lookAhead;
-                break;
-            }
-            t.plugOptions.lookAtPosition = lookAtPosition;
-            t.plugOptions.stableZRotation = stableZRotation;
-            SetPathForwardDirection(t, forwardDirection, up);
-            return t;
-        }
-
-        static void SetPathForwardDirection(this TweenerCore<Vector3, Path, PathOptions> t, Vector3? forwardDirection = null, Vector3? up = null)
-        {
-            if (t == null || !t.active) return;
-
-            t.plugOptions.hasCustomForwardDirection = forwardDirection != null && forwardDirection != Vector3.zero || up != null && up != Vector3.zero;
-            if (t.plugOptions.hasCustomForwardDirection) {
-                if (forwardDirection == Vector3.zero) forwardDirection = Vector3.forward;
-                t.plugOptions.forward = Quaternion.LookRotation(
-                    forwardDirection == null ? Vector3.forward : (Vector3)forwardDirection,
-                    up == null ? Vector3.up : (Vector3)up
-                );
-            }
-        }
-
-        #endregion
 
         #endregion
     }

@@ -15,8 +15,6 @@ using DOQuaternion = UnityEngine.Quaternion;
 using DG.Tweening.Core;
 using DG.Tweening.Core.Enums;
 using DG.Tweening.CustomPlugins;
-using DG.Tweening.Plugins;
-using DG.Tweening.Plugins.Core.PathCore;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
 
@@ -860,28 +858,6 @@ namespace DG.Tweening
                 target.position = pos;
             });
             return s;
-
-            // Old incorrect method
-//            Sequence s = DOTween.Sequence();
-//            s.Append(DOTween.To(() => target.position, x => target.position = x, new Vector3(endValue.x, 0, 0), duration)
-//                    .SetOptions(AxisConstraint.X, snapping).SetEase(Ease.Linear)
-//                ).Join(DOTween.To(() => target.position, x => target.position = x, new Vector3(0, 0, endValue.z), duration)
-//                    .SetOptions(AxisConstraint.Z, snapping).SetEase(Ease.Linear)
-//                ).Join(DOTween.To(() => target.position, x => target.position = x, new Vector3(0, jumpPower, 0), duration / (numJumps * 2))
-//                    .SetOptions(AxisConstraint.Y, snapping).SetEase(Ease.OutQuad).SetRelative()
-//                    .SetLoops(numJumps * 2, LoopType.Yoyo)
-//                ).SetTarget(target).SetEase(DOTween.defaultEaseType)
-//                .OnUpdate(() => {
-//                    if (!offsetYSet) {
-//                        offsetYSet = true;
-//                        offsetY = s.isRelative ? endValue.y : endValue.y - startPosY;
-//                    }
-//                    Vector3 pos = target.position;
-//                    Debug.Log(offsetY + " > " + s.ElapsedDirectionalPercentage());
-//                    pos.y += DOVirtual.EasedValue(0, offsetY, s.ElapsedDirectionalPercentage(), Ease.OutQuad);
-//                    target.position = pos;
-//                });
-//            return s;
         }
         /// <summary>Tweens a Transform's localPosition to the given value, while also applying a jump effect along the Y axis.
         /// Returns a Sequence instead of a Tweener.
@@ -921,110 +897,6 @@ namespace DG.Tweening
                 target.localPosition = pos;
             });
             return s;
-
-            // Old incorrect method
-            // if (numJumps < 1) numJumps = 1;
-            // float startPosY = target.localPosition.y;
-            // float offsetY = -1;
-            // bool offsetYSet = false;
-            // Sequence s = DOTween.Sequence();
-            // s.Append(DOTween.To(() => target.localPosition, x => target.localPosition = x, new Vector3(endValue.x, 0, 0), duration)
-            //         .SetOptions(AxisConstraint.X, snapping).SetEase(Ease.Linear)
-            //     ).Join(DOTween.To(() => target.localPosition, x => target.localPosition = x, new Vector3(0, 0, endValue.z), duration)
-            //         .SetOptions(AxisConstraint.Z, snapping).SetEase(Ease.Linear)
-            //     ).Join(DOTween.To(() => target.localPosition, x => target.localPosition = x, new Vector3(0, jumpPower, 0), duration / (numJumps * 2))
-            //         .SetOptions(AxisConstraint.Y, snapping).SetEase(Ease.OutQuad).SetRelative()
-            //         .SetLoops(numJumps * 2, LoopType.Yoyo)
-            //     ).SetTarget(target).SetEase(DOTween.defaultEaseType)
-            //     .OnUpdate(() => {
-            //         if (!offsetYSet) {
-            //             offsetYSet = false;
-            //             offsetY = s.isRelative ? endValue.y : endValue.y - startPosY;
-            //         }
-            //         Vector3 pos = target.localPosition;
-            //         pos.y += DOVirtual.EasedValue(0, offsetY, s.ElapsedDirectionalPercentage(), Ease.OutQuad);
-            //         target.localPosition = pos;
-            //     });
-            // return s;
-        }
-
-        /// <summary>Tweens a Transform's position through the given path waypoints, using the chosen path algorithm.
-        /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="path">The waypoints to go through</param>
-        /// <param name="duration">The duration of the tween</param>
-        /// <param name="pathType">The type of path: Linear (straight path), CatmullRom (curved CatmullRom path) or CubicBezier (curved with control points)</param>
-        /// <param name="pathMode">The path mode: 3D, side-scroller 2D, top-down 2D</param>
-        /// <param name="resolution">The resolution of the path (useless in case of Linear paths): higher resolutions make for more detailed curved paths but are more expensive.
-        /// Defaults to 10, but a value of 5 is usually enough if you don't have dramatic long curves between waypoints</param>
-        /// <param name="gizmoColor">The color of the path (shown when gizmos are active in the Play panel and the tween is running)</param>
-        public static TweenerCore<Vector3, Path, PathOptions> DOPath(
-            this Transform target, Vector3[] path, float duration, PathType pathType = PathType.Linear,
-            PathMode pathMode = PathMode.Full3D, int resolution = 10, Color? gizmoColor = null
-        )
-        {
-            if (resolution < 1) resolution = 1;
-            TweenerCore<Vector3, Path, PathOptions> t = DOTween.To(PathPlugin.Get(), () => target.position, x => target.position = x, new Path(pathType, path, resolution, gizmoColor), duration)
-                .SetTarget(target);
-
-            t.plugOptions.mode = pathMode;
-            return t;
-        }
-        /// <summary>Tweens a Transform's localPosition through the given path waypoints, using the chosen path algorithm.
-        /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="path">The waypoint to go through</param>
-        /// <param name="duration">The duration of the tween</param>
-        /// <param name="pathType">The type of path: Linear (straight path), CatmullRom (curved CatmullRom path) or CubicBezier (curved with control points)</param>
-        /// <param name="pathMode">The path mode: 3D, side-scroller 2D, top-down 2D</param>
-        /// <param name="resolution">The resolution of the path: higher resolutions make for more detailed curved paths but are more expensive.
-        /// Defaults to 10, but a value of 5 is usually enough if you don't have dramatic long curves between waypoints</param>
-        /// <param name="gizmoColor">The color of the path (shown when gizmos are active in the Play panel and the tween is running)</param>
-        public static TweenerCore<Vector3, Path, PathOptions> DOLocalPath(
-            this Transform target, Vector3[] path, float duration, PathType pathType = PathType.Linear,
-            PathMode pathMode = PathMode.Full3D, int resolution = 10, Color? gizmoColor = null
-        )
-        {
-            if (resolution < 1) resolution = 1;
-            TweenerCore<Vector3, Path, PathOptions> t = DOTween.To(PathPlugin.Get(), () => target.localPosition, x => target.localPosition = x, new Path(pathType, path, resolution, gizmoColor), duration)
-                .SetTarget(target);
-
-            t.plugOptions.mode = pathMode;
-            t.plugOptions.useLocalPosition = true;
-            return t;
-        }
-        // Used by path editor when creating the actual tween, so it can pass a pre-compiled path
-        /// <summary>IMPORTANT: Unless you really know what you're doing, you should use the overload that accepts a Vector3 array instead.<para/>
-        /// Tweens a Transform's position via the given path.
-        /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="path">The path to use</param>
-        /// <param name="duration">The duration of the tween</param>
-        /// <param name="pathMode">The path mode: 3D, side-scroller 2D, top-down 2D</param>
-        public static TweenerCore<Vector3, Path, PathOptions> DOPath(
-            this Transform target, Path path, float duration, PathMode pathMode = PathMode.Full3D
-        )
-        {
-            TweenerCore<Vector3, Path, PathOptions> t = DOTween.To(PathPlugin.Get(), () => target.position, x => target.position = x, path, duration)
-                .SetTarget(target);
-
-            t.plugOptions.mode = pathMode;
-            return t;
-        }
-        // Used by path editor when creating the actual tween, so it can pass a pre-compiled path
-        /// <summary>IMPORTANT: Unless you really know what you're doing, you should use the overload that accepts a Vector3 array instead.<para/>
-        /// Tweens a Transform's localPosition via the given path.
-        /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="path">The path to use</param>
-        /// <param name="duration">The duration of the tween</param>
-        /// <param name="pathMode">The path mode: 3D, side-scroller 2D, top-down 2D</param>
-        public static TweenerCore<Vector3, Path, PathOptions> DOLocalPath(
-            this Transform target, Path path, float duration, PathMode pathMode = PathMode.Full3D
-        )
-        {
-            TweenerCore<Vector3, Path, PathOptions> t = DOTween.To(PathPlugin.Get(), () => target.localPosition, x => target.localPosition = x, path, duration)
-                .SetTarget(target);
-
-            t.plugOptions.mode = pathMode;
-            t.plugOptions.useLocalPosition = true;
-            return t;
         }
 
         #endregion

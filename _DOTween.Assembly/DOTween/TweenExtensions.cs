@@ -5,10 +5,7 @@
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
 using DG.Tweening.Core;
-using DG.Tweening.Core.Easing;
 using DG.Tweening.Core.Enums;
-using DG.Tweening.Plugins.Core.PathCore;
-using DG.Tweening.Plugins.Options;
 using UnityEngine;
 
 #pragma warning disable 1573
@@ -315,48 +312,6 @@ namespace DG.Tweening
             TweenManager.TogglePause(t);
         }
 
-        #region Path Tweens
-
-        /// <summary>Send a path tween to the given waypoint.
-        /// Has no effect if this is not a path tween.
-        /// <para>BEWARE, this is a special utility method:
-        /// it works only with Linear eases. Also, the lookAt direction might be wrong after calling this and might need to be set manually
-        /// (because it relies on a smooth path movement and doesn't work well with jumps that encompass dramatic direction changes)</para></summary>
-        /// <param name="waypointIndex">Waypoint index to reach
-        /// (if higher than the max waypoint index the tween will simply go to the last one)</param>
-        /// <param name="andPlay">If TRUE will play the tween after reaching the given waypoint, otherwise it will pause it</param>
-        public static void GotoWaypoint(this Tween t, int waypointIndex, bool andPlay = false)
-        {
-            if (t == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNullTween(t); return;
-            } else if (!t.active) {
-                if (Debugger.logPriority > 1) Debugger.LogInvalidTween(t); return;
-            } else if (t.isSequenced) {
-                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t); return;
-            }
-
-            TweenerCore<Vector3, Path, PathOptions> pathTween = t as TweenerCore<Vector3, Path, PathOptions>;
-            if (pathTween == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNonPathTween(t); return;
-            }
-
-            if (!t.startupDone) TweenManager.ForceInit(t); // Initialize the tween if it's not initialized already (required)
-            if (waypointIndex < 0) waypointIndex = 0;
-            else if (waypointIndex > pathTween.changeValue.wps.Length - 1) waypointIndex = pathTween.changeValue.wps.Length - 1;
-            // Find path percentage relative to given waypoint
-            float wpLength = 0; // Total length from start to the given waypoint
-            for (int i = 0; i < waypointIndex + 1; i++) wpLength += pathTween.changeValue.wpLengths[i];
-            float wpPerc = wpLength / pathTween.changeValue.length;
-            // Convert to time taking eventual inverse direction into account
-            bool useInversePosition = t.hasLoops && t.loopType == LoopType.Yoyo
-                && (t.position < t.duration ? t.completedLoops % 2 != 0 : t.completedLoops % 2 == 0);
-            if (useInversePosition) wpPerc = 1 - wpPerc;
-            float to = (t.isComplete ? t.completedLoops - 1 : t.completedLoops) * t.duration + wpPerc * t.duration;
-            TweenManager.Goto(t, to, andPlay);
-        }
-
-        #endregion
-
         #endregion
 
         #region Yield Coroutines
@@ -644,95 +599,6 @@ namespace DG.Tweening
 
             return t.loops;
         }
-
-        #region Path Tweens
-
-        /// <summary>
-        /// Returns a point on a path based on the given path percentage.
-        /// Returns <code>Vector3.zero</code> if this is not a path tween, if the tween is invalid, or if the path is not yet initialized.
-        /// A path is initialized after its tween starts, or immediately if the tween was created with the Path Editor (DOTween Pro feature).
-        /// You can force a path to be initialized by calling <code>myTween.ForceInit()</code>.
-        /// </summary>
-        /// <param name="pathPercentage">Percentage of the path (0 to 1) on which to get the point</param>
-        public static Vector3 PathGetPoint(this Tween t, float pathPercentage)
-        {
-            if (pathPercentage > 1) pathPercentage = 1;
-            else if (pathPercentage < 0) pathPercentage = 0;
-
-            if (t == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNullTween(t); return Vector3.zero;
-            } else if (!t.active) {
-                if (Debugger.logPriority > 1) Debugger.LogInvalidTween(t); return Vector3.zero;
-            } else if (t.isSequenced) {
-                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t); return Vector3.zero;
-            }
-
-            TweenerCore<Vector3, Path, PathOptions> pathTween = t as TweenerCore<Vector3, Path, PathOptions>;
-            if (pathTween == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNonPathTween(t); return Vector3.zero;
-            } else if (!pathTween.endValue.isFinalized) {
-                if (Debugger.logPriority > 1) Debugger.LogWarning("The path is not finalized yet", t); return Vector3.zero;
-            }
-
-            return pathTween.endValue.GetPoint(pathPercentage, true);
-        }
-
-        /// <summary>
-        /// Returns an array of points that can be used to draw the path.
-        /// Note that this method generates allocations, because it creates a new array.
-        /// Returns <code>NULL</code> if this is not a path tween, if the tween is invalid, or if the path is not yet initialized.
-        /// A path is initialized after its tween starts, or immediately if the tween was created with the Path Editor (DOTween Pro feature).
-        /// You can force a path to be initialized by calling <code>myTween.ForceInit()</code>.
-        /// </summary>
-        /// <param name="subdivisionsXSegment">How many points to create for each path segment (waypoint to waypoint).
-        /// Only used in case of non-Linear paths</param>
-        public static Vector3[] PathGetDrawPoints(this Tween t, int subdivisionsXSegment = 10)
-        {
-            if (t == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNullTween(t); return null;
-            } else if (!t.active) {
-                if (Debugger.logPriority > 1) Debugger.LogInvalidTween(t); return null;
-            } else if (t.isSequenced) {
-                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t); return null;
-            }
-
-            TweenerCore<Vector3, Path, PathOptions> pathTween = t as TweenerCore<Vector3, Path, PathOptions>;
-            if (pathTween == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNonPathTween(t); return null;
-            } else if (!pathTween.endValue.isFinalized) {
-                if (Debugger.logPriority > 1) Debugger.LogWarning("The path is not finalized yet", t); return null;
-            }
-
-            return Path.GetDrawPoints(pathTween.endValue, subdivisionsXSegment);
-        }
-
-        /// <summary>
-        /// Returns the length of a path.
-        /// Returns -1 if this is not a path tween, if the tween is invalid, or if the path is not yet initialized.
-        /// A path is initialized after its tween starts, or immediately if the tween was created with the Path Editor (DOTween Pro feature).
-        /// You can force a path to be initialized by calling <code>myTween.ForceInit()</code>.
-        /// </summary>
-        public static float PathLength(this Tween t)
-        {
-            if (t == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNullTween(t); return -1;
-            } else if (!t.active) {
-                if (Debugger.logPriority > 1) Debugger.LogInvalidTween(t); return -1;
-            } else if (t.isSequenced) {
-                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t); return -1;
-            }
-
-            TweenerCore<Vector3, Path, PathOptions> pathTween = t as TweenerCore<Vector3, Path, PathOptions>;
-            if (pathTween == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNonPathTween(t); return -1;
-            } else if (!pathTween.endValue.isFinalized) {
-                if (Debugger.logPriority > 1) Debugger.LogWarning("The path is not finalized yet", t); return -1;
-            }
-
-            return pathTween.endValue.length;
-        }
-
-        #endregion
 
         #endregion
     }
