@@ -6,19 +6,10 @@
 
 
 using System;
-#if COMPATIBLE
-using DOVector2 = DG.Tweening.Core.Surrogates.Vector2Wrapper;
-using DOVector3 = DG.Tweening.Core.Surrogates.Vector3Wrapper;
-using DOVector4 = DG.Tweening.Core.Surrogates.Vector4Wrapper;
-using DOQuaternion = DG.Tweening.Core.Surrogates.QuaternionWrapper;
-using DOColor = DG.Tweening.Core.Surrogates.ColorWrapper;
-#else
 using DOVector2 = UnityEngine.Vector2;
 using DOVector3 = UnityEngine.Vector3;
-using DOVector4 = UnityEngine.Vector4;
 using DOQuaternion = UnityEngine.Quaternion;
 using DOColor = UnityEngine.Color;
-#endif
 using System.Collections.Generic;
 using DG.Tweening.Core;
 using DG.Tweening.Core.Enums;
@@ -377,14 +368,6 @@ namespace DG.Tweening
         /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
         public static TweenerCore<DOVector3, DOVector3, VectorOptions> To(DOGetter<DOVector3> getter, DOSetter<DOVector3> setter, Vector3 endValue, float duration)
         { return ApplyTo<DOVector3, DOVector3, VectorOptions>(getter, setter, endValue, duration); }
-        /// <summary>Tweens a property or field to the given value using default plugins</summary>
-        /// <param name="getter">A getter for the field or property to tween.
-        /// <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-        /// <param name="setter">A setter for the field or property to tween
-        /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        public static TweenerCore<DOVector4, DOVector4, VectorOptions> To(DOGetter<DOVector4> getter, DOSetter<DOVector4> setter, Vector4 endValue, float duration)
-        { return ApplyTo<DOVector4, DOVector4, VectorOptions>(getter, setter, endValue, duration); }
         /// <summary>Tweens a property or field to the given value using default plugins</summary>
         /// <param name="getter">A getter for the field or property to tween.
         /// <para>Example usage with lambda:</para><code>()=> myProperty</code></param>

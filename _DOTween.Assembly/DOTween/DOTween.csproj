@@ -96,7 +96,6 @@
     <Compile Include="Core\Surrogates\QuaternionWrapper.cs" />
     <Compile Include="Core\Surrogates\Vector2Wrapper.cs" />
     <Compile Include="Core\Surrogates\Vector3Wrapper.cs" />
-    <Compile Include="Core\Surrogates\Vector4Wrapper.cs" />
     <Compile Include="Core\TweenLink.cs" />
     <Compile Include="Core\TweenManager.cs" />
     <Compile Include="Core\DOTweenUtils.cs" />
@@ -134,7 +133,6 @@
     <Compile Include="Plugins\Core\PathCore\Path.cs" />
     <Compile Include="Plugins\PathPlugin.cs" />
     <Compile Include="Plugins\Vector3WrapperPlugin.cs" />
-    <Compile Include="Plugins\Vector4WrapperPlugin.cs" />
     <Compile Include="Core\Enums\RewindCallbackMode.cs" />
     <Compile Include="RotateMode.cs" />
     <Compile Include="ScrambleMode.cs" />
@@ -156,7 +154,6 @@
     <Compile Include="Plugins\Options\RectOptions.cs" />
     <Compile Include="Plugins\Options\StringOptions.cs" />
     <Compile Include="Plugins\Options\VectorOptions.cs" />
-    <Compile Include="Plugins\Vector4Plugin.cs" />
     <Compile Include="Plugins\StringPlugin.cs" />
     <Compile Include="Sequence.cs" />
     <Compile Include="ShortcutExtensions.cs" />

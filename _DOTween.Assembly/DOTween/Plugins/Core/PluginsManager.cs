@@ -6,12 +6,10 @@
 
 using DOVector2 = UnityEngine.Vector2;
 using DOVector3 = UnityEngine.Vector3;
-using DOVector4 = UnityEngine.Vector4;
 using DOQuaternion = UnityEngine.Quaternion;
 using DOColor = UnityEngine.Color;
 using DOVector2Plugin = DG.Tweening.Plugins.Vector2Plugin;
 using DOVector3Plugin = DG.Tweening.Plugins.Vector3Plugin;
-using DOVector4Plugin = DG.Tweening.Plugins.Vector4Plugin;
 using DOQuaternionPlugin = DG.Tweening.Plugins.QuaternionPlugin;
 using DOColorPlugin = DG.Tweening.Plugins.ColorPlugin;
 using System;
@@ -33,7 +31,6 @@ namespace DG.Tweening.Plugins.Core
         static ITweenPlugin _ulongPlugin;
         static ITweenPlugin _vector2Plugin;
         static ITweenPlugin _vector3Plugin;
-        static ITweenPlugin _vector4Plugin;
         static ITweenPlugin _quaternionPlugin;
         static ITweenPlugin _colorPlugin;
         static ITweenPlugin _rectPlugin;
@@ -75,9 +72,6 @@ namespace DG.Tweening.Plugins.Core
             } else if (t1 == typeof(int)) {
                 if (_intPlugin == null) _intPlugin = new IntPlugin();
                 plugin = _intPlugin;
-            } else if (t1 == typeof(DOVector4)) {
-                if (_vector4Plugin == null) _vector4Plugin = new DOVector4Plugin();
-                plugin = _vector4Plugin;
             } else if (t1 == typeof(Rect)) {
                 if (_rectPlugin == null) _rectPlugin = new RectPlugin();
                 plugin = _rectPlugin;
@@ -126,7 +120,6 @@ namespace DG.Tweening.Plugins.Core
             _ulongPlugin = null;
             _vector2Plugin = null;
             _vector3Plugin = null;
-            _vector4Plugin = null;
             _quaternionPlugin = null;
             _colorPlugin = null;
             _rectPlugin = null;

@@ -6,11 +6,9 @@
 
 using DOVector2 = UnityEngine.Vector2;
 using DOVector3 = UnityEngine.Vector3;
-using DOVector4 = UnityEngine.Vector4;
 using DOQuaternion = UnityEngine.Quaternion;
 using DG.Tweening.Core;
 using DG.Tweening.Core.Easing;
-using DG.Tweening.Plugins;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -554,27 +552,6 @@ namespace DG.Tweening
         /// <param name="axisConstraint">Selecting an axis will tween the vector only on that axis, leaving the others untouched</param>
         /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         public static Tweener SetOptions(this TweenerCore<DOVector3, DOVector3, VectorOptions> t, AxisConstraint axisConstraint, bool snapping = false)
-        {
-            if (t == null || !t.active) return t;
-
-            t.plugOptions.axisConstraint = axisConstraint;
-            t.plugOptions.snapping = snapping;
-            return t;
-        }
-
-        /// <summary>Options for Vector4 tweens</summary>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static Tweener SetOptions(this TweenerCore<DOVector4, DOVector4, VectorOptions> t, bool snapping)
-        {
-            if (t == null || !t.active) return t;
-
-            t.plugOptions.snapping = snapping;
-            return t;
-        }
-        /// <summary>Options for Vector4 tweens</summary>
-        /// <param name="axisConstraint">Selecting an axis will tween the vector only on that axis, leaving the others untouched</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static Tweener SetOptions(this TweenerCore<DOVector4, DOVector4, VectorOptions> t, AxisConstraint axisConstraint, bool snapping = false)
         {
             if (t == null || !t.active) return t;
 

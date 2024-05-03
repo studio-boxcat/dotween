@@ -179,20 +179,5 @@ namespace DG.Tweening.Core
             }
             return false;
         }
-
-#if COMPATIBLE
-
-        // Eventually converts a Unity struct to the correct wrapper
-        static void ConvertToWrapper(ref object value)
-        {
-            Type t = value.GetType();
-            if (t == typeof(Vector3)) value = (Vector3Wrapper)((Vector3)value);
-            else if (t == typeof(Vector2)) value = (Vector2Wrapper)((Vector2)value);
-            else if (t == typeof(Quaternion)) value = (QuaternionWrapper)((Quaternion)value);
-            else if (t == typeof(Color)) value = (ColorWrapper)((Color)value);
-            else if (t == typeof(Vector4)) value = (Vector4Wrapper)((Vector4)value);
-        }
-
-#endif
     }
 }

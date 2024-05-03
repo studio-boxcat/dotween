@@ -369,37 +369,6 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Tweens a Material's named Vector property to the given value.
-        /// Also stores the material as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param>
-        /// <param name="property">The name of the material property to tween</param>
-        /// <param name="duration">The duration of the tween</param>
-        public static TweenerCore<Vector4, Vector4, VectorOptions> DOVector(this Material target, Vector4 endValue, string property, float duration)
-        {
-            if (!target.HasProperty(property)) {
-                if (Debugger.logPriority > 0) Debugger.LogMissingMaterialProperty(property);
-                return null;
-            }
-            TweenerCore<Vector4, Vector4, VectorOptions> t = DOTween.To(() => target.GetVector(property), x => target.SetVector(property, x), endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
-        /// <summary>Tweens a Material's named Vector property with the given ID to the given value.
-        /// Also stores the material as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param>
-        /// <param name="propertyID">The ID of the material property to tween (also called nameID in Unity's manual)</param>
-        /// <param name="duration">The duration of the tween</param>
-        public static TweenerCore<Vector4, Vector4, VectorOptions> DOVector(this Material target, Vector4 endValue, int propertyID, float duration)
-        {
-            if (!target.HasProperty(propertyID)) {
-                if (Debugger.logPriority > 0) Debugger.LogMissingMaterialProperty(propertyID);
-                return null;
-            }
-            TweenerCore<Vector4, Vector4, VectorOptions> t = DOTween.To(() => target.GetVector(propertyID), x => target.SetVector(propertyID, x), endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
-
         #endregion
 
         #region TrailRenderer Shortcuts
