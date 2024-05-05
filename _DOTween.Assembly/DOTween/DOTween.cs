@@ -177,7 +177,7 @@ namespace DG.Tweening
                 DOTween.unscaledTimeScale = settings.unscaledTimeScale;
                 DOTween.useSmoothDeltaTime = settings.useSmoothDeltaTime;
                 DOTween.maxSmoothUnscaledTime = settings.maxSmoothUnscaledTime;
-                DOTween.defaultRecyclable = recycleAllByDefault == null ? settings.defaultRecyclable : (bool)recycleAllByDefault;
+                DOTween.defaultRecyclable = recycleAllByDefault ?? settings.defaultRecyclable;
                 DOTween.drawGizmos = settings.drawGizmos;
                 DOTween.defaultUpdateType = settings.defaultUpdateType;
                 DOTween.defaultTimeScaleIndependent = settings.defaultTimeScaleIndependent;
