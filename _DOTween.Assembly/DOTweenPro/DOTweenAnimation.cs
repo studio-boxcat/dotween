@@ -52,14 +52,6 @@ namespace DG.Tweening
             Transform,
         }
 
-        #region EVENTS - EDITOR-ONLY
-
-        /// <summary>Used internally by the editor</summary>
-        public static event Action<DOTweenAnimation> OnReset;
-        static void Dispatch_OnReset(DOTweenAnimation anim) { if (OnReset != null) OnReset(anim); }
-
-        #endregion
-
         [NonSerialized]
         public Tweener tween;
 
@@ -111,11 +103,6 @@ namespace DG.Tweening
 
             CreateTween(false, autoPlay);
             _tweenAutoGenerationCalled = true;
-        }
-
-        void Reset()
-        {
-            Dispatch_OnReset(this);
         }
 
         void OnDestroy()
