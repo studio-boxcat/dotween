@@ -33,7 +33,6 @@ namespace DG.DOTweenEditor.UI
         void OnEnable()
         {
             _isRuntime = EditorApplication.isPlaying;
-            ConnectToSource(true);
 
             _strb.Length = 0;
             _strb.Append("DOTween v").Append(DOTween.Version);
@@ -52,7 +51,6 @@ namespace DG.DOTweenEditor.UI
         public override void OnInspectorGUI()
         {
             _isRuntime = EditorApplication.isPlaying;
-            ConnectToSource();
 
             // Header img
             // GUILayout.Space(4);
@@ -140,19 +138,6 @@ namespace DG.DOTweenEditor.UI
         #endregion
 
         #region Methods
-
-        void ConnectToSource(bool forceReconnection = false)
-        {
-            // _headerImg = AssetDatabase.LoadAssetAtPath("Assets/" + EditorUtils.editorADBDir + "Imgs/DOTweenIcon.png", typeof(Texture2D)) as Texture2D;
-
-            /*
-            if (_settings == null || forceReconnection) {
-                _settings = _isRuntime
-                    ? Resources.Load(DOTweenSettings.AssetName) as DOTweenSettings
-                    : DOTweenUtilityWindow.GetDOTweenSettings();
-            }
-            */
-        }
 
         void DrawTweensButtons(int totPlayingTweens, int totPausedTweens)
         {

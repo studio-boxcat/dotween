@@ -86,10 +86,10 @@ namespace DG.DOTweenEditor
                     }
             } else {
                 GUILayout.BeginHorizontal();
-                bool hasManager = _src.GetComponent<DOTweenVisualManager_Custom>() != null;
+                bool hasManager = _src.GetComponent<DOTweenVisualManager>() != null;
                 if (!hasManager) {
                     if (GUILayout.Button(new GUIContent("Add Manager", "Adds a manager component which allows you to choose additional options for this gameObject"))) {
-                        _src.gameObject.AddComponent<DOTweenVisualManager_Custom>();
+                        _src.gameObject.AddComponent<DOTweenVisualManager>();
                     }
                 }
                 GUILayout.EndHorizontal();

@@ -13,7 +13,7 @@ using UnityEngine.Assertions;
 
 namespace DG.Tweening
 {
-    public class DOTweenVisualManager_Custom : MonoBehaviour
+    public class DOTweenVisualManager : MonoBehaviour
 #if UNITY_EDITOR
         , ISelfValidator
 #endif
