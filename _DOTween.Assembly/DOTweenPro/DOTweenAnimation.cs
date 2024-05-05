@@ -74,13 +74,10 @@ namespace DG.Tweening
         public bool autoKill = true;
         public bool autoGenerate = true; // If TRUE automatically creates the tween at startup
 
-        [NonSerialized]
-        public bool isValid = true;
         [Required, ChildGameObjectsOnly]
         public Component target;
         public AnimationType animationType;
         public TargetType targetType;
-        public TargetType forcedTargetType; // Used when choosing between multiple targets
         public bool autoPlay = true;
 
         public float endValueFloat;
@@ -141,12 +138,8 @@ namespace DG.Tweening
         /// <param name="andPlay">If TRUE also plays the tween, otherwise only creates it</param>
         public void CreateTween(bool regenerateIfExists = false, bool andPlay = true)
         {
-            if (!isValid) {
-                if (regenerateIfExists) { // Called manually: warn users
-                    Logger.Warning($"{gameObject.name} :: This DOTweenAnimation isn't valid and its tween won't be created", gameObject);
-                }
-                return;
-            }
+            Assert.AreNotEqual(TargetType.Unset, targetType, "TargetType is Unset");
+            Assert.AreNotEqual(AnimationType.None, animationType, "AnimationType is None");
 
             if (tween != null) {
                 if (tween.active) {
@@ -159,12 +152,6 @@ namespace DG.Tweening
             if (target == null) {
                 Logger.Warning($"{gameObject.name} :: This DOTweenAnimation's target/GameObject is unset: the tween will not be created.", gameObject);
                 return;
-            }
-
-            if (forcedTargetType != TargetType.Unset) targetType = forcedTargetType;
-            if (targetType == TargetType.Unset) {
-                // Legacy DOTweenAnimation (made with a version older than 0.9.450) without stored targetType > assign it now
-                targetType = TypeToDOTargetType(target.GetType());
             }
 
             // Create tween.
@@ -206,16 +193,6 @@ namespace DG.Tweening
         #region Public Methods
 
         #region Internal (also used by Inspector)
-
-        public static TargetType TypeToDOTargetType(Type t)
-        {
-            string str = t.ToString();
-            int dotIndex = str.LastIndexOf(".", StringComparison.Ordinal);
-            if (dotIndex != -1) str = str[(dotIndex + 1)..];
-            if (str.IndexOf("Renderer", StringComparison.Ordinal) != -1 && str != "SpriteRenderer") str = "Renderer";
-            if (str is "RawImage" or "Image") str = "Graphic"; // RawImages/Graphics are managed like Images for DOTweenAnimation (color and fade use Graphic target anyway)
-            return (TargetType)Enum.Parse(typeof(TargetType), str);
-        }
 
         // Editor preview system
         /// <summary>
@@ -356,9 +333,6 @@ namespace DG.Tweening
             {
                 result.AddError("TargetType must be set to a valid value");
             }
-
-            if (forcedTargetType is not TargetType.Unset)
-                result.AddError("ForcedTargetType must be Unset");
 
             if (animationType
                 is AnimationType.None

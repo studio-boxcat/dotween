@@ -62,12 +62,10 @@ namespace DG.DOTweenEditor
             return isPreviewing;
         }
 
-#if !(UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_5)
-        public static void StopAllPreviews(PlayModeStateChange state)
+        static void StopAllPreviews(PlayModeStateChange state)
         {
             StopAllPreviews();
         }
-#endif
 
         public static void StopAllPreviews()
         {

@@ -6,14 +6,8 @@
 
 
 using System;
-using System.Collections;
-#if COMPATIBLE
-using DOVector3 = DG.Tweening.Core.Surrogates.Vector3Wrapper;
-using DOQuaternion = DG.Tweening.Core.Surrogates.QuaternionWrapper;
-#else
 using DOVector3 = UnityEngine.Vector3;
 using DOQuaternion = UnityEngine.Quaternion;
-#endif
 using DG.Tweening.Core;
 using DG.Tweening.Core.Enums;
 using DG.Tweening.Plugins.Core;
@@ -66,13 +60,13 @@ namespace DG.Tweening
             t.endValue = endValue;
             t.duration = duration;
             // Defaults
-            t.autoKill = DOTween.defaultAutoKill;
+            t.autoKill = true;
             t.isRecyclable = DOTween.defaultRecyclable;
             t.easeType = DOTween.defaultEaseType; // Set to INTERNAL_Zero in case of 0 duration, but in DoStartup
             t.easeOvershootOrAmplitude = DOTween.defaultEaseOvershootOrAmplitude;
             t.easePeriod = DOTween.defaultEasePeriod;
             t.loopType = DOTween.defaultLoopType;
-            t.isPlaying = DOTween.defaultAutoPlay == AutoPlay.All || DOTween.defaultAutoPlay == AutoPlay.AutoPlayTweeners;
+            t.isPlaying = true;
             return true;
         }
 

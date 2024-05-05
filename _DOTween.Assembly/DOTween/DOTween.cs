@@ -5,7 +5,6 @@
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
 
-using System;
 using DOVector2 = UnityEngine.Vector2;
 using DOVector3 = UnityEngine.Vector3;
 using DOQuaternion = UnityEngine.Quaternion;
@@ -81,12 +80,6 @@ namespace DG.Tweening
         /// <summary>Sets whether Unity's timeScale should be taken into account by default or not.
         /// <para>Default: false</para></summary>
         public static bool defaultTimeScaleIndependent = false;
-        /// <summary>Default autoPlay behaviour for new tweens.
-        /// <para>Default: AutoPlay.All</para></summary>
-        public static AutoPlay defaultAutoPlay = AutoPlay.All;
-        /// <summary>Default autoKillOnComplete behaviour for new tweens.
-        /// <para>Default: TRUE</para></summary>
-        public static bool defaultAutoKill = true;
         /// <summary>Default loopType applied to all new tweens.
         /// <para>Default: LoopType.Restart</para></summary>
         public static LoopType defaultLoopType = LoopType.Restart;
@@ -186,13 +179,11 @@ namespace DG.Tweening
                 DOTween.maxSmoothUnscaledTime = settings.maxSmoothUnscaledTime;
                 DOTween.defaultRecyclable = recycleAllByDefault == null ? settings.defaultRecyclable : (bool)recycleAllByDefault;
                 DOTween.drawGizmos = settings.drawGizmos;
-                DOTween.defaultAutoPlay = settings.defaultAutoPlay;
                 DOTween.defaultUpdateType = settings.defaultUpdateType;
                 DOTween.defaultTimeScaleIndependent = settings.defaultTimeScaleIndependent;
                 DOTween.defaultEaseType = settings.defaultEaseType;
                 DOTween.defaultEaseOvershootOrAmplitude = settings.defaultEaseOvershootOrAmplitude;
                 DOTween.defaultEasePeriod = settings.defaultEasePeriod;
-                DOTween.defaultAutoKill = settings.defaultAutoKill;
                 DOTween.defaultLoopType = settings.defaultLoopType;
             }
             // Log
@@ -248,9 +239,7 @@ namespace DG.Tweening
             defaultEasePeriod = 0;
             defaultUpdateType = UpdateType.Normal;
             defaultTimeScaleIndependent = false;
-            defaultAutoPlay = AutoPlay.All;
             defaultLoopType = LoopType.Restart;
-            defaultAutoKill = true;
             defaultRecyclable = false;
             maxActiveTweenersReached = maxActiveSequencesReached = 0;
             GizmosDelegates.Clear();

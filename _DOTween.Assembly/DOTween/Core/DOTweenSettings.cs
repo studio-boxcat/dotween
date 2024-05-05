@@ -21,13 +21,11 @@ namespace DG.Tweening.Core
         public float maxSmoothUnscaledTime = 0.15f; // Used if useSmoothDeltaTime is TRUE
         public bool drawGizmos = true;
         public bool defaultRecyclable;
-        public AutoPlay defaultAutoPlay = AutoPlay.All;
         public UpdateType defaultUpdateType;
         public bool defaultTimeScaleIndependent;
         public Ease defaultEaseType = Ease.OutQuad;
         public float defaultEaseOvershootOrAmplitude = 1.70158f;
         public float defaultEasePeriod = 0;
-        public bool defaultAutoKill = true;
         public LoopType defaultLoopType = LoopType.Restart;
 
         // Editor-Only ► DOTween Inspector
