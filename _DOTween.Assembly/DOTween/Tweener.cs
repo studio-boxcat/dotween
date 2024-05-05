@@ -13,6 +13,7 @@ using DG.Tweening.Core.Enums;
 using DG.Tweening.Plugins.Core;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace DG.Tweening
 {
@@ -47,12 +48,8 @@ namespace DG.Tweening
         {
             if (plugin != null) t.tweenPlugin = plugin;
             else {
-                if (t.tweenPlugin == null) t.tweenPlugin = PluginsManager.GetDefaultPlugin<T1, T2, TPlugOptions>();
-                if (t.tweenPlugin == null) {
-                    // No suitable plugin found. Kill
-                    Debugger.LogError("No suitable plugin found for this type");
-                    return false;
-                }
+                t.tweenPlugin ??= PluginsManager.GetDefaultPlugin<T1, T2, TPlugOptions>();
+                Assert.IsNotNull(t.tweenPlugin, $"No suitable plugin found for this type: {typeof(T1)}, {typeof(T2)}, {typeof(TPlugOptions)}");
             }
 
             t.getter = getter;

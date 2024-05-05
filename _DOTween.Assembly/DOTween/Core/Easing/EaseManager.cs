@@ -154,11 +154,11 @@ namespace DG.Tweening.Core.Easing
                 if ((time /= duration * 0.5f) < 1) return 0.5f * (time * time * (((overshootOrAmplitude *= (1.525f)) + 1) * time - overshootOrAmplitude));
                 return 0.5f * ((time -= 2) * time * (((overshootOrAmplitude *= (1.525f)) + 1) * time + overshootOrAmplitude) + 2);
             case Ease.InBounce:
-                return Bounce.EaseIn(time, duration, overshootOrAmplitude, period);
+                return Bounce.EaseIn(time, duration);
             case Ease.OutBounce:
-                return Bounce.EaseOut(time, duration, overshootOrAmplitude, period);
+                return Bounce.EaseOut(time, duration);
             case Ease.InOutBounce:
-                return Bounce.EaseInOut(time, duration, overshootOrAmplitude, period);
+                return Bounce.EaseInOut(time, duration);
             case Ease.INTERNAL_Custom:
                 return customEase(time, duration, overshootOrAmplitude, period);
             case Ease.INTERNAL_Zero:
@@ -317,13 +317,13 @@ namespace DG.Tweening.Core.Easing
                 };
             case Ease.InBounce:
                 return (float time, float duration, float overshootOrAmplitude, float period) => 
-                    Bounce.EaseIn(time, duration, overshootOrAmplitude, period);
+                    Bounce.EaseIn(time, duration);
             case Ease.OutBounce:
                 return (float time, float duration, float overshootOrAmplitude, float period) => 
-                    Bounce.EaseOut(time, duration, overshootOrAmplitude, period);
+                    Bounce.EaseOut(time, duration);
             case Ease.InOutBounce:
                 return (float time, float duration, float overshootOrAmplitude, float period) => 
-                    Bounce.EaseInOut(time, duration, overshootOrAmplitude, period);
+                    Bounce.EaseInOut(time, duration);
 
             // Extra custom eases ////////////////////////////////////////////////////
             case Ease.Flash:

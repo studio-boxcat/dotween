@@ -13,12 +13,11 @@ namespace DG.Tweening
     /// What axis to constrain in case of Vector tweens
     /// </summary>
     [Flags]
-    public enum AxisConstraint
+    public enum AxisConstraint : byte
     {
         None = 0,
         X = 2,
         Y = 4,
         Z = 8,
-        W = 16
     }
 }

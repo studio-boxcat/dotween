@@ -44,14 +44,12 @@ namespace DG.Tweening.Core.Easing
         /// <param name="duration">
         /// Expected easing duration (in frames or seconds).
         /// </param>
-        /// <param name="unusedOvershootOrAmplitude">Unused: here to keep same delegate for all ease types.</param>
-        /// <param name="unusedPeriod">Unused: here to keep same delegate for all ease types.</param>
         /// <returns>
         /// The eased value.
         /// </returns>
-        public static float EaseIn(float time, float duration, float unusedOvershootOrAmplitude, float unusedPeriod)
+        public static float EaseIn(float time, float duration)
         {
-            return 1 - EaseOut(duration - time, duration, -1, -1);
+            return 1 - EaseOut(duration - time, duration);
         }
 
         /// <summary>
@@ -63,12 +61,10 @@ namespace DG.Tweening.Core.Easing
         /// <param name="duration">
         /// Expected easing duration (in frames or seconds).
         /// </param>
-        /// <param name="unusedOvershootOrAmplitude">Unused: here to keep same delegate for all ease types.</param>
-        /// <param name="unusedPeriod">Unused: here to keep same delegate for all ease types.</param>
         /// <returns>
         /// The eased value.
         /// </returns>
-        public static float EaseOut(float time, float duration, float unusedOvershootOrAmplitude, float unusedPeriod)
+        public static float EaseOut(float time, float duration)
         {
             if ((time /= duration) < (1 / 2.75f)) {
                 return (7.5625f * time * time);
@@ -91,18 +87,16 @@ namespace DG.Tweening.Core.Easing
         /// <param name="duration">
         /// Expected easing duration (in frames or seconds).
         /// </param>
-        /// <param name="unusedOvershootOrAmplitude">Unused: here to keep same delegate for all ease types.</param>
-        /// <param name="unusedPeriod">Unused: here to keep same delegate for all ease types.</param>
         /// <returns>
         /// The eased value.
         /// </returns>
-        public static float EaseInOut(float time, float duration, float unusedOvershootOrAmplitude, float unusedPeriod)
+        public static float EaseInOut(float time, float duration)
         {
             if (time < duration*0.5f)
             {
-                return EaseIn(time*2, duration, -1, -1)*0.5f;
+                return EaseIn(time*2, duration)*0.5f;
             }
-            return EaseOut(time*2 - duration, duration, -1, -1)*0.5f + 0.5f;
+            return EaseOut(time*2 - duration, duration)*0.5f + 0.5f;
         }
     }
 }

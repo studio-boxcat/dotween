@@ -4,7 +4,6 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
-using System;
 using System.Collections;
 using UnityEngine;
 

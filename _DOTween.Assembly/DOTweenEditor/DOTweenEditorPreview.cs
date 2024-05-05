@@ -19,7 +19,7 @@ namespace DG.DOTweenEditor
 
         static double _previewTime;
         static Action _onPreviewUpdated;
-        static readonly List<Tween> _Tweens = new List<Tween>();
+        static readonly List<Tween> _Tweens = new();
 
         #region Public Methods
 
@@ -99,7 +99,7 @@ namespace DG.DOTweenEditor
             Canvas.ForceUpdateCanvases();
             InternalEditorUtility.RepaintAllViews();
 
-            if (_onPreviewUpdated != null) _onPreviewUpdated();
+            _onPreviewUpdated?.Invoke();
         }
 
         static void ValidateTweens()
