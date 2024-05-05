@@ -1,0 +1,10 @@
+{
+  "name": "DOTween.Editor",
+  "references": [
+    "DOTween"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "autoReferenced": false
+}
