@@ -31,9 +31,6 @@ namespace DG.Tweening.Plugins
             case AxisConstraint.Y:
                 to.y = t.startValue.y;
                 break;
-            case AxisConstraint.Z:
-                to.z = t.startValue.z;
-                break;
             default:
                 to = t.startValue;
                 break;
@@ -64,10 +61,6 @@ namespace DG.Tweening.Plugins
                     to = t.getter();
                     to.y = fromValue.y;
                     break;
-                case AxisConstraint.Z:
-                    to = t.getter();
-                    to.z = fromValue.z;
-                    break;
                 default:
                     to = fromValue;
                     break;
@@ -94,9 +87,6 @@ namespace DG.Tweening.Plugins
                 break;
             case AxisConstraint.Y:
                 t.changeValue = new Vector3(0, t.endValue.y - t.startValue.y, 0);
-                break;
-            case AxisConstraint.Z:
-                t.changeValue = new Vector3(0, 0, t.endValue.z - t.startValue.z);
                 break;
             default:
                 t.changeValue = t.endValue - t.startValue;
@@ -128,12 +118,6 @@ namespace DG.Tweening.Plugins
                 resY.y = startValue.y + changeValue.y * easeVal;
                 if (options.snapping) resY.y = (float)Math.Round(resY.y);
                 setter(resY);
-                break;
-            case AxisConstraint.Z:
-                Vector3 resZ = getter();
-                resZ.z = startValue.z + changeValue.z * easeVal;
-                if (options.snapping) resZ.z = (float)Math.Round(resZ.z);
-                setter(resZ);
                 break;
             default:
                 startValue.x += changeValue.x * easeVal;

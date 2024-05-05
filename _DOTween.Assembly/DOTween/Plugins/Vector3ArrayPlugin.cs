@@ -117,12 +117,6 @@ namespace DG.Tweening.Plugins
                 if (options.snapping) res.y = (float)Math.Round(res.y);
                 setter(res);
                 return;
-            case AxisConstraint.Z:
-                res = getter();
-                res.z = startValue[index].z + incrementValue.z + changeValue[index].z * easeVal;
-                if (options.snapping) res.z = (float)Math.Round(res.z);
-                setter(res);
-                break;
             default:
                 res.x = startValue[index].x + incrementValue.x + changeValue[index].x * easeVal;
                 res.y = startValue[index].y + incrementValue.y + changeValue[index].y * easeVal;

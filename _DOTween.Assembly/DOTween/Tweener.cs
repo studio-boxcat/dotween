@@ -237,9 +237,6 @@ namespace DG.Tweening
         {
             try {
                 switch (t.specialStartupMode) {
-                case SpecialStartupMode.SetLookAt:
-                    if (!SpecialPluginsUtils.SetLookAt(t as TweenerCore<DOQuaternion, DOVector3, QuaternionOptions>)) return false;
-                    break;
                 case SpecialStartupMode.SetPunch:
                     if (!SpecialPluginsUtils.SetPunch(t as TweenerCore<Vector3, Vector3[], Vector3ArrayOptions>)) return false;
                     break;

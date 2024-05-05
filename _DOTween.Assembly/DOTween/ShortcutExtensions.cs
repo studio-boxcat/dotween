@@ -4,14 +4,8 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
-#if COMPATIBLE
-using DG.Tweening.Core.Surrogates;
-using DOVector3 = DG.Tweening.Core.Surrogates.Vector3Wrapper;
-using DOQuaternion = DG.Tweening.Core.Surrogates.QuaternionWrapper;
-#else
 using DOVector3 = UnityEngine.Vector3;
 using DOQuaternion = UnityEngine.Quaternion;
-#endif
 using DG.Tweening.Core;
 using DG.Tweening.Core.Enums;
 using DG.Tweening.CustomPlugins;
@@ -438,17 +432,6 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Tweens a Transform's Z position to the given value.
-        /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static TweenerCore<Vector3, Vector3, VectorOptions> DOMoveZ(this Transform target, float endValue, float duration, bool snapping = false)
-        {
-            TweenerCore<Vector3, Vector3, VectorOptions> t = DOTween.To(() => target.position, x => target.position = x, new Vector3(0, 0, endValue), duration);
-            t.SetOptions(AxisConstraint.Z, snapping).SetTarget(target);
-            return t;
-        }
-
         /// <summary>Tweens a Transform's localPosition to the given value.
         /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
@@ -479,17 +462,6 @@ namespace DG.Tweening
         {
             TweenerCore<Vector3, Vector3, VectorOptions> t = DOTween.To(() => target.localPosition, x => target.localPosition = x, new Vector3(0, endValue, 0), duration);
             t.SetOptions(AxisConstraint.Y, snapping).SetTarget(target);
-            return t;
-        }
-
-        /// <summary>Tweens a Transform's Z localPosition to the given value.
-        /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static TweenerCore<Vector3, Vector3, VectorOptions> DOLocalMoveZ(this Transform target, float endValue, float duration, bool snapping = false)
-        {
-            TweenerCore<Vector3, Vector3, VectorOptions> t = DOTween.To(() => target.localPosition, x => target.localPosition = x, new Vector3(0, 0, endValue), duration);
-            t.SetOptions(AxisConstraint.Z, snapping).SetTarget(target);
             return t;
         }
 
@@ -585,46 +557,6 @@ namespace DG.Tweening
             TweenerCore<Vector3, Vector3, VectorOptions> t = DOTween.To(() => target.localScale, x => target.localScale = x, new Vector3(0, endValue, 0), duration);
             t.SetOptions(AxisConstraint.Y)
                 .SetTarget(target);
-            return t;
-        }
-
-        /// <summary>Tweens a Transform's Z localScale to the given value.
-        /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Vector3, Vector3, VectorOptions> DOScaleZ(this Transform target, float endValue, float duration)
-        {
-            TweenerCore<Vector3, Vector3, VectorOptions> t = DOTween.To(() => target.localScale, x => target.localScale = x, new Vector3(0, 0, endValue), duration);
-            t.SetOptions(AxisConstraint.Z)
-                .SetTarget(target);
-            return t;
-        }
-
-        /// <summary>Tweens a Transform's rotation so that it will look towards the given world position.
-        /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="towards">The position to look at</param><param name="duration">The duration of the tween</param>
-        /// <param name="axisConstraint">Eventual axis constraint for the rotation</param>
-        /// <param name="up">The vector that defines in which direction up is (default: Vector3.up)</param>
-        public static Tweener DOLookAt(this Transform target, Vector3 towards, float duration, AxisConstraint axisConstraint = AxisConstraint.None, Vector3? up = null)
-        { return LookAt(target, towards, duration, axisConstraint, up, false); }
-        /// <summary><code>EXPERIMENTAL</code> Tweens a Transform's rotation so that it will look towards the given world position,
-        /// while also updating the lookAt position every frame
-        /// (contrary to <see cref="DOLookAt"/> which calculates the lookAt rotation only once, when the tween starts).
-        /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="towards">The position to look at</param><param name="duration">The duration of the tween</param>
-        /// <param name="axisConstraint">Eventual axis constraint for the rotation</param>
-        /// <param name="up">The vector that defines in which direction up is (default: Vector3.up)</param>
-        public static Tweener DODynamicLookAt(this Transform target, Vector3 towards, float duration, AxisConstraint axisConstraint = AxisConstraint.None, Vector3? up = null)
-        { return LookAt(target, towards, duration, axisConstraint, up, true); }
-        static Tweener LookAt(this Transform target, Vector3 towards, float duration, AxisConstraint axisConstraint, Vector3? up, bool dynamic)
-        {
-            TweenerCore<DOQuaternion, DOVector3, QuaternionOptions> t = DOTween.To(() => target.rotation, x => target.rotation = x, towards, duration)
-                .SetTarget(target).SetSpecialStartupMode(SpecialStartupMode.SetLookAt);
-            t.plugOptions.axisConstraint = axisConstraint;
-            t.plugOptions.up = (up == null) ? Vector3.up : (Vector3)up;
-            if (dynamic) {
-                t.plugOptions.dynamicLookAt = true;
-                t.plugOptions.dynamicLookAtWorldPosition = towards;
-            } else t.plugOptions.dynamicLookAt = false;
             return t;
         }
 
@@ -797,7 +729,7 @@ namespace DG.Tweening
         /// <param name="numJumps">Total number of jumps</param>
         /// <param name="duration">The duration of the tween</param>
         /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static Sequence DOJump(this Transform target, Vector3 endValue, float jumpPower, int numJumps, float duration, bool snapping = false)
+        public static Sequence DOJump(this Transform target, Vector2 endValue, float jumpPower, int numJumps, float duration, bool snapping = false)
         {
             if (numJumps < 1) numJumps = 1;
             float startPosY = target.position.y; // Temporary fix for OnStart not being called when using Goto instead of GotoWithCallbacks
@@ -813,8 +745,6 @@ namespace DG.Tweening
                 .OnStart(()=> startPosY = target.position.y); // FIXME not called if you only use Goto (and not GotoWithCallbacks)
             s.Append(DOTween.To(() => target.position, x => target.position = x, new Vector3(endValue.x, 0, 0), duration)
                     .SetOptions(AxisConstraint.X, snapping).SetEase(Ease.Linear)
-                ).Join(DOTween.To(() => target.position, x => target.position = x, new Vector3(0, 0, endValue.z), duration)
-                    .SetOptions(AxisConstraint.Z, snapping).SetEase(Ease.Linear)
                 ).Join(yTween)
                 .SetTarget(target).SetEase(DOTween.defaultEaseType);
             yTween.OnUpdate(() => {
@@ -852,8 +782,6 @@ namespace DG.Tweening
                 .OnStart(()=> startPosY = target.localPosition.y); // FIXME not called if you only use Goto (and not GotoWithCallbacks)
             s.Append(DOTween.To(() => target.localPosition, x => target.localPosition = x, new Vector3(endValue.x, 0, 0), duration)
                     .SetOptions(AxisConstraint.X, snapping).SetEase(Ease.Linear)
-                ).Join(DOTween.To(() => target.localPosition, x => target.localPosition = x, new Vector3(0, 0, endValue.z), duration)
-                    .SetOptions(AxisConstraint.Z, snapping).SetEase(Ease.Linear)
                 ).Join(yTween)
                 .SetTarget(target).SetEase(DOTween.defaultEaseType);
             yTween.OnUpdate(() => {

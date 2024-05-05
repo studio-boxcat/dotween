@@ -27,17 +27,17 @@ namespace DG.Tweening
         /// <code>Has no effect</code> if the tween has already started or if it's added to a Sequence</summary>
         public static T SetAutoKill<T>(this T t) where T : Tween
         {
-            if (t == null || !t.active || t.creationLocked) return t;
+            if (t is not { active: true } || t.creationLocked) return t;
 
             t.autoKill = true;
             return t;
         }
-        /// <summary>Sets the autoKill behaviour of the tween. 
+        /// <summary>Sets the autoKill behaviour of the tween.
         /// <code>Has no effect</code> if the tween has already started or if it's added to a Sequence</summary>
         /// <param name="autoKillOnCompletion">If TRUE the tween will be automatically killed when complete</param>
         public static T SetAutoKill<T>(this T t, bool autoKillOnCompletion) where T : Tween
         {
-            if (t == null || !t.active || t.creationLocked) return t;
+            if (t is not { active: true } || t.creationLocked) return t;
 
             t.autoKill = autoKillOnCompletion;
             return t;
@@ -61,7 +61,7 @@ namespace DG.Tweening
         /// <param name="target">The target to assign to this tween. Can be an int, a string, an object or anything else.</param>
         public static T SetTarget<T>(this T t, object target) where T : Tween
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             if (DOTween.debugStoreTargetId) {
                 var comp = target as Object;
@@ -71,12 +71,12 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Sets the looping options for the tween. 
+        /// <summary>Sets the looping options for the tween.
         /// Has no effect if the tween has already started</summary>
         /// <param name="loops">Number of cycles to play (-1 for infinite - will be converted to 1 in case the tween is nested in a Sequence)</param>
         public static T SetLoops<T>(this T t, int loops) where T : Tween
         {
-            if (t == null || !t.active || t.creationLocked) return t;
+            if (t is not { active: true } || t.creationLocked) return t;
 
             if (loops < -1) loops = -1;
             else if (loops == 0) loops = 1;
@@ -88,13 +88,13 @@ namespace DG.Tweening
             }
             return t;
         }
-        /// <summary>Sets the looping options for the tween. 
+        /// <summary>Sets the looping options for the tween.
         /// Has no effect if the tween has already started</summary>
         /// <param name="loops">Number of cycles to play (-1 for infinite - will be converted to 1 in case the tween is nested in a Sequence)</param>
         /// <param name="loopType">Loop behaviour type (default: LoopType.Restart)</param>
         public static T SetLoops<T>(this T t, int loops, LoopType loopType) where T : Tween
         {
-            if (t == null || !t.active || t.creationLocked) return t;
+            if (t is not { active: true } || t.creationLocked) return t;
 
             if (loops < -1) loops = -1;
             else if (loops == 0) loops = 1;
@@ -112,11 +112,11 @@ namespace DG.Tweening
         /// <para>If applied to Sequences eases the whole sequence animation</para></summary>
         public static T SetEase<T>(this T t, Ease ease) where T : Tween
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             t.easeType = ease;
             if (EaseManager.IsFlashEase(ease)) t.easeOvershootOrAmplitude = (int)t.easeOvershootOrAmplitude;
-            
+
             t.customEase = null;
             return t;
         }
@@ -129,7 +129,7 @@ namespace DG.Tweening
         /// </param>
         public static T SetEase<T>(this T t, Ease ease, float overshoot) where T : Tween
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             t.easeType = ease;
             if (EaseManager.IsFlashEase(ease)) overshoot = (int)overshoot;
@@ -149,7 +149,7 @@ namespace DG.Tweening
         /// </param>
         public static T SetEase<T>(this T t, Ease ease, float amplitude, float period) where T : Tween
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             t.easeType = ease;
             if (EaseManager.IsFlashEase(ease)) amplitude = (int)amplitude;
@@ -162,7 +162,7 @@ namespace DG.Tweening
         /// <para>If applied to Sequences eases the whole sequence animation</para></summary>
         public static T SetEase<T>(this T t, AnimationCurve animCurve) where T : Tween
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             t.easeType = Ease.INTERNAL_Custom;
             t.customEase = new EaseCurve(animCurve).Evaluate;
@@ -172,7 +172,7 @@ namespace DG.Tweening
         /// <para>If applied to Sequences eases the whole sequence animation</para></summary>
         public static T SetEase<T>(this T t, EaseFunction customEase) where T : Tween
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             t.easeType = Ease.INTERNAL_Custom;
             t.customEase = customEase;
@@ -182,7 +182,7 @@ namespace DG.Tweening
         /// <summary>Allows the tween to be recycled after being killed.</summary>
         public static T SetRecyclable<T>(this T t) where T : Tween
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             t.isRecyclable = true;
             return t;
@@ -191,7 +191,7 @@ namespace DG.Tweening
         /// <param name="recyclable">If TRUE the tween will be recycled after being killed, otherwise it will be destroyed.</param>
         public static T SetRecyclable<T>(this T t, bool recyclable) where T : Tween
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             t.isRecyclable = recyclable;
             return t;
@@ -201,7 +201,7 @@ namespace DG.Tweening
         /// <param name="isIndependentUpdate">If TRUE the tween will ignore Unity's Time.timeScale</param>
         public static T SetUpdate<T>(this T t, bool isIndependentUpdate) where T : Tween
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             TweenManager.SetUpdateType(t, DOTween.defaultUpdateType, isIndependentUpdate);
             return t;
@@ -210,7 +210,7 @@ namespace DG.Tweening
         /// <param name="updateType">The type of update (defalt: UpdateType.Normal)</param>
         public static T SetUpdate<T>(this T t, UpdateType updateType) where T : Tween
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             TweenManager.SetUpdateType(t, updateType, DOTween.defaultTimeScaleIndependent);
             return t;
@@ -220,29 +220,29 @@ namespace DG.Tweening
         /// <param name="isIndependentUpdate">If TRUE the tween will ignore Unity's Time.timeScale</param>
         public static T SetUpdate<T>(this T t, UpdateType updateType, bool isIndependentUpdate) where T : Tween
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             TweenManager.SetUpdateType(t, updateType, isIndependentUpdate);
             return t;
         }
 
         /// <summary>EXPERIMENTAL: inverts this tween, so that it will play from the end to the beginning
-        /// (playing it backwards will actually play it from the beginning to the end). 
+        /// (playing it backwards will actually play it from the beginning to the end).
         /// <code>Has no effect</code> if the tween has already started or if it's added to a Sequence</summary>
         public static T SetInverted<T>(this T t) where T : Tween
         {
-            if (t == null || !t.active || t.creationLocked) return t;
+            if (t is not { active: true } || t.creationLocked) return t;
 
             t.isInverted = true;
             return t;
         }
         /// <summary>EXPERIMENTAL: inverts this tween, so that it will play from the end to the beginning
-        /// (playing it backwards will actually play it from the beginning to the end). 
+        /// (playing it backwards will actually play it from the beginning to the end).
         /// <code>Has no effect</code> if the tween has already started or if it's added to a Sequence</summary>
         /// <param name="inverted">If TRUE the tween will be inverted, otherwise it won't</param>
         public static T SetInverted<T>(this T t, bool inverted) where T : Tween
         {
-            if (t == null || !t.active || t.creationLocked) return t;
+            if (t is not { active: true } || t.creationLocked) return t;
 
             t.isInverted = inverted;
             return t;
@@ -252,7 +252,7 @@ namespace DG.Tweening
         /// Called the first time the tween is set in a playing state, after any eventual delay</summary>
         public static T OnStart<T>(this T t, TweenCallback action) where T : Tween
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             t.onStart = action;
             return t;
@@ -262,7 +262,7 @@ namespace DG.Tweening
         /// Called each time the tween updates</summary>
         public static T OnUpdate<T>(this T t, TweenCallback action) where T : Tween
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             t.onUpdate = action;
             return t;
@@ -272,7 +272,7 @@ namespace DG.Tweening
         /// Called the moment the tween reaches its final forward position, loops included</summary>
         public static T OnComplete<T>(this T t, TweenCallback action) where T : Tween
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             t.onComplete = action;
             return t;
@@ -282,7 +282,7 @@ namespace DG.Tweening
         /// Called the moment the tween is killed</summary>
         public static T OnKill<T>(this T t, TweenCallback action) where T : Tween
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             t.onKill = action;
             return t;
@@ -292,7 +292,7 @@ namespace DG.Tweening
 
         #region Sequences-only
 
-        /// <summary>Adds the given tween to the end of the Sequence. 
+        /// <summary>Adds the given tween to the end of the Sequence.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="t">The tween to append</param>
         public static Sequence Append(this Sequence s, Tween t)
@@ -301,7 +301,7 @@ namespace DG.Tweening
             Sequence.DoInsert(s, t, s.duration);
             return s;
         }
-        /// <summary>Adds the given tween to the beginning of the Sequence, pushing forward the other nested content. 
+        /// <summary>Adds the given tween to the beginning of the Sequence, pushing forward the other nested content.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="t">The tween to prepend</param>
         public static Sequence Prepend(this Sequence s, Tween t)
@@ -320,7 +320,7 @@ namespace DG.Tweening
             return s;
         }
         /// <summary>Inserts the given tween at the given time position in the Sequence,
-        /// automatically adding an interval if needed. 
+        /// automatically adding an interval if needed.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="atPosition">The time position where the tween will be placed</param>
         /// <param name="t">The tween to insert</param>
@@ -331,7 +331,7 @@ namespace DG.Tweening
             return s;
         }
 
-        /// <summary>Adds the given interval to the end of the Sequence. 
+        /// <summary>Adds the given interval to the end of the Sequence.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="interval">The interval duration</param>
         public static Sequence AppendInterval(this Sequence s, float interval)
@@ -340,7 +340,7 @@ namespace DG.Tweening
             Sequence.DoAppendInterval(s, interval);
             return s;
         }
-        /// <summary>Adds the given interval to the beginning of the Sequence, pushing forward the other nested content. 
+        /// <summary>Adds the given interval to the beginning of the Sequence, pushing forward the other nested content.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="interval">The interval duration</param>
         public static Sequence PrependInterval(this Sequence s, float interval)
@@ -350,7 +350,7 @@ namespace DG.Tweening
             return s;
         }
 
-        /// <summary>Adds the given callback to the end of the Sequence. 
+        /// <summary>Adds the given callback to the end of the Sequence.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="callback">The callback to append</param>
         public static Sequence AppendCallback(this Sequence s, TweenCallback callback)
@@ -361,7 +361,7 @@ namespace DG.Tweening
             Sequence.DoInsertCallback(s, callback, s.duration);
             return s;
         }
-        /// <summary>Adds the given callback to the beginning of the Sequence, pushing forward the other nested content. 
+        /// <summary>Adds the given callback to the beginning of the Sequence, pushing forward the other nested content.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="callback">The callback to prepend</param>
         public static Sequence PrependCallback(this Sequence s, TweenCallback callback)
@@ -373,7 +373,7 @@ namespace DG.Tweening
             return s;
         }
         /// <summary>Inserts the given callback at the given time position in the Sequence,
-        /// automatically adding an interval if needed. 
+        /// automatically adding an interval if needed.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="atPosition">The time position where the callback will be placed</param>
         /// <param name="callback">The callback to insert</param>
@@ -432,7 +432,7 @@ namespace DG.Tweening
         /// <param name="isRelative">If TRUE the FROM value will be calculated as relative to the current one</param>
         public static T From<T>(this T t, bool isRelative) where T : Tweener
         {
-            if (t == null || !t.active || t.creationLocked || !t.isFromAllowed) return t;
+            if (t is not { active: true } || t.creationLocked || !t.isFromAllowed) return t;
 
             t.isFrom = true;
             t.SetFrom(isRelative && !t.isBlendable);
@@ -448,7 +448,7 @@ namespace DG.Tweening
             this TweenerCore<T1,T2,TPlugOptions> t, T2 fromValue, bool setImmediately = true, bool isRelative = false
         ) where TPlugOptions : struct, IPlugOptions
         {
-            if (t == null || !t.active || t.creationLocked || !t.isFromAllowed) return t;
+            if (t is not { active: true } || t.creationLocked || !t.isFromAllowed) return t;
 
             t.isFrom = true;
             t.SetFrom(fromValue, setImmediately, isRelative);
@@ -463,7 +463,7 @@ namespace DG.Tweening
         /// Has no effect if the tween has already started</summary>
         public static T SetDelay<T>(this T t, float delay) where T : Tween
         {
-            if (t == null || !t.active || t.creationLocked) return t;
+            if (t is not { active: true } || t.creationLocked) return t;
 
             if (t.tweenType == TweenType.Sequence) {
                 (t as Sequence).PrependInterval(delay);
@@ -481,7 +481,7 @@ namespace DG.Tweening
         /// otherwise as a Sequence interval which will repeat at the beginning of every loop cycle</param>
         public static T SetDelay<T>(this T t, float delay, bool asPrependedIntervalIfSequence) where T : Tween
         {
-            if (t == null || !t.active || t.creationLocked) return t;
+            if (t is not { active: true } || t.creationLocked) return t;
 
             bool isSequence = t.tweenType == TweenType.Sequence;
             if (!isSequence || !asPrependedIntervalIfSequence) {
@@ -498,7 +498,7 @@ namespace DG.Tweening
         /// <para>Has no effect on Sequences or if the tween has already started</para></summary>
         public static T SetRelative<T>(this T t) where T : Tween
         {
-            if (t == null || !t.active || t.creationLocked || t.isFrom || t.isBlendable) return t;
+            if (t is not { active: true } || t.creationLocked || t.isFrom || t.isBlendable) return t;
 
             t.isRelative = true;
             return t;
@@ -508,7 +508,7 @@ namespace DG.Tweening
         /// <para>Has no effect on Sequences or if the tween has already started</para></summary>
         public static T SetRelative<T>(this T t, bool isRelative) where T : Tween
         {
-            if (t == null || !t.active || t.creationLocked || t.isFrom || t.isBlendable) return t;
+            if (t is not { active: true } || t.creationLocked || t.isFrom || t.isBlendable) return t;
 
             t.isRelative = isRelative;
             return t;
@@ -522,7 +522,7 @@ namespace DG.Tweening
         /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         public static Tweener SetOptions(this TweenerCore<DOVector2, DOVector2, VectorOptions> t, bool snapping)
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             t.plugOptions.snapping = snapping;
             return t;
@@ -532,7 +532,7 @@ namespace DG.Tweening
         /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         public static Tweener SetOptions(this TweenerCore<DOVector2, DOVector2, VectorOptions> t, AxisConstraint axisConstraint, bool snapping = false)
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             t.plugOptions.axisConstraint = axisConstraint;
             t.plugOptions.snapping = snapping;
@@ -543,7 +543,7 @@ namespace DG.Tweening
         /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         public static Tweener SetOptions(this TweenerCore<DOVector3, DOVector3, VectorOptions> t, bool snapping)
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             t.plugOptions.snapping = snapping;
             return t;
@@ -553,7 +553,7 @@ namespace DG.Tweening
         /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         public static Tweener SetOptions(this TweenerCore<DOVector3, DOVector3, VectorOptions> t, AxisConstraint axisConstraint, bool snapping = false)
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             t.plugOptions.axisConstraint = axisConstraint;
             t.plugOptions.snapping = snapping;
@@ -565,19 +565,9 @@ namespace DG.Tweening
         /// If FALSE the rotation will be fully accounted. Is always FALSE if the tween is set as relative</param>
         public static Tweener SetOptions(this TweenerCore<DOQuaternion, DOVector3, QuaternionOptions> t, bool useShortest360Route = true)
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             t.plugOptions.rotateMode = useShortest360Route ? RotateMode.Fast : RotateMode.FastBeyond360;
-            return t;
-        }
-
-        /// <summary>Options for Vector4 tweens</summary>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static Tweener SetOptions(this TweenerCore<Rect, Rect, RectOptions> t, bool snapping)
-        {
-            if (t == null || !t.active) return t;
-
-            t.plugOptions.snapping = snapping;
             return t;
         }
 
@@ -585,7 +575,7 @@ namespace DG.Tweening
         /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         public static Tweener SetOptions(this TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> t, bool snapping)
         {
-            if (t == null || !t.active) return t;
+            if (t is not { active: true }) return t;
 
             t.plugOptions.snapping = snapping;
             return t;

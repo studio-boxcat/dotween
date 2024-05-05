@@ -164,30 +164,30 @@ namespace DG.Tweening
         {
             initialized = true;
             // Options
-            if (recycleAllByDefault != null) DOTween.defaultRecyclable = (bool)recycleAllByDefault;
+            if (recycleAllByDefault != null) defaultRecyclable = (bool)recycleAllByDefault;
             if (useSafeMode != null) DOTween.useSafeMode = (bool)useSafeMode;
             // Gameobject - also assign instance
             DOTweenComponent.Create();
             // Assign settings
             if (settings != null) {
                 if (useSafeMode == null) DOTween.useSafeMode = settings.useSafeMode;
-                if (recycleAllByDefault == null) DOTween.defaultRecyclable = settings.defaultRecyclable;
-                DOTween.nestedTweenFailureBehaviour = settings.safeModeOptions.nestedTweenFailureBehaviour;
-                DOTween.timeScale = settings.timeScale;
-                DOTween.unscaledTimeScale = settings.unscaledTimeScale;
-                DOTween.useSmoothDeltaTime = settings.useSmoothDeltaTime;
-                DOTween.maxSmoothUnscaledTime = settings.maxSmoothUnscaledTime;
-                DOTween.defaultRecyclable = recycleAllByDefault ?? settings.defaultRecyclable;
-                DOTween.drawGizmos = settings.drawGizmos;
-                DOTween.defaultUpdateType = settings.defaultUpdateType;
-                DOTween.defaultTimeScaleIndependent = settings.defaultTimeScaleIndependent;
-                DOTween.defaultEaseType = settings.defaultEaseType;
-                DOTween.defaultEaseOvershootOrAmplitude = settings.defaultEaseOvershootOrAmplitude;
-                DOTween.defaultEasePeriod = settings.defaultEasePeriod;
-                DOTween.defaultLoopType = settings.defaultLoopType;
+                if (recycleAllByDefault == null) defaultRecyclable = settings.defaultRecyclable;
+                nestedTweenFailureBehaviour = settings.safeModeOptions.nestedTweenFailureBehaviour;
+                timeScale = settings.timeScale;
+                unscaledTimeScale = settings.unscaledTimeScale;
+                useSmoothDeltaTime = settings.useSmoothDeltaTime;
+                maxSmoothUnscaledTime = settings.maxSmoothUnscaledTime;
+                defaultRecyclable = recycleAllByDefault ?? settings.defaultRecyclable;
+                drawGizmos = settings.drawGizmos;
+                defaultUpdateType = settings.defaultUpdateType;
+                defaultTimeScaleIndependent = settings.defaultTimeScaleIndependent;
+                defaultEaseType = settings.defaultEaseType;
+                defaultEaseOvershootOrAmplitude = settings.defaultEaseOvershootOrAmplitude;
+                defaultEasePeriod = settings.defaultEasePeriod;
+                defaultLoopType = settings.defaultLoopType;
             }
             // Log
-            if (Debugger.logPriority >= 2) Debugger.Log("DOTween initialization (useSafeMode: " + DOTween.useSafeMode + ", recycling: " + (DOTween.defaultRecyclable ? "ON" : "OFF"));
+            if (Debugger.logPriority >= 2) Debugger.Log("DOTween initialization (useSafeMode: " + DOTween.useSafeMode + ", recycling: " + (defaultRecyclable ? "ON" : "OFF"));
 
             return instance;
         }
@@ -275,7 +275,7 @@ namespace DG.Tweening
             InitCheck();
 //            instance.ManualUpdate(deltaTime, unscaledDeltaTime);
             if (TweenManager.hasActiveManualTweens) {
-                TweenManager.Update(UpdateType.Manual, deltaTime * DOTween.timeScale, unscaledDeltaTime * DOTween.unscaledTimeScale * DOTween.timeScale);
+                TweenManager.Update(UpdateType.Manual, deltaTime * timeScale, unscaledDeltaTime * unscaledTimeScale * timeScale);
             }
         }
 
@@ -504,22 +504,22 @@ namespace DG.Tweening
             float tDurationMultiplier = duration / sum; // Multiplier that allows the sum of tDurations to equal the set duration
             for (int i = 0; i < totIterations; ++i) tDurations[i] = tDurations[i] * tDurationMultiplier;
             // Create the tween
-            float ang = UnityEngine.Random.Range(0f, 360f);
+            float ang = Random.Range(0f, 360f);
             Vector3[] tos = new Vector3[totIterations];
             for (int i = 0; i < totIterations; ++i) {
                 if (i < totIterations - 1) {
                     Quaternion rndQuaternion = Quaternion.identity;
                     switch (randomnessMode) {
                     case ShakeRandomnessMode.Harmonic:
-                        if (i > 0) ang = ang - 180 + UnityEngine.Random.Range(0, randomness);
+                        if (i > 0) ang = ang - 180 + Random.Range(0, randomness);
                         if (vectorBased || !ignoreZAxis) {
-                            rndQuaternion = Quaternion.AngleAxis(UnityEngine.Random.Range(0, randomness), Vector3.up);
+                            rndQuaternion = Quaternion.AngleAxis(Random.Range(0, randomness), Vector3.up);
                         }
                         break;
                     default: // Full
-                        if (i > 0) ang = ang - 180 + UnityEngine.Random.Range(-randomness, randomness);
+                        if (i > 0) ang = ang - 180 + Random.Range(-randomness, randomness);
                         if (vectorBased || !ignoreZAxis) {
-                            rndQuaternion = Quaternion.AngleAxis(UnityEngine.Random.Range(-randomness, randomness), Vector3.up);
+                            rndQuaternion = Quaternion.AngleAxis(Random.Range(-randomness, randomness), Vector3.up);
                         }
                         break;
                     }
@@ -605,7 +605,7 @@ namespace DG.Tweening
         /// <param name="target">The target of the Sequence. Relevant only for static target-based methods like DOTween.Kill(target),
         /// useless otherwise</param>
         public static Sequence Sequence(object target)
-        { return DOTween.Sequence().SetTarget(target); }
+        { return Sequence().SetTarget(target); }
 
         #endregion
 

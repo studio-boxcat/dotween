@@ -4,9 +4,6 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
-#if COMPATIBLE
-using DG.Tweening.Core.Surrogates;
-#endif
 using System;
 using DG.Tweening.Core.Enums;
 using DG.Tweening.Plugins.Core;
@@ -169,9 +166,7 @@ namespace DG.Tweening.Core
                     tweenPlugin.EvaluateAndApply(plugOptions, this, isRelative, getter, setter, updatePosition, startValue, changeValue, duration, useInversePosition, newCompletedSteps, updateNotice);
                 } catch (Exception e) {
                     // Target/field doesn't exist anymore: kill tween
-                    Debugger.LogSafeModeCapturedError(string.Format(
-                        "Target or field is missing/null ({0}) ► {1}\n\n{2}\n\n", e.TargetSite, e.Message, e.StackTrace
-                    ), this);
+                    Debugger.LogSafeModeCapturedError($"Target or field is missing/null ({e.TargetSite}) ► {e.Message}\n\n{e.StackTrace}\n\n", this);
                     return true;
                 }
             } else {
