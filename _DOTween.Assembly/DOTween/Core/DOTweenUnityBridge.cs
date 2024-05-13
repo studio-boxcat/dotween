@@ -17,7 +17,7 @@ namespace DG.Tweening.Core
     [AddComponentMenu("")]
     class DOTweenUnityBridge : MonoBehaviour
     {
-        static DOTweenUnityBridge _instance;
+        static GameObject _instance;
 
         void Update() => DOTween.Update();
         void OnApplicationQuit() => DOTween.Clear();
@@ -26,14 +26,18 @@ namespace DG.Tweening.Core
         {
             Assert.IsTrue(Application.isPlaying, "Cannot create a DOTweenUnityBridge instance outside Play mode");
             Assert.IsNull(_instance, "An instance of DOTween is already running");
-            var go = new GameObject("[DOTween]");
-            DontDestroyOnLoad(go);
-            _instance = go.AddComponent<DOTweenUnityBridge>();
+            _instance = new GameObject();
+#if DEBUG
+            _instance.name = nameof(DOTweenUnityBridge);
+#endif
+            DontDestroyOnLoad(_instance);
+            _instance.AddComponent<DOTweenUnityBridge>();
         }
 
         internal static void DestroyInstance()
         {
             Assert.IsTrue(_instance is not null, "No instance of DOTween is running");
+            Destroy(_instance);
             _instance = null;
         }
     }
