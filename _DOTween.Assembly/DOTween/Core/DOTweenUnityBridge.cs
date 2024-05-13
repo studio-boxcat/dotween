@@ -24,6 +24,7 @@ namespace DG.Tweening.Core
 
         internal static void Create()
         {
+            Assert.IsTrue(Application.isPlaying, "Cannot create a DOTweenUnityBridge instance outside Play mode");
             Assert.IsNull(_instance, "An instance of DOTween is already running");
             var go = new GameObject("[DOTween]");
             DontDestroyOnLoad(go);
