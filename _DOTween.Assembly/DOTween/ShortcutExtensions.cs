@@ -26,56 +26,6 @@ namespace DG.Tweening
 
         #region Camera Shortcuts
 
-        /// <summary>Tweens a Camera's <code>aspect</code> to the given value.
-        /// Also stores the camera as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float, float, NoOptions> DOAspect(this Camera target, float endValue, float duration)
-        {
-            TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.aspect, x => target.aspect = x, endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
-
-        /// <summary>Tweens a Camera's backgroundColor to the given value.
-        /// Also stores the camera as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Color, Color, NoOptions> DOColor(this Camera target, Color endValue, float duration)
-        {
-            TweenerCore<Color, Color, NoOptions> t = DOTween.To(() => target.backgroundColor, x => target.backgroundColor = x, endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
-
-        /// <summary>Tweens a Camera's <code>farClipPlane</code> to the given value.
-        /// Also stores the camera as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float, float, NoOptions> DOFarClipPlane(this Camera target, float endValue, float duration)
-        {
-            TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.farClipPlane, x => target.farClipPlane = x, endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
-
-        /// <summary>Tweens a Camera's <code>fieldOfView</code> to the given value.
-        /// Also stores the camera as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float, float, NoOptions> DOFieldOfView(this Camera target, float endValue, float duration)
-        {
-            TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.fieldOfView, x => target.fieldOfView = x, endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
-
-        /// <summary>Tweens a Camera's <code>nearClipPlane</code> to the given value.
-        /// Also stores the camera as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float, float, NoOptions> DONearClipPlane(this Camera target, float endValue, float duration)
-        {
-            TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.nearClipPlane, x => target.nearClipPlane = x, endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
-
         /// <summary>Tweens a Camera's <code>orthographicSize</code> to the given value.
         /// Also stores the camera as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
@@ -158,40 +108,6 @@ namespace DG.Tweening
             }
             return DOTween.Shake(() => target.transform.localEulerAngles, x => target.transform.localRotation = Quaternion.Euler(x), duration, strength, vibrato, randomness, fadeOut, randomnessMode)
                 .SetTarget(target).SetSpecialStartupMode(SpecialStartupMode.SetShake);
-        }
-
-        #endregion
-
-        #region Light Shortcuts
-
-        /// <summary>Tweens a Light's color to the given value.
-        /// Also stores the light as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Color, Color, NoOptions> DOColor(this Light target, Color endValue, float duration)
-        {
-            TweenerCore<Color, Color, NoOptions> t = DOTween.To(() => target.color, x => target.color = x, endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
-
-        /// <summary>Tweens a Light's intensity to the given value.
-        /// Also stores the light as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float, float, NoOptions> DOIntensity(this Light target, float endValue, float duration)
-        {
-            TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.intensity, x => target.intensity = x, endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
-
-        /// <summary>Tweens a Light's shadowStrength to the given value.
-        /// Also stores the light as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float, float, NoOptions> DOShadowStrength(this Light target, float endValue, float duration)
-        {
-            TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.shadowStrength, x => target.shadowStrength = x, endValue, duration);
-            t.SetTarget(target);
-            return t;
         }
 
         #endregion
@@ -816,31 +732,6 @@ namespace DG.Tweening
         #endregion
 
         #region Blendables
-
-        #region Light
-
-        /// <summary>Tweens a Light's color to the given value,
-        /// in a way that allows other DOBlendableColor tweens to work together on the same target,
-        /// instead than fight each other as multiple DOColor would do.
-        /// Also stores the Light as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The value to tween to</param><param name="duration">The duration of the tween</param>
-        public static Tweener DOBlendableColor(this Light target, Color endValue, float duration)
-        {
-            endValue = endValue - target.color;
-            Color to = new Color(0, 0, 0, 0);
-            return DOTween.To(() => to, x => {
-#if COMPATIBLE
-                Color diff = x.value - to;
-#else
-                Color diff = x - to;
-#endif
-                to = x;
-                target.color += diff;
-            }, endValue, duration)
-                .Blendable().SetTarget(target);
-        }
-
-        #endregion
 
         #region Material
 

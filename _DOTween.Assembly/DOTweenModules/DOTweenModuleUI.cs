@@ -9,7 +9,6 @@ using DG.Tweening.Core;
 using DG.Tweening.Core.Easing;
 using DG.Tweening.Core.Enums;
 using DG.Tweening.Plugins.Options;
-using Text = UnityEngine.UI.Text;
 
 #pragma warning disable 1591
 namespace DG.Tweening
@@ -75,76 +74,6 @@ namespace DG.Tweening
             else if (endValue < 0) endValue = 0;
             TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.fillAmount, x => target.fillAmount = x, endValue, duration);
             t.SetTarget(target);
-            return t;
-        }
-
-        /// <summary>Tweens an Image's colors using the given gradient
-        /// (NOTE 1: only uses the colors of the gradient, not the alphas - NOTE 2: creates a Sequence, not a Tweener).
-        /// Also stores the image as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="gradient">The gradient to use</param><param name="duration">The duration of the tween</param>
-        public static Sequence DOGradientColor(this Image target, Gradient gradient, float duration)
-        {
-            Sequence s = DOTween.Sequence();
-            GradientColorKey[] colors = gradient.colorKeys;
-            int len = colors.Length;
-            for (int i = 0; i < len; ++i) {
-                GradientColorKey c = colors[i];
-                if (i == 0 && c.time <= 0) {
-                    target.color = c.color;
-                    continue;
-                }
-                float colorDuration = i == len - 1
-                    ? duration - s.Duration(false) // Verifies that total duration is correct
-                    : duration * (i == 0 ? c.time : c.time - colors[i - 1].time);
-                s.Append(target.DOColor(c.color, colorDuration).SetEase(Ease.Linear));
-            }
-            s.SetTarget(target);
-            return s;
-        }
-
-        #endregion
-
-        #region LayoutElement
-
-        /// <summary>Tweens an LayoutElement's flexibleWidth/Height to the given value.
-        /// Also stores the LayoutElement as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static TweenerCore<Vector2, Vector2, VectorOptions> DOFlexibleSize(this LayoutElement target, Vector2 endValue, float duration, bool snapping = false)
-        {
-            TweenerCore<Vector2, Vector2, VectorOptions> t = DOTween.To(() => new Vector2(target.flexibleWidth, target.flexibleHeight), x => {
-                    target.flexibleWidth = x.x;
-                    target.flexibleHeight = x.y;
-                }, endValue, duration);
-            t.SetOptions(snapping).SetTarget(target);
-            return t;
-        }
-
-        /// <summary>Tweens an LayoutElement's minWidth/Height to the given value.
-        /// Also stores the LayoutElement as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static TweenerCore<Vector2, Vector2, VectorOptions> DOMinSize(this LayoutElement target, Vector2 endValue, float duration, bool snapping = false)
-        {
-            TweenerCore<Vector2, Vector2, VectorOptions> t = DOTween.To(() => new Vector2(target.minWidth, target.minHeight), x => {
-                target.minWidth = x.x;
-                target.minHeight = x.y;
-            }, endValue, duration);
-            t.SetOptions(snapping).SetTarget(target);
-            return t;
-        }
-
-        /// <summary>Tweens an LayoutElement's preferredWidth/Height to the given value.
-        /// Also stores the LayoutElement as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static TweenerCore<Vector2, Vector2, VectorOptions> DOPreferredSize(this LayoutElement target, Vector2 endValue, float duration, bool snapping = false)
-        {
-            TweenerCore<Vector2, Vector2, VectorOptions> t = DOTween.To(() => new Vector2(target.preferredWidth, target.preferredHeight), x => {
-                target.preferredWidth = x.x;
-                target.preferredHeight = x.y;
-            }, endValue, duration);
-            t.SetOptions(snapping).SetTarget(target);
             return t;
         }
 
@@ -407,7 +336,6 @@ namespace DG.Tweening
         /// <summary>Tweens a ScrollRect's verticalNormalizedPosition to the given value.
         /// Also stores the ScrollRect as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         public static Tweener DOVerticalNormalizedPos(this ScrollRect target, float endValue, float duration)
         {
             return DOTween.To(() => target.verticalNormalizedPosition, x => target.verticalNormalizedPosition = x, endValue, duration)
@@ -421,7 +349,6 @@ namespace DG.Tweening
         /// <summary>Tweens a Slider's value to the given value.
         /// Also stores the Slider as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         public static TweenerCore<float, float, NoOptions> DOValue(this Slider target, float endValue, float duration)
         {
             TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.value, x => target.value = x, endValue, duration);
@@ -441,48 +368,6 @@ namespace DG.Tweening
         /// Also stores the Graphic as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The value to tween to</param><param name="duration">The duration of the tween</param>
         public static Tweener DOBlendableColor(this Graphic target, Color endValue, float duration)
-        {
-            endValue = endValue - target.color;
-            Color to = new Color(0, 0, 0, 0);
-            return DOTween.To(() => to, x => {
-                Color diff = x - to;
-                to = x;
-                target.color += diff;
-            }, endValue, duration)
-                .Blendable().SetTarget(target);
-        }
-
-        #endregion
-
-        #region Image
-
-        /// <summary>Tweens a Image's color to the given value,
-        /// in a way that allows other DOBlendableColor tweens to work together on the same target,
-        /// instead than fight each other as multiple DOColor would do.
-        /// Also stores the Image as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The value to tween to</param><param name="duration">The duration of the tween</param>
-        public static Tweener DOBlendableColor(this Image target, Color endValue, float duration)
-        {
-            endValue = endValue - target.color;
-            Color to = new Color(0, 0, 0, 0);
-            return DOTween.To(() => to, x => {
-                Color diff = x - to;
-                to = x;
-                target.color += diff;
-            }, endValue, duration)
-                .Blendable().SetTarget(target);
-        }
-
-        #endregion
-
-        #region Text
-
-        /// <summary>Tweens a Text's color BY the given value,
-        /// in a way that allows other DOBlendableColor tweens to work together on the same target,
-        /// instead than fight each other as multiple DOColor would do.
-        /// Also stores the Text as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The value to tween to</param><param name="duration">The duration of the tween</param>
-        public static Tweener DOBlendableColor(this Text target, Color endValue, float duration)
         {
             endValue = endValue - target.color;
             Color to = new Color(0, 0, 0, 0);

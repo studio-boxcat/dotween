@@ -1,8 +1,6 @@
 ﻿// Author: Daniele Giardini - http://www.demigiant.com
 // Created: 2018/07/13
 
-#if true && (UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_5 || UNITY_2017_1_OR_NEWER) // MODULE_MARKER
-using System;
 using UnityEngine;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
@@ -10,12 +8,8 @@ using DG.Tweening.Plugins.Options;
 #pragma warning disable 1591
 namespace DG.Tweening
 {
-	public static class DOTweenModuleSprite
+    public static class DOTweenModuleSprite
     {
-        #region Shortcuts
-
-        #region SpriteRenderer
-
         /// <summary>Tweens a SpriteRenderer's color to the given value.
         /// Also stores the spriteRenderer as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
@@ -36,12 +30,6 @@ namespace DG.Tweening
             return t;
         }
 
-        #endregion
-
-        #region Blendables
-
-        #region SpriteRenderer
-
         /// <summary>Tweens a SpriteRenderer's color to the given value,
         /// in a way that allows other DOBlendableColor tweens to work together on the same target,
         /// instead than fight each other as multiple DOColor would do.
@@ -51,19 +39,13 @@ namespace DG.Tweening
         {
             endValue = endValue - target.color;
             Color to = new Color(0, 0, 0, 0);
-            return DOTween.To(() => to, x => {
+            return DOTween.To(() => to, x =>
+                {
                     Color diff = x - to;
                     to = x;
                     target.color += diff;
                 }, endValue, duration)
                 .Blendable().SetTarget(target);
         }
-
-        #endregion
-
-        #endregion
-
-        #endregion
-	}
+    }
 }
-#endif

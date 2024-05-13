@@ -25,8 +25,8 @@ namespace DG.Tweening
         public enum AnimationType : byte
         {
             None,
-            Move, LocalMove,
-            Rotate, LocalRotate,
+            Unused_8, LocalMove,
+            Unused_9, LocalRotate,
             Scale,
             Color, Fade,
             Unused_0,
@@ -89,12 +89,8 @@ namespace DG.Tweening
         {
             if (!autoGenerate) return;
 
-            if (animationType != AnimationType.Move) {
-                // Don't create tweens if we're using a RectTransform as a Move target,
-                // because that will work only inside Start
-                CreateTween(false, autoPlay);
-                _tweenAutoGenerationCalled = true;
-            }
+            CreateTween(false, autoPlay);
+            _tweenAutoGenerationCalled = true;
         }
 
         void Start()
@@ -215,20 +211,8 @@ namespace DG.Tweening
             {
                 case AnimationType.None:
                     break;
-                case AnimationType.Move:
-                    switch (targetType)
-                    {
-                        case TargetType.Transform:
-                            return ((Transform) target).DOMove(endValueV3, duration, optionalBool0);
-                        case TargetType.RectTransform:
-                            return ((RectTransform) target).DOAnchorPos3D(endValueV3, duration, optionalBool0);
-                    }
-                    break;
                 case AnimationType.LocalMove:
                     return transform.DOLocalMove(endValueV3, duration, optionalBool0);
-                case AnimationType.Rotate:
-                    Assert.AreEqual(TargetType.Transform, targetType);
-                    return transform.DORotate(endValueV3, duration, optionalRotationMode);
                 case AnimationType.LocalRotate:
                     return transform.DOLocalRotate(endValueV3, duration, optionalRotationMode);
                 case AnimationType.Scale:
@@ -331,6 +315,8 @@ namespace DG.Tweening
                 or AnimationType.Unused_5
                 or AnimationType.Unused_6
                 or AnimationType.Unused_7
+                or AnimationType.Unused_8
+                or AnimationType.Unused_9
                )
             {
                 result.AddError("AnimationType must be set to a valid value");

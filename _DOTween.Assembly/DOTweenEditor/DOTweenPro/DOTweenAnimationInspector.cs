@@ -14,8 +14,6 @@ namespace DG.DOTweenEditor
     public class DOTweenAnimationInspector : Editor
     {
         static readonly Dictionary<DOTweenAnimation.AnimationType, Type[]> _AnimationTypeToComponent = new() {
-            { DOTweenAnimation.AnimationType.Move, new[] { typeof(RectTransform), typeof(Transform) }},
-            { DOTweenAnimation.AnimationType.Rotate, new[] { typeof(Transform) }},
             { DOTweenAnimation.AnimationType.LocalMove, new[] { typeof(Transform) } },
             { DOTweenAnimation.AnimationType.LocalRotate, new[] { typeof(Transform) } },
             { DOTweenAnimation.AnimationType.Scale, new[] { typeof(Transform) } },
@@ -115,9 +113,7 @@ namespace DG.DOTweenEditor
                 if (prevAnimType != _src.animationType) {
                     // Set default optional values based on animation type
                     switch (_src.animationType) {
-                    case DOTweenAnimation.AnimationType.Move:
                     case DOTweenAnimation.AnimationType.LocalMove:
-                    case DOTweenAnimation.AnimationType.Rotate:
                     case DOTweenAnimation.AnimationType.LocalRotate:
                     case DOTweenAnimation.AnimationType.Scale:
                         _src.endValueV3 = Vector3.zero;
@@ -179,12 +175,10 @@ namespace DG.DOTweenEditor
                 bool canBeRelative = true;
                 // End value and eventual specific options
                 switch (_src.animationType) {
-                case DOTweenAnimation.AnimationType.Move:
                 case DOTweenAnimation.AnimationType.LocalMove:
                     GUIEndValueV3();
                     _src.optionalBool0 = EditorGUILayout.Toggle("    Snapping", _src.optionalBool0);
                     break;
-                case DOTweenAnimation.AnimationType.Rotate:
                 case DOTweenAnimation.AnimationType.LocalRotate:
                     GUIEndValueV3();
                     _src.optionalRotationMode = (RotateMode)EditorGUILayout.EnumPopup("    Rotation Mode", _src.optionalRotationMode);

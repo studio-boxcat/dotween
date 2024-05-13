@@ -47,7 +47,7 @@ namespace DG.Tweening
             inSequence.duration += tFullTime;
             int len = inSequence._sequencedObjs.Count;
             for (int i = 0; i < len; ++i) {
-                ABSSequentiable sequentiable = inSequence._sequencedObjs[i];
+                var sequentiable = inSequence._sequencedObjs[i];
                 sequentiable.sequencedPosition += tFullTime;
                 sequentiable.sequencedEndPosition += tFullTime;
             }
@@ -411,13 +411,5 @@ namespace DG.Tweening
             return s.onComplete != null || s.onKill != null
                    || s.onStart != null || s.onUpdate != null;
         }
-
-//        // Quicker but doesn't implement stable sort
-//        static int SortSequencedObjs(ABSSequentiable a, ABSSequentiable b)
-//        {
-//            if (a.sequencedPosition > b.sequencedPosition) return 1;
-//            if (a.sequencedPosition < b.sequencedPosition) return -1;
-//            return 0;
-//        }
     }
 }
