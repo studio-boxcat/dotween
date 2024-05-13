@@ -154,7 +154,6 @@ namespace DG.DOTweenEditor
                     break;
                 case DOTweenAnimation.AnimationType.LocalRotateZ:
                     GUIEndValueZ();
-                    _src.optionalRotationMode = (byte) EditorGUILayout.IntField("    Rotation Mode", _src.optionalRotationMode);
                     break;
                 case DOTweenAnimation.AnimationType.Scale:
                     if (_src.optionalBool0) GUIEndValueFloat();
@@ -227,7 +226,7 @@ namespace DG.DOTweenEditor
         /// <summary>
         /// Returns TRUE if its actually previewing animations
         /// </summary>
-        public static bool DrawPreview(bool previewing)
+        static bool DrawPreview(bool previewing)
         {
             if (EditorApplication.isPlaying)
                 return false;
