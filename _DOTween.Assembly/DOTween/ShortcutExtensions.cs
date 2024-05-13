@@ -7,6 +7,7 @@
 using DOVector3 = UnityEngine.Vector3;
 using DOQuaternion = UnityEngine.Quaternion;
 using DG.Tweening.Core;
+using DG.Tweening.Core.Easing;
 using DG.Tweening.Core.Enums;
 using DG.Tweening.CustomPlugins;
 using DG.Tweening.Plugins.Options;
@@ -753,7 +754,7 @@ namespace DG.Tweening
                     offsetY = s.isRelative ? endValue.y : endValue.y - startPosY;
                 }
                 Vector3 pos = target.position;
-                pos.y += DOVirtual.EasedValue(0, offsetY, yTween.ElapsedPercentage(), Ease.OutQuad);
+                pos.y += EaseManager.Evaluate(0, offsetY, yTween.ElapsedPercentage(), Ease.OutQuad);
                 target.position = pos;
             });
             return s;
@@ -790,7 +791,7 @@ namespace DG.Tweening
                     offsetY = s.isRelative ? endValue.y : endValue.y - startPosY;
                 }
                 Vector3 pos = target.localPosition;
-                pos.y += DOVirtual.EasedValue(0, offsetY, yTween.ElapsedPercentage(), Ease.OutQuad);
+                pos.y += EaseManager.Evaluate(0, offsetY, yTween.ElapsedPercentage(), Ease.OutQuad);
                 target.localPosition = pos;
             });
             return s;

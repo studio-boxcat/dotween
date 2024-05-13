@@ -26,8 +26,8 @@ namespace DG.Tweening.Core
         internal static int maxActive = _DefaultMaxTweeners + _DefaultMaxSequences; // Always equal to maxTweeners + maxSequences
         internal static int maxTweeners = _DefaultMaxTweeners; // Always >= maxSequences
         internal static int maxSequences = _DefaultMaxSequences; // Always <= maxTweeners
-        internal static bool hasActiveTweens, hasActiveDefaultTweens, hasActiveLateTweens, hasActiveFixedTweens, hasActiveManualTweens;
-        internal static int totActiveTweens, totActiveDefaultTweens, totActiveLateTweens, totActiveFixedTweens, totActiveManualTweens;
+        internal static bool hasActiveTweens, hasActiveDefaultTweens, hasActiveManualTweens;
+        internal static int totActiveTweens, totActiveDefaultTweens, totActiveManualTweens;
         internal static int totActiveTweeners, totActiveSequences;
         internal static int totPooledTweeners, totPooledSequences;
         internal static int totTweeners, totSequences; // Both active and pooled
@@ -159,20 +159,9 @@ namespace DG.Tweening.Core
                 totActiveDefaultTweens--;
                 hasActiveDefaultTweens = totActiveDefaultTweens > 0;
             } else {
-                switch (t.updateType) {
-                case UpdateType.Fixed:
-                    totActiveFixedTweens--;
-                    hasActiveFixedTweens = totActiveFixedTweens > 0;
-                    break;
-                case UpdateType.Late:
-                    totActiveLateTweens--;
-                    hasActiveLateTweens = totActiveLateTweens > 0;
-                    break;
-                default: // Manual
-                    totActiveManualTweens--;
-                    hasActiveManualTweens = totActiveManualTweens > 0;
-                    break;
-                }
+                Assert.AreEqual(UpdateType.Manual, t.updateType, "Invalid update type");
+                totActiveManualTweens--;
+                hasActiveManualTweens = totActiveManualTweens > 0;
             }
             // Assign new one
             t.updateType = updateType;
@@ -181,20 +170,9 @@ namespace DG.Tweening.Core
                 totActiveDefaultTweens++;
                 hasActiveDefaultTweens = true;
             } else {
-                switch (updateType) {
-                case UpdateType.Fixed:
-                    totActiveFixedTweens++;
-                    hasActiveFixedTweens = true;
-                    break;
-                case UpdateType.Late:
-                    totActiveLateTweens++;
-                    hasActiveLateTweens = true;
-                    break;
-                default: // Manual
-                    totActiveManualTweens++;
-                    hasActiveManualTweens = true;
-                    break;
-                }
+                Assert.AreEqual(UpdateType.Manual, t.updateType, "Invalid update type");
+                totActiveManualTweens++;
+                hasActiveManualTweens = true;
             }
         }
 
@@ -213,8 +191,8 @@ namespace DG.Tweening.Core
                 if (t != null) Despawn(t, false);
             }
             ClearTweenArray(_activeTweens);
-            hasActiveTweens = hasActiveDefaultTweens = hasActiveLateTweens = hasActiveFixedTweens = hasActiveManualTweens = false;
-            totActiveTweens = totActiveDefaultTweens = totActiveLateTweens = totActiveFixedTweens = totActiveManualTweens = 0;
+            hasActiveTweens = hasActiveDefaultTweens = hasActiveManualTweens = false;
+            totActiveTweens = totActiveDefaultTweens = totActiveManualTweens = 0;
             totActiveTweeners = totActiveSequences = 0;
             _maxActiveLookupId = _reorganizeFromId = -1;
             _requiresActiveReorganization = false;
@@ -300,8 +278,8 @@ namespace DG.Tweening.Core
             }
 
             ClearTweenArray(_activeTweens);
-            hasActiveTweens = hasActiveDefaultTweens = hasActiveLateTweens = hasActiveFixedTweens = hasActiveManualTweens = false;
-            totActiveTweens = totActiveDefaultTweens = totActiveLateTweens = totActiveFixedTweens = totActiveManualTweens = 0;
+            hasActiveTweens = hasActiveDefaultTweens = hasActiveManualTweens = false;
+            totActiveTweens = totActiveDefaultTweens = totActiveManualTweens = 0;
             totActiveTweeners = totActiveSequences = 0;
             _maxActiveLookupId = _reorganizeFromId = -1;
             _requiresActiveReorganization = false;
@@ -977,20 +955,9 @@ namespace DG.Tweening.Core
                 totActiveDefaultTweens++;
                 hasActiveDefaultTweens = true;
             } else {
-                switch (t.updateType) {
-                case UpdateType.Fixed:
-                    totActiveFixedTweens++;
-                    hasActiveFixedTweens = true;
-                    break;
-                case UpdateType.Late:
-                    totActiveLateTweens++;
-                    hasActiveLateTweens = true;
-                    break;
-                default:
-                    totActiveManualTweens++;
-                    hasActiveManualTweens = true;
-                    break;
-                }
+                Assert.AreEqual(UpdateType.Manual, t.updateType, "Invalid update type");
+                totActiveManualTweens++;
+                hasActiveManualTweens = true;
             }
 
             totActiveTweens++;
@@ -1056,34 +1023,13 @@ namespace DG.Tweening.Core
                     Debugger.LogRemoveActiveTweenError("totActiveDefaultTweens < 0", t);
                 }
             } else {
-                switch (t.updateType) {
-                case UpdateType.Fixed:
-                    // Safety check (IndexOutOfRangeException)
-                    if (totActiveFixedTweens > 0) {
-                        totActiveFixedTweens--;
-                        hasActiveFixedTweens = totActiveFixedTweens > 0;
-                    } else {
-                        Debugger.LogRemoveActiveTweenError("totActiveFixedTweens < 0", t);
-                    }
-                    break;
-                case UpdateType.Late:
-                    // Safety check (IndexOutOfRangeException)
-                    if (totActiveLateTweens > 0) {
-                        totActiveLateTweens--;
-                        hasActiveLateTweens = totActiveLateTweens > 0;
-                    } else {
-                        Debugger.LogRemoveActiveTweenError("totActiveLateTweens < 0", t);
-                    }
-                    break;
-                default:
-                    // Safety check (IndexOutOfRangeException)
-                    if (totActiveManualTweens > 0) {
-                        totActiveManualTweens--;
-                        hasActiveManualTweens = totActiveManualTweens > 0;
-                    } else {
-                        Debugger.LogRemoveActiveTweenError("totActiveManualTweens < 0", t);
-                    }
-                    break;
+                // Safety check (IndexOutOfRangeException)
+                Assert.AreEqual(UpdateType.Manual, t.updateType, "Invalid update type");
+                if (totActiveManualTweens > 0) {
+                    totActiveManualTweens--;
+                    hasActiveManualTweens = totActiveManualTweens > 0;
+                } else {
+                    Debugger.LogRemoveActiveTweenError("totActiveManualTweens < 0", t);
                 }
             }
             totActiveTweens--;

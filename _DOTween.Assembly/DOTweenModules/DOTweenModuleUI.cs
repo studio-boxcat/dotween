@@ -6,6 +6,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening.Core;
+using DG.Tweening.Core.Easing;
 using DG.Tweening.Core.Enums;
 using DG.Tweening.Plugins.Options;
 using Text = UnityEngine.UI.Text;
@@ -369,7 +370,7 @@ namespace DG.Tweening
                     offsetY = s.isRelative ? endValue.y : endValue.y - startPosY;
                 }
                 Vector2 pos = target.anchoredPosition;
-                pos.y += DOVirtual.EasedValue(0, offsetY, s.ElapsedDirectionalPercentage(), Ease.OutQuad);
+                pos.y += EaseManager.Evaluate(0, offsetY, s.ElapsedDirectionalPercentage(), Ease.OutQuad);
                 target.anchoredPosition = pos;
             });
             return s;

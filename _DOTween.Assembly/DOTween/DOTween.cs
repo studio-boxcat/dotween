@@ -36,16 +36,6 @@ namespace DG.Tweening
         /// <summary>Behaviour in case a tween nested inside a Sequence fails (and is caught by safe mode).
         /// <para>Default: NestedTweenFailureBehaviour.TryToPreserveSequence</para></summary>
         public static NestedTweenFailureBehaviour nestedTweenFailureBehaviour = NestedTweenFailureBehaviour.TryToPreserveSequence;
-        /// <summary>Global DOTween global timeScale (default: 1).<para/>
-        /// The final timeScale of a non-timeScaleIndependent tween is:<para/>
-        /// <code>Unity's Time.timeScale * DOTween.timeScale * tween.timeScale</code><para/>
-        /// while the final timeScale of a timeScaleIndependent tween is:<para/>
-        /// <code>DOTween.unscaledTimeScale * DOTween.timeScale * tween.timeScale</code></summary>
-        public static float timeScale = 1;
-        /// <summary>DOTween timeScale applied only to timeScaleIndependent tweens (default: 1).<para/>
-        /// The final timeScale of a timeScaleIndependent tween is:<para/>
-        /// <code>DOTween.unscaledTimeScale * DOTween.timeScale * tween.timeScale</code></summary>
-        public static float unscaledTimeScale = 1;
         /// <summary>If TRUE, DOTween will use Time.smoothDeltaTime instead of Time.deltaTime for UpdateType.Normal and UpdateType.Late tweens
         /// (unless they're set as timeScaleIndependent, in which case a value between the last timestep
         /// and <see cref="maxSmoothUnscaledTime"/> will be used instead).
@@ -173,8 +163,6 @@ namespace DG.Tweening
                 if (useSafeMode == null) DOTween.useSafeMode = settings.useSafeMode;
                 if (recycleAllByDefault == null) defaultRecyclable = settings.defaultRecyclable;
                 nestedTweenFailureBehaviour = settings.safeModeOptions.nestedTweenFailureBehaviour;
-                timeScale = settings.timeScale;
-                unscaledTimeScale = settings.unscaledTimeScale;
                 useSmoothDeltaTime = settings.useSmoothDeltaTime;
                 maxSmoothUnscaledTime = settings.maxSmoothUnscaledTime;
                 defaultRecyclable = recycleAllByDefault ?? settings.defaultRecyclable;
@@ -229,8 +217,6 @@ namespace DG.Tweening
             useSafeMode = false;
             nestedTweenFailureBehaviour = NestedTweenFailureBehaviour.TryToPreserveSequence;
             drawGizmos = true;
-            timeScale = 1;
-            unscaledTimeScale = 1;
             useSmoothDeltaTime = false;
             maxSmoothUnscaledTime = 0.15f;
             defaultEaseType = Ease.OutQuad;
@@ -275,7 +261,7 @@ namespace DG.Tweening
             InitCheck();
 //            instance.ManualUpdate(deltaTime, unscaledDeltaTime);
             if (TweenManager.hasActiveManualTweens) {
-                TweenManager.Update(UpdateType.Manual, deltaTime * timeScale, unscaledDeltaTime * unscaledTimeScale * timeScale);
+                TweenManager.Update(UpdateType.Manual, deltaTime, unscaledDeltaTime);
             }
         }
 

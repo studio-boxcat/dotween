@@ -63,38 +63,10 @@ namespace DG.Tweening.Core
             _unscaledDeltaTime = Time.realtimeSinceStartup - _unscaledTime;
             if (DOTween.useSmoothDeltaTime && _unscaledDeltaTime > DOTween.maxSmoothUnscaledTime) _unscaledDeltaTime = DOTween.maxSmoothUnscaledTime;
             if (TweenManager.hasActiveDefaultTweens) {
-                TweenManager.Update(UpdateType.Normal, (DOTween.useSmoothDeltaTime ? Time.smoothDeltaTime : Time.deltaTime) * DOTween.timeScale, _unscaledDeltaTime * DOTween.unscaledTimeScale * DOTween.timeScale);
+                TweenManager.Update(UpdateType.Normal, (DOTween.useSmoothDeltaTime ? Time.smoothDeltaTime : Time.deltaTime), _unscaledDeltaTime);
             }
             _unscaledTime = Time.realtimeSinceStartup;
         }
-
-        void LateUpdate()
-        {
-            if (TweenManager.hasActiveLateTweens) {
-                TweenManager.Update(UpdateType.Late, (DOTween.useSmoothDeltaTime ? Time.smoothDeltaTime : Time.deltaTime) * DOTween.timeScale, _unscaledDeltaTime * DOTween.unscaledTimeScale * DOTween.timeScale);
-            }
-        }
-
-        void FixedUpdate()
-        {
-            if (TweenManager.hasActiveFixedTweens && Time.timeScale > 0) {
-                TweenManager.Update(UpdateType.Fixed, (DOTween.useSmoothDeltaTime ? Time.smoothDeltaTime : Time.deltaTime) * DOTween.timeScale, ((DOTween.useSmoothDeltaTime ? Time.smoothDeltaTime : Time.deltaTime) / Time.timeScale) * DOTween.unscaledTimeScale * DOTween.timeScale);
-            }
-        }
-
-        // Now activated directly by DOTween so it can be used to run tweens in editor mode
-//        internal void ManualUpdate(float deltaTime, float unscaledDeltaTime)
-//        {
-//            if (TweenManager.hasActiveManualTweens) {
-//                TweenManager.Update(UpdateType.Manual, deltaTime * DOTween.timeScale, unscaledDeltaTime * DOTween.timeScale);
-//            }
-//        }
-
-        // Removed to allow compatibility with Unity 5.4 and later
-//        void OnLevelWasLoaded()
-//        {
-//            if (DOTween.useSafeMode) DOTween.Validate();
-//        }
 
         void OnDrawGizmos()
         {

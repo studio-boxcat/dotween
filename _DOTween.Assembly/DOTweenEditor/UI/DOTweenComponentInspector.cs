@@ -77,8 +77,6 @@ namespace DG.DOTweenEditor.UI
                 int totPlayingTweens = TweenManager.TotalPlayingTweens();
                 int totPausedTweens = totActiveTweens - totPlayingTweens;
                 int totActiveDefaultTweens = TweenManager.totActiveDefaultTweens;
-                int totActiveLateTweens = TweenManager.totActiveLateTweens;
-                int totActiveFixedTweens = TweenManager.totActiveFixedTweens;
                 int totActiveManualTweens = TweenManager.totActiveManualTweens;
 
                 GUILayout.Space(5);
@@ -86,9 +84,7 @@ namespace DG.DOTweenEditor.UI
                 _strb.Append("Active tweens: ").Append(totActiveTweens)
                     .Append(" (").Append(TweenManager.totActiveTweeners).Append(" TW, ")
                     .Append(TweenManager.totActiveSequences).Append(" SE)")
-                    .Append("\nDefault/Late/Fixed/Manual tweens: ").Append(totActiveDefaultTweens)
-                    .Append("/").Append(totActiveLateTweens)
-                    .Append("/").Append(totActiveFixedTweens)
+                    .Append("\nDefault/Manual tweens: ").Append(totActiveDefaultTweens)
                     .Append("/").Append(totActiveManualTweens);
                 GUILayout.Label(_strb.ToString());
 
@@ -115,9 +111,6 @@ namespace DG.DOTweenEditor.UI
             _strb.Remove(0, _strb.Length);
             _strb.Append("SETTINGS ▼");
             _strb.Append("\nSafe Mode: ").Append((_isRuntime ? DOTween.useSafeMode : _settings.useSafeMode) ? "ON" : "OFF");
-            _strb.Append("\nTimeScale (Unity/DOTween/DOTween-Unscaled): ").Append(Time.timeScale)
-                .Append("/").Append(_isRuntime ? DOTween.timeScale : _settings.timeScale)
-                .Append("/").Append(_isRuntime ? DOTween.unscaledTimeScale : _settings.unscaledTimeScale);
             GUILayout.Label(_strb.ToString());
             GUILayout.Label(
                 "NOTE: DOTween's TimeScale is not the same as Unity's Time.timeScale: it is actually multiplied by it except for tweens that are set to update independently");
