@@ -4,7 +4,6 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
-using System.Collections;
 using UnityEngine;
 
 #pragma warning disable 1591
@@ -15,10 +14,9 @@ namespace DG.Tweening.Core
     /// Contains all instance-based methods
     /// </summary>
     [AddComponentMenu("")]
-    public class DOTweenComponent : MonoBehaviour, IDOTweenInit
+    public class DOTweenComponent : MonoBehaviour
     {
         float _unscaledTime;
-        float _unscaledDeltaTime;
 
         bool _paused; // Used to mark when app is paused and to avoid resume being called when application starts playing
         float _pausedTime; // Marks the time when Unity was paused
@@ -60,22 +58,11 @@ namespace DG.Tweening.Core
 
         void Update()
         {
-            _unscaledDeltaTime = Time.realtimeSinceStartup - _unscaledTime;
-            if (DOTween.useSmoothDeltaTime && _unscaledDeltaTime > DOTween.maxSmoothUnscaledTime) _unscaledDeltaTime = DOTween.maxSmoothUnscaledTime;
             if (TweenManager.hasActiveDefaultTweens) {
-                TweenManager.Update(UpdateType.Normal, (DOTween.useSmoothDeltaTime ? Time.smoothDeltaTime : Time.deltaTime), _unscaledDeltaTime);
+                var unscaledDeltaTime = Time.realtimeSinceStartup - _unscaledTime;
+                TweenManager.Update(UpdateType.Normal, Time.deltaTime, unscaledDeltaTime);
             }
             _unscaledTime = Time.realtimeSinceStartup;
-        }
-
-        void OnDrawGizmos()
-        {
-            if (!DOTween.drawGizmos || !TweenManager.isUnityEditor) return;
-
-            int len = DOTween.GizmosDelegates.Count;
-            if (len == 0) return;
-
-            for (int i = 0; i < len; ++i) DOTween.GizmosDelegates[i]();
         }
 
         void OnDestroy()
@@ -109,80 +96,11 @@ namespace DG.Tweening.Core
 
         #endregion
 
-        #region Editor
-
-        
-
-        #endregion
-
-        #region Public Methods
-
-        /// <summary>
-        /// Directly sets the current max capacity of Tweeners and Sequences
-        /// (meaning how many Tweeners and Sequences can be running at the same time),
-        /// so that DOTween doesn't need to automatically increase them in case the max is reached
-        /// (which might lead to hiccups when that happens).
-        /// Sequences capacity must be less or equal to Tweeners capacity
-        /// (if you pass a low Tweener capacity it will be automatically increased to match the Sequence's).
-        /// Beware: use this method only when there are no tweens running.
-        /// </summary>
-        /// <param name="tweenersCapacity">Max Tweeners capacity.
-        /// Default: 200</param>
-        /// <param name="sequencesCapacity">Max Sequences capacity.
-        /// Default: 50</param>
-        public IDOTweenInit SetCapacity(int tweenersCapacity, int sequencesCapacity)
-        {
-            TweenManager.SetCapacities(tweenersCapacity, sequencesCapacity);
-            return this;
-        }
-
-        #endregion
-
-        #region Yield Coroutines
-
-        // CALLED BY TweenExtensions, creates a coroutine that waits for the tween to be complete (or killed)
-        internal IEnumerator WaitForCompletion(Tween t)
-        {
-            while (t.active && !t.isComplete) yield return null;
-        }
-
-        // CALLED BY TweenExtensions, creates a coroutine that waits for the tween to be rewinded (or killed)
-        internal IEnumerator WaitForRewind(Tween t)
-        {
-            while (t.active && (!t.playedOnce || t.position * (t.completedLoops + 1) > 0)) yield return null;
-        }
-
-        // CALLED BY TweenExtensions, creates a coroutine that waits for the tween to be killed
-        internal IEnumerator WaitForKill(Tween t)
-        {
-            while (t.active) yield return null;
-        }
-
-        // CALLED BY TweenExtensions, creates a coroutine that waits for the tween to reach a given amount of loops (or to be killed)
-        internal IEnumerator WaitForElapsedLoops(Tween t, int elapsedLoops)
-        {
-            while (t.active && t.completedLoops < elapsedLoops) yield return null;
-        }
-
-        // CALLED BY TweenExtensions, creates a coroutine that waits for the tween to reach a given time position (or to be killed)
-        internal IEnumerator WaitForPosition(Tween t, float position)
-        {
-            while (t.active && t.position * (t.completedLoops + 1) < position) yield return null;
-        }
-
-        // CALLED BY TweenExtensions, creates a coroutine that waits for the tween to be started (or killed)
-        internal IEnumerator WaitForStart(Tween t)
-        {
-            while (t.active && !t.playedOnce) yield return null;
-        }
-
-        #endregion
-
         internal static void Create()
         {
             if (DOTween.instance != null) return;
 
-            GameObject go = new GameObject("[DOTween]");
+            var go = new GameObject("[DOTween]");
             DontDestroyOnLoad(go);
             DOTween.instance = go.AddComponent<DOTweenComponent>();
         }

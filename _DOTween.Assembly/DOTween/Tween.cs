@@ -82,8 +82,6 @@ namespace DG.Tweening
 
         // PLAY DATA /////////////////////////////////////////////////
 
-        /// <summary>Gets and sets the time position (loops included, delays excluded) of the tween</summary>
-        public float fullPosition { get { return this.Elapsed(true); } set { this.Goto(value, this.isPlaying); } }
         /// <summary>Returns TRUE if the tween is set to loop (either a set number of times or infinitely)</summary>
         public bool hasLoops { get { return loops == -1 || loops > 1; } }
 

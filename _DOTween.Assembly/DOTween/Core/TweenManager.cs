@@ -21,8 +21,6 @@ namespace DG.Tweening.Core
         const string _MaxTweensReached = "Max Tweens reached: capacity has automatically been increased from #0 to #1. Use DOTween.SetTweensCapacity to set it manually at startup";
         const float _EpsilonVsTimeCheck = 0.000001f;
 
-        internal static bool isUnityEditor;
-        internal static bool isDebugBuild;
         internal static int maxActive = _DefaultMaxTweeners + _DefaultMaxSequences; // Always equal to maxTweeners + maxSequences
         internal static int maxTweeners = _DefaultMaxTweeners; // Always >= maxSequences
         internal static int maxSequences = _DefaultMaxSequences; // Always <= maxTweeners
@@ -48,22 +46,6 @@ namespace DG.Tweening.Core
 
         // Used to prevent tweens from being re-killed at the end of an update loop if KillAll was called during said loop
         static bool _despawnAllCalledFromUpdateLoopCallback;
-
-#if DEBUG
-        public static int updateLoopCount;
-#endif
-
-        #region Static Constructor
-
-        static TweenManager()
-        {
-            isUnityEditor = Application.isEditor;
-#if DEBUG
-            isDebugBuild = true;
-#endif
-        }
-
-        #endregion
 
         #region Main
 
@@ -348,87 +330,15 @@ namespace DG.Tweening.Core
 
             isUpdateLoop = true;
 #if DEBUG
-            updateLoopCount++;
             VerifyActiveTweensList();
 #endif
             bool willKill = false;
 //            Debug.Log("::::::::::: " + updateType + " > " + (_maxActiveLookupId + 1));
             int len = _maxActiveLookupId + 1; // Stored here so if _maxActiveLookupId changed during update loop (like if new tween is created at onComplete) new tweens are still ignored
             for (int i = 0; i < len; ++i) {
-                Tween t = _activeTweens[i];
+                var t = _activeTweens[i];
                 if (t == null || t.updateType != updateType) continue; // Wrong updateType or was added to a Sequence (thus removed from active list) while inside current updateLoop
                 if (Update(t, deltaTime, independentTime, false)) willKill = true;
-                // ► Commented in favor of the new Update(tween...) method
-                // if (_totTweenLinks > 0) EvaluateTweenLink(t); // TweenLinks
-                // if (!t.active) {
-                //     // Manually killed by another tween's callback or deactivated by the TweenLink evaluation
-                //     willKill = true;
-                //     MarkForKilling(t);
-                //     continue;
-                // }
-                // if (!t.isPlaying) continue;
-                // t.creationLocked = true; // Lock tween creation methods from now on
-                // float tDeltaTime = (t.isIndependentUpdate ? independentTime : deltaTime) * t.timeScale;
-                // if (tDeltaTime < _EpsilonVsTimeCheck && tDeltaTime > -_EpsilonVsTimeCheck) continue; // Skip update in case time is approximately 0
-                // if (!t.delayComplete) {
-                //     tDeltaTime = t.UpdateDelay(t.elapsedDelay + tDeltaTime);
-                //     if (tDeltaTime <= -1) {
-                //         // Error during startup (can happen with FROM tweens): mark tween for killing
-                //         willKill = true;
-                //         MarkForKilling(t);
-                //         continue;
-                //     }
-                //     if (tDeltaTime <= 0) continue;
-                //     // Delay elapsed - call OnPlay if required
-                //     if (t.playedOnce && t.onPlay != null) {
-                //         // Don't call in case it hasn't started because onStart routine will call it
-                //         Tween.OnTweenCallback(t.onPlay, t);
-                //     }
-                // }
-                // // Startup (needs to be here other than in Tween.DoGoto in case of speed-based tweens, to calculate duration correctly)
-                // if (!t.startupDone) {
-                //     if (!t.Startup()) {
-                //         // Startup failure: mark for killing
-                //         willKill = true;
-                //         MarkForKilling(t);
-                //         continue;
-                //     }
-                // }
-                // // Find update data
-                // float toPosition = t.position;
-                // bool wasEndPosition = toPosition >= t.duration;
-                // int toCompletedLoops = t.completedLoops;
-                // if (t.duration <= 0) {
-                //     toPosition = 0;
-                //     toCompletedLoops = t.loops == -1 ? t.completedLoops + 1 : t.loops;
-                // } else {
-                //     if (t.isBackwards) {
-                //         toPosition -= tDeltaTime;
-                //         while (toPosition < 0 && toCompletedLoops > -1) {
-                //             toPosition += t.duration;
-                //             toCompletedLoops--;
-                //         }
-                //         if (toCompletedLoops < 0 || wasEndPosition && toCompletedLoops < 1) {
-                //             // Result is equivalent to a rewind, so set values according to it
-                //             toPosition = 0;
-                //             toCompletedLoops = wasEndPosition ? 1 : 0;
-                //         }
-                //     } else {
-                //         toPosition += tDeltaTime;
-                //         while (toPosition >= t.duration && (t.loops == -1 || toCompletedLoops < t.loops)) {
-                //             toPosition -= t.duration;
-                //             toCompletedLoops++;
-                //         }
-                //     }
-                //     if (wasEndPosition) toCompletedLoops--;
-                //     if (t.loops != -1 && toCompletedLoops >= t.loops) toPosition = t.duration;
-                // }
-                // // Goto
-                // bool needsKilling = Tween.DoGoto(t, toPosition, toCompletedLoops, UpdateMode.Update);
-                // if (needsKilling) {
-                //     willKill = true;
-                //     MarkForKilling(t);
-                // }
             }
             // Kill all eventually marked tweens
             if (willKill) {
@@ -530,7 +440,7 @@ namespace DG.Tweening.Core
 
             for (int i = _maxActiveLookupId; i > -1; --i) {
                 Tween t = _activeTweens[i];
-                if (t == null || !t.active) continue;
+                if (t is not { active: true }) continue;
 
                 bool isFilterCompliant = false;
                 if (useId) isFilterCompliant = t.id == id;
@@ -665,7 +575,6 @@ namespace DG.Tweening.Core
         // Returns TRUE if there was an error and the tween needs to be destroyed
         internal static bool Goto(Tween t, float to, bool andPlay = false, UpdateMode updateMode = UpdateMode.Goto)
         {
-            bool wasPlaying = t.isPlaying;
             t.isPlaying = andPlay;
             t.delayComplete = true;
             t.elapsedDelay = t.delay;
@@ -860,16 +769,6 @@ namespace DG.Tweening.Core
             return null;
         }
 
-        // Returns all active tweens with the given id
-        internal static List<Tween> GetTweensById(object id, bool playingOnly, List<Tween> fillableList = null)
-        {
-            if (_requiresActiveReorganization) ReorganizeActiveTweens();
-            if (totActiveTweens <= 0) return null;
-            if (fillableList == null) fillableList = new List<Tween>(totActiveTweens);
-            DoGetTweensById(id, playingOnly, true, fillableList);
-            return fillableList.Count > 0 ? fillableList : null;
-        }
-
         // Returns the total number of active tweens with the given id, and eventually fills a list with them
         static int DoGetTweensById(object id, bool playingOnly, bool addToList, List<Tween> fillableList)
         {
@@ -898,23 +797,6 @@ namespace DG.Tweening.Core
             return result;
         }
 
-        // Returns all active tweens with the given target
-        internal static List<Tween> GetTweensByTarget(object target, bool playingOnly, List<Tween> fillableList = null)
-        {
-            if (_requiresActiveReorganization) ReorganizeActiveTweens();
-
-            if (totActiveTweens <= 0) return null;
-            int len = totActiveTweens;
-            if (fillableList == null) fillableList = new List<Tween>(len);
-            for (int i = 0; i < len; ++i) {
-                Tween t = _activeTweens[i];
-                if (t.target != target) continue;
-                if (!playingOnly || t.isPlaying) fillableList.Add(t);
-            }
-            if (fillableList.Count > 0) return fillableList;
-            return null;
-        }
-
         #endregion
 
         #region Private Methods
@@ -941,14 +823,10 @@ namespace DG.Tweening.Core
                 Debugger.LogAddActiveTweenError("totActiveTweens < 0", t);
                 totActiveTweens = 0;
             }
-//            else if (totActiveTweens > _activeTweens.Length - 1) {
-//                Debugger.LogError("AddActiveTween: totActiveTweens > _activeTweens capacity. This should never ever happen. Please report it with instructions on how to reproduce it");
-//                return;
-//            }
 
             t.active = true;
-            t.updateType = DOTween.defaultUpdateType;
-            t.isIndependentUpdate = DOTween.defaultTimeScaleIndependent;
+            t.updateType = UpdateType.Normal;
+            t.isIndependentUpdate = false;
             t.activeId = _maxActiveLookupId = totActiveTweens;
             _activeTweens[totActiveTweens] = t;
             if (t.updateType == UpdateType.Normal) {
@@ -1123,7 +1001,7 @@ namespace DG.Tweening.Core
 
             if (nullTweensWithinLookup > 0 || inactiveTweensWithinLookup > 0 || activeTweensAfterNull > 0) {
                 string s = "VerifyActiveTweensList WARNING:";
-                if (isUpdateLoop) s += " - UPDATE LOOP (" + updateLoopCount + ")";
+                if (isUpdateLoop) s += " - Inside Update Loop";
                 if (nullTweensWithinLookup > 0) s += " - NULL Tweens Within Lookup (" + nullTweensWithinLookup + ")";
                 if (inactiveTweensWithinLookup > 0) s += " - Inactive Tweens Within Lookup (" + inactiveTweensWithinLookup + ")";
                 if (activeTweensAfterNull > 0) {

@@ -36,19 +36,6 @@ namespace DG.Tweening
         /// <summary>Behaviour in case a tween nested inside a Sequence fails (and is caught by safe mode).
         /// <para>Default: NestedTweenFailureBehaviour.TryToPreserveSequence</para></summary>
         public static NestedTweenFailureBehaviour nestedTweenFailureBehaviour = NestedTweenFailureBehaviour.TryToPreserveSequence;
-        /// <summary>If TRUE, DOTween will use Time.smoothDeltaTime instead of Time.deltaTime for UpdateType.Normal and UpdateType.Late tweens
-        /// (unless they're set as timeScaleIndependent, in which case a value between the last timestep
-        /// and <see cref="maxSmoothUnscaledTime"/> will be used instead).
-        /// Setting this to TRUE will lead to smoother animations.
-        /// <para>Default: FALSE</para></summary>
-        public static bool useSmoothDeltaTime;
-        /// <summary>If <see cref="useSmoothDeltaTime"/> is TRUE, this indicates the max timeStep that an independent update call can last.
-        /// Setting this to TRUE will lead to smoother animations.
-        /// <para>Default: FALSE</para></summary>
-        public static float maxSmoothUnscaledTime = 0.15f;
-        /// <summary>If TRUE draws path gizmos in Unity Editor (if the gizmos button is active).
-        /// Deactivate this if you want to avoid gizmos overhead while in Unity Editor</summary>
-        public static bool drawGizmos = true;
         // DEBUG OPTIONS
         /// <summary>If TRUE activates various debug options</summary>
         public const bool debugMode =
@@ -64,18 +51,6 @@ namespace DG.Tweening
         ///////////////////////////////////////////////
         // Default options for Tweens /////////////////
 
-        /// <summary>Default updateType for new tweens.
-        /// <para>Default: UpdateType.Normal</para></summary>
-        public static UpdateType defaultUpdateType = UpdateType.Normal;
-        /// <summary>Sets whether Unity's timeScale should be taken into account by default or not.
-        /// <para>Default: false</para></summary>
-        public static bool defaultTimeScaleIndependent = false;
-        /// <summary>Default loopType applied to all new tweens.
-        /// <para>Default: LoopType.Restart</para></summary>
-        public static LoopType defaultLoopType = LoopType.Restart;
-        /// <summary>If TRUE all newly created tweens are set as recyclable, otherwise not.
-        /// <para>Default: FALSE</para></summary>
-        public static bool defaultRecyclable;
         /// <summary>Default ease applied to all new Tweeners (not to Sequences which always have Ease.Linear as default).
         /// <para>Default: Ease.InOutQuad</para></summary>
         public static Ease defaultEaseType = Ease.OutQuad;
@@ -105,79 +80,29 @@ namespace DG.Tweening
         }
         static bool _foo_isQuitting;
         internal static int maxActiveTweenersReached, maxActiveSequencesReached; // Controlled by DOTweenInspector if showUnityEditorReport is active
-        internal static readonly List<TweenCallback> GizmosDelegates = new List<TweenCallback>(); // Can be used by other classes to call internal gizmo draw methods
         internal static bool initialized; // Can be set to false by DOTweenComponent OnDestroy
         static int _isQuittingFrame = -1; // Frame when isQuitting was set. Sets isQuitting to false after this frame (so no-domain-reload playmode can work)
 
         #region Public Methods
 
-        /// <summary>
-        /// Must be called once, before the first ever DOTween call/reference,
-        /// otherwise it will be called automatically and will use default options.
-        /// Calling it a second time won't have any effect.
-        /// <para>You can chain <code>SetCapacity</code> to this method, to directly set the max starting size of Tweeners and Sequences:</para>
-        /// <code>DOTween.Init(false, false, LogBehaviour.Default).SetCapacity(100, 20);</code>
-        /// </summary>
-        /// <param name="recycleAllByDefault">If TRUE all new tweens will be set for recycling, meaning that when killed,
-        /// instead of being destroyed, they will be put in a pool and reused instead of creating new tweens. This option allows you to avoid
-        /// GC allocations by reusing tweens, but you will have to take care of tween references, since they might result active
-        /// even if they were killed (since they might have been respawned and are now being used for other tweens).
-        /// <para>If you want to automatically set your tween references to NULL when a tween is killed 
-        /// you can use the OnKill callback like this:</para>
-        /// <code>.OnKill(()=> myTweenReference = null)</code>
-        /// <para>You can change this setting at any time by changing the static <see cref="DOTween.defaultRecyclable"/> property,
-        /// or you can set the recycling behaviour for each tween separately, using:</para>
-        /// <para><code>SetRecyclable(bool recyclable)</code></para>
-        /// <para>Default: FALSE</para></param>
-        /// <param name="useSafeMode">If TRUE makes tweens slightly slower but safer, automatically taking care of a series of things
-        /// (like targets becoming null while a tween is playing).
-        /// You can change this setting at any time by changing the static <see cref="DOTween.useSafeMode"/> property.
-        /// <para>Default: FALSE</para></param>
-        /// <param name="logBehaviour">Type of logging to use.
-        /// You can change this setting at any time by changing the static <see cref="DOTween.logBehaviour"/> property.
-        /// <para>Default: ErrorsOnly</para></param>
-        public static IDOTweenInit Init(bool? recycleAllByDefault = null, bool? useSafeMode = null)
-        {
-            if (initialized) return instance;
-            if (!Application.isPlaying || isQuitting) return null;
-
-            return Init(DOTweenSettings.Instance, recycleAllByDefault, useSafeMode);
-        }
         // Auto-init
         static void AutoInit()
         {
             if (!Application.isPlaying || isQuitting) return;
-            Init(DOTweenSettings.Instance, null, null);
-        }
-        // Full init
-        static IDOTweenInit Init(DOTweenSettings settings, bool? recycleAllByDefault, bool? useSafeMode)
-        {
+
+            var settings = DOTweenSettings.Instance;
+
             initialized = true;
-            // Options
-            if (recycleAllByDefault != null) defaultRecyclable = (bool)recycleAllByDefault;
-            if (useSafeMode != null) DOTween.useSafeMode = (bool)useSafeMode;
+
             // Gameobject - also assign instance
             DOTweenComponent.Create();
-            // Assign settings
-            if (settings != null) {
-                if (useSafeMode == null) DOTween.useSafeMode = settings.useSafeMode;
-                if (recycleAllByDefault == null) defaultRecyclable = settings.defaultRecyclable;
-                nestedTweenFailureBehaviour = settings.safeModeOptions.nestedTweenFailureBehaviour;
-                useSmoothDeltaTime = settings.useSmoothDeltaTime;
-                maxSmoothUnscaledTime = settings.maxSmoothUnscaledTime;
-                defaultRecyclable = recycleAllByDefault ?? settings.defaultRecyclable;
-                drawGizmos = settings.drawGizmos;
-                defaultUpdateType = settings.defaultUpdateType;
-                defaultTimeScaleIndependent = settings.defaultTimeScaleIndependent;
-                defaultEaseType = settings.defaultEaseType;
-                defaultEaseOvershootOrAmplitude = settings.defaultEaseOvershootOrAmplitude;
-                defaultEasePeriod = settings.defaultEasePeriod;
-                defaultLoopType = settings.defaultLoopType;
-            }
-            // Log
-            if (Debugger.logPriority >= 2) Debugger.Log("DOTween initialization (useSafeMode: " + DOTween.useSafeMode + ", recycling: " + (defaultRecyclable ? "ON" : "OFF"));
 
-            return instance;
+            // Assign settings
+            useSafeMode = settings.useSafeMode;
+            nestedTweenFailureBehaviour = settings.safeModeOptions.nestedTweenFailureBehaviour;
+            defaultEaseType = settings.defaultEaseType;
+            defaultEaseOvershootOrAmplitude = settings.defaultEaseOvershootOrAmplitude;
+            defaultEasePeriod = settings.defaultEasePeriod;
         }
 
         /// <summary>
@@ -216,18 +141,10 @@ namespace DG.Tweening
             initialized = false;
             useSafeMode = false;
             nestedTweenFailureBehaviour = NestedTweenFailureBehaviour.TryToPreserveSequence;
-            drawGizmos = true;
-            useSmoothDeltaTime = false;
-            maxSmoothUnscaledTime = 0.15f;
             defaultEaseType = Ease.OutQuad;
             defaultEaseOvershootOrAmplitude = 1.70158f;
             defaultEasePeriod = 0;
-            defaultUpdateType = UpdateType.Normal;
-            defaultTimeScaleIndependent = false;
-            defaultLoopType = LoopType.Restart;
-            defaultRecyclable = false;
             maxActiveTweenersReached = maxActiveSequencesReached = 0;
-            GizmosDelegates.Clear();
 
             DOTweenComponent.DestroyInstance();
         }
@@ -243,7 +160,7 @@ namespace DG.Tweening
         /// <summary>
         /// Checks all active tweens to find and remove eventually invalid ones (usually because their targets became NULL)
         /// and returns the total number of invalid tweens found and removed.
-        /// IMPORTANT: this will cause an error on UWP platform, so don't use it there 
+        /// IMPORTANT: this will cause an error on UWP platform, so don't use it there
         /// BEWARE: this is a slightly expensive operation so use it with care
         /// </summary>
         public static int Validate()
@@ -366,7 +283,7 @@ namespace DG.Tweening
 
         #region Special TOs (No FROMs)
 
-        /// <summary>Tweens a virtual property from the given start to the given end value 
+        /// <summary>Tweens a virtual property from the given start to the given end value
         /// and implements a setter that allows to use that value with an external method or a lambda
         /// <para>Example:</para>
         /// <code>To(MyMethod, 0, 12, 0.5f);</code>
@@ -438,7 +355,7 @@ namespace DG.Tweening
         /// <param name="duration">The duration of the tween</param>
         /// <param name="strength">The shake strength</param>
         /// <param name="vibrato">Indicates how much will the shake vibrate</param>
-        /// <param name="randomness">Indicates how much the shake will be random (0 to 180 - values higher than 90 kind of suck, so beware). 
+        /// <param name="randomness">Indicates how much the shake will be random (0 to 180 - values higher than 90 kind of suck, so beware).
         /// Setting it to 0 will shake along a single direction and behave like a random punch.</param>
         /// <param name="ignoreZAxis">If TRUE only shakes on the X Y axis (looks better with things like cameras).</param>
         /// <param name="fadeOut">If TRUE the shake will automatically fadeOut smoothly within the tween's duration, otherwise it will not</param>
@@ -458,7 +375,7 @@ namespace DG.Tweening
         /// <param name="duration">The duration of the tween</param>
         /// <param name="strength">The shake strength on each axis</param>
         /// <param name="vibrato">Indicates how much will the shake vibrate</param>
-        /// <param name="randomness">Indicates how much the shake will be random (0 to 180 - values higher than 90 kind of suck, so beware). 
+        /// <param name="randomness">Indicates how much the shake will be random (0 to 180 - values higher than 90 kind of suck, so beware).
         /// Setting it to 0 will shake along a single direction and behave like a random punch.</param>
         /// <param name="fadeOut">If TRUE the shake will automatically fadeOut smoothly within the tween's duration, otherwise it will not</param>
         /// <param name="randomnessMode">Randomness mode</param>
@@ -724,105 +641,6 @@ namespace DG.Tweening
         public static bool IsTweening(object targetOrId, bool alsoCheckIfIsPlaying = false)
         {
             return TweenManager.FilteredOperation(OperationType.IsTweening, targetOrId, alsoCheckIfIsPlaying, 0) > 0;
-        }
-
-        /// <summary>
-        /// Returns the total number of active tweens (so both Tweeners and Sequences).
-        /// A tween is considered active if it wasn't killed, regardless if it's playing or paused
-        /// </summary>
-        public static int TotalActiveTweens()
-        {
-            return TweenManager.totActiveTweens;
-        }
-
-        /// <summary>
-        /// Returns the total number of active Tweeners.
-        /// A Tweener is considered active if it wasn't killed, regardless if it's playing or paused
-        /// </summary>
-        public static int TotalActiveTweeners()
-        {
-            return TweenManager.totActiveTweeners;
-        }
-
-        /// <summary>
-        /// Returns the total number of active Sequences.
-        /// A Sequence is considered active if it wasn't killed, regardless if it's playing or paused
-        /// </summary>
-        public static int TotalActiveSequences()
-        {
-            return TweenManager.totActiveSequences;
-        }
-
-        /// <summary>
-        /// Returns the total number of active and playing tweens.
-        /// A tween is considered as playing even if its delay is actually playing
-        /// </summary>
-        public static int TotalPlayingTweens()
-        {
-            return TweenManager.TotalPlayingTweens();
-        }
-
-        /// <summary>
-        /// Returns a the total number of active tweens with the given id.
-        /// </summary>
-        /// <param name="playingOnly">If TRUE returns only the tweens with the given ID that are currently playing</param>
-        public static int TotalTweensById(object id, bool playingOnly = false)
-        {
-            if (id == null) return 0;
-
-            return TweenManager.TotalTweensById(id, playingOnly);
-        }
-
-        /// <summary>
-        /// Returns a list of all active tweens in a playing state.
-        /// Returns NULL if there are no active playing tweens.
-        /// <para>Beware: each time you call this method a new list is generated, so use it for debug only</para>
-        /// </summary>
-        /// <param name="fillableList">If NULL creates a new list, otherwise clears and fills this one (and thus saves allocations)</param>
-        public static List<Tween> PlayingTweens(List<Tween> fillableList = null)
-        {
-            if (fillableList != null) fillableList.Clear();
-            return TweenManager.GetActiveTweens(true, fillableList);
-        }
-
-        /// <summary>
-        /// Returns a list of all active tweens in a paused state.
-        /// Returns NULL if there are no active paused tweens.
-        /// <para>Beware: each time you call this method a new list is generated, so use it for debug only</para>
-        /// </summary>
-        /// <param name="fillableList">If NULL creates a new list, otherwise clears and fills this one (and thus saves allocations)</param>
-        public static List<Tween> PausedTweens(List<Tween> fillableList = null)
-        {
-            if (fillableList != null) fillableList.Clear();
-            return TweenManager.GetActiveTweens(false, fillableList);
-        }
-
-        /// <summary>
-        /// Returns a list of all active tweens with the given id.
-        /// Returns NULL if there are no active tweens with the given id.
-        /// <para>Beware: each time you call this method a new list is generated</para>
-        /// </summary>
-        /// <param name="playingOnly">If TRUE returns only the tweens with the given ID that are currently playing</param>
-        /// <param name="fillableList">If NULL creates a new list, otherwise clears and fills this one (and thus saves allocations)</param>
-        public static List<Tween> TweensById(object id, bool playingOnly = false, List<Tween> fillableList = null)
-        {
-            if (id == null) return null;
-
-            if (fillableList != null) fillableList.Clear();
-            return TweenManager.GetTweensById(id, playingOnly, fillableList);
-        }
-
-        /// <summary>
-        /// Returns a list of all active tweens with the given target.
-        /// Returns NULL if there are no active tweens with the given target.
-        /// <para>Beware: each time you call this method a new list is generated</para>
-        /// <param name="playingOnly">If TRUE returns only the tweens with the given target that are currently playing</param>
-        /// <param name="fillableList">If NULL creates a new list, otherwise clears and fills this one (and thus saves allocations)</param>
-        /// </summary>
-        public static List<Tween> TweensByTarget(object target, bool playingOnly = false, List<Tween> fillableList = null)
-        {
-            if (fillableList != null) fillableList.Clear();
-            return TweenManager.GetTweensByTarget(target, playingOnly, fillableList);
         }
 
         #endregion

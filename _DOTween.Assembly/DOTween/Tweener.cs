@@ -58,11 +58,11 @@ namespace DG.Tweening
             t.duration = duration;
             // Defaults
             t.autoKill = true;
-            t.isRecyclable = DOTween.defaultRecyclable;
+            t.isRecyclable = true;
             t.easeType = DOTween.defaultEaseType; // Set to INTERNAL_Zero in case of 0 duration, but in DoStartup
             t.easeOvershootOrAmplitude = DOTween.defaultEaseOvershootOrAmplitude;
             t.easePeriod = DOTween.defaultEasePeriod;
-            t.loopType = DOTween.defaultLoopType;
+            t.loopType = LoopType.Restart;
             t.isPlaying = true;
             return true;
         }

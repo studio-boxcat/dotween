@@ -197,32 +197,13 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Sets the update type to UpdateType.Normal and lets you choose if it should be independent from Unity's Time.timeScale</summary>
-        /// <param name="isIndependentUpdate">If TRUE the tween will ignore Unity's Time.timeScale</param>
-        public static T SetUpdate<T>(this T t, bool isIndependentUpdate) where T : Tween
-        {
-            if (t is not { active: true }) return t;
-
-            TweenManager.SetUpdateType(t, DOTween.defaultUpdateType, isIndependentUpdate);
-            return t;
-        }
         /// <summary>Sets the type of update for the tween</summary>
         /// <param name="updateType">The type of update (defalt: UpdateType.Normal)</param>
         public static T SetUpdate<T>(this T t, UpdateType updateType) where T : Tween
         {
             if (t is not { active: true }) return t;
 
-            TweenManager.SetUpdateType(t, updateType, DOTween.defaultTimeScaleIndependent);
-            return t;
-        }
-        /// <summary>Sets the type of update for the tween and lets you choose if it should be independent from Unity's Time.timeScale</summary>
-        /// <param name="updateType">The type of update</param>
-        /// <param name="isIndependentUpdate">If TRUE the tween will ignore Unity's Time.timeScale</param>
-        public static T SetUpdate<T>(this T t, UpdateType updateType, bool isIndependentUpdate) where T : Tween
-        {
-            if (t is not { active: true }) return t;
-
-            TweenManager.SetUpdateType(t, updateType, isIndependentUpdate);
+            TweenManager.SetUpdateType(t, updateType, false);
             return t;
         }
 

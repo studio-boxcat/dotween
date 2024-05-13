@@ -166,9 +166,9 @@ namespace DG.Tweening
         internal static void Setup(Sequence s)
         {
             s.autoKill = true;
-            s.isRecyclable = DOTween.defaultRecyclable;
+            s.isRecyclable = true;
             s.isPlaying = true;
-            s.loopType = DOTween.defaultLoopType;
+            s.loopType = LoopType.Restart;
             s.easeType = Ease.Linear;
             s.easeOvershootOrAmplitude = DOTween.defaultEaseOvershootOrAmplitude;
             s.easePeriod = DOTween.defaultEasePeriod;

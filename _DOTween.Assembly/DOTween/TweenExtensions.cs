@@ -314,103 +314,6 @@ namespace DG.Tweening
 
         #endregion
 
-        #region Yield Coroutines
-
-        /// <summary>
-        /// Creates a yield instruction that waits until the tween is killed or complete.
-        /// It can be used inside a coroutine as a yield.
-        /// <para>Example usage:</para><code>yield return myTween.WaitForCompletion();</code>
-        /// </summary>
-        public static YieldInstruction WaitForCompletion(this Tween t)
-        {
-            if (!t.active) {
-                if (Debugger.logPriority > 0) Debugger.LogInvalidTween(t);
-                return null;
-            }
-
-            return DOTween.instance.StartCoroutine(DOTween.instance.WaitForCompletion(t));
-        }
-
-        /// <summary>
-        /// Creates a yield instruction that waits until the tween is killed or rewinded.
-        /// It can be used inside a coroutine as a yield.
-        /// <para>Example usage:</para><code>yield return myTween.WaitForRewind();</code>
-        /// </summary>
-        public static YieldInstruction WaitForRewind(this Tween t)
-        {
-            if (!t.active) {
-                if (Debugger.logPriority > 0) Debugger.LogInvalidTween(t);
-                return null;
-            }
-
-            return DOTween.instance.StartCoroutine(DOTween.instance.WaitForRewind(t));
-        }
-
-        /// <summary>
-        /// Creates a yield instruction that waits until the tween is killed.
-        /// It can be used inside a coroutine as a yield.
-        /// <para>Example usage:</para><code>yield return myTween.WaitForKill();</code>
-        /// </summary>
-        public static YieldInstruction WaitForKill(this Tween t)
-        {
-            if (!t.active) {
-                if (Debugger.logPriority > 0) Debugger.LogInvalidTween(t);
-                return null;
-            }
-
-            return DOTween.instance.StartCoroutine(DOTween.instance.WaitForKill(t));
-        }
-
-        /// <summary>
-        /// Creates a yield instruction that waits until the tween is killed or has gone through the given amount of loops.
-        /// It can be used inside a coroutine as a yield.
-        /// <para>Example usage:</para><code>yield return myTween.WaitForElapsedLoops(2);</code>
-        /// </summary>
-        /// <param name="elapsedLoops">Elapsed loops to wait for</param>
-        public static YieldInstruction WaitForElapsedLoops(this Tween t, int elapsedLoops)
-        {
-            if (!t.active) {
-                if (Debugger.logPriority > 0) Debugger.LogInvalidTween(t);
-                return null;
-            }
-
-            return DOTween.instance.StartCoroutine(DOTween.instance.WaitForElapsedLoops(t, elapsedLoops));
-        }
-
-        /// <summary>
-        /// Creates a yield instruction that waits until the tween is killed or has reached the given position (loops included, delays excluded).
-        /// It can be used inside a coroutine as a yield.
-        /// <para>Example usage:</para><code>yield return myTween.WaitForPosition(2.5f);</code>
-        /// </summary>
-        /// <param name="position">Position (loops included, delays excluded) to wait for</param>
-        public static YieldInstruction WaitForPosition(this Tween t, float position)
-        {
-            if (!t.active) {
-                if (Debugger.logPriority > 0) Debugger.LogInvalidTween(t);
-                return null;
-            }
-
-            return DOTween.instance.StartCoroutine(DOTween.instance.WaitForPosition(t, position));
-        }
-
-        /// <summary>
-        /// Creates a yield instruction that waits until the tween is killed or started
-        /// (meaning when the tween is set in a playing state the first time, after any eventual delay).
-        /// It can be used inside a coroutine as a yield.
-        /// <para>Example usage:</para><code>yield return myTween.WaitForStart();</code>
-        /// </summary>
-        public static Coroutine WaitForStart(this Tween t)
-        {
-            if (!t.active) {
-                if (Debugger.logPriority > 0) Debugger.LogInvalidTween(t);
-                return null;
-            }
-
-            return DOTween.instance.StartCoroutine(DOTween.instance.WaitForStart(t));
-        }
-
-        #endregion
-
         #region Info Getters
 
         /// <summary>Returns the total number of loops completed by this tween</summary>
@@ -463,22 +366,6 @@ namespace DG.Tweening
             return t.duration;
         }
 
-        /// <summary>Returns the elapsed time for this tween (delays exluded)</summary>
-        /// <param name="includeLoops">If TRUE returns the elapsed time since startup loops included,
-        ///  otherwise the elapsed time within the current loop cycle</param>
-        public static float Elapsed(this Tween t, bool includeLoops = true)
-        {
-            if (!t.active) {
-                if (Debugger.logPriority > 0) Debugger.LogInvalidTween(t);
-                return 0;
-            }
-
-            if (includeLoops) {
-                int loopsToCount = t.position >= t.duration ? t.completedLoops - 1 : t.completedLoops;
-                return (loopsToCount * t.duration) + t.position;
-            }
-            return t.position;
-        }
         /// <summary>Returns the elapsed percentage (0 to 1) of this tween (delays exluded)</summary>
         /// <param name="includeLoops">If TRUE returns the elapsed percentage since startup loops included,
         /// otherwise the elapsed percentage within the current loop cycle</param>
