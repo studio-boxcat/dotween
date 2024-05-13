@@ -254,64 +254,6 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Tweens a Material's texture scale to the given value.
-        /// Also stores the material as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param>
-        /// <param name="duration">The duration of the tween</param>
-        public static TweenerCore<Vector2, Vector2, VectorOptions> DOTiling(this Material target, Vector2 endValue, float duration)
-        {
-            TweenerCore<Vector2, Vector2, VectorOptions> t = DOTween.To(() => target.mainTextureScale, x => target.mainTextureScale = x, endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
-        /// <summary>Tweens a Material's named texture scale property to the given value.
-        /// Also stores the material as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param>
-        /// <param name="property">The name of the material property to tween</param>
-        /// <param name="duration">The duration of the tween</param>
-        public static TweenerCore<Vector2, Vector2, VectorOptions> DOTiling(this Material target, Vector2 endValue, string property, float duration)
-        {
-            if (!target.HasProperty(property)) {
-                if (Debugger.logPriority > 0) Debugger.LogMissingMaterialProperty(property);
-                return null;
-            }
-            TweenerCore<Vector2, Vector2, VectorOptions> t = DOTween.To(() => target.GetTextureScale(property), x => target.SetTextureScale(property, x), endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
-
-        #endregion
-
-        #region TrailRenderer Shortcuts
-
-        /// <summary>Tweens a TrailRenderer's startWidth/endWidth to the given value.
-        /// Also stores the TrailRenderer as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="toStartWidth">The end startWidth to reach</param><param name="toEndWidth">The end endWidth to reach</param>
-        /// <param name="duration">The duration of the tween</param>
-        public static Tweener DOResize(this TrailRenderer target, float toStartWidth, float toEndWidth, float duration)
-        {
-            return DOTween.To(() => new Vector2(target.startWidth, target.endWidth), x => {
-#if COMPATIBLE
-                    target.startWidth = x.value.x;
-                    target.endWidth = x.value.y;
-#else
-                    target.startWidth = x.x;
-                    target.endWidth = x.y;
-#endif
-                }, new Vector2(toStartWidth, toEndWidth), duration)
-                .SetTarget(target);
-        }
-
-        /// <summary>Tweens a TrailRenderer's time to the given value.
-        /// Also stores the TrailRenderer as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float, float, NoOptions> DOTime(this TrailRenderer target, float endValue, float duration)
-        {
-            TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.time, x => target.time = x, endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
-
         #endregion
 
         #region Transform Shortcuts
@@ -373,32 +315,6 @@ namespace DG.Tweening
         {
             TweenerCore<Vector3, Vector3, VectorOptions> t = DOTween.To(() => target.localPosition, x => target.localPosition = x, new Vector3(0, endValue, 0), duration);
             t.SetOptions(AxisConstraint.Y).SetTarget(target);
-            return t;
-        }
-
-        /// <summary>Tweens a Transform's rotation to the given value.
-        /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        /// <param name="mode">Rotation mode</param>
-        public static TweenerCore<DOQuaternion, DOVector3, QuaternionOptions> DORotate(this Transform target, Vector3 endValue, float duration, RotateMode mode = RotateMode.Fast)
-        {
-            TweenerCore<DOQuaternion, DOVector3, QuaternionOptions> t = DOTween.To(() => target.rotation, x => target.rotation = x, endValue, duration);
-            t.SetTarget(target);
-            t.plugOptions.rotateMode = mode;
-            return t;
-        }
-
-        /// <summary>Tweens a Transform's rotation to the given value using pure quaternion values.
-        /// Also stores the transform as the tween's target so it can be used for filtered operations.
-        /// <para>PLEASE NOTE: DORotate, which takes Vector3 values, is the preferred rotation method.
-        /// This method was implemented for very special cases, and doesn't support LoopType.Incremental loops
-        /// (neither for itself nor if placed inside a LoopType.Incremental Sequence)</para>
-        /// </summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<DOQuaternion, DOQuaternion, NoOptions> DORotateQuaternion(this Transform target, Quaternion endValue, float duration)
-        {
-            TweenerCore<DOQuaternion, DOQuaternion, NoOptions> t = DOTween.To(PureQuaternionPlugin.Plug(), () => target.rotation, x => target.rotation = x, endValue, duration);
-            t.SetTarget(target);
             return t;
         }
 
