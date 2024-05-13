@@ -24,9 +24,6 @@ namespace DG.Tweening
         public float timeScale;
         /// <summary>If TRUE the tween will play backwards</summary>
         public bool isBackwards;
-        /// <summary>If TRUE the tween is completely inverted but without playing it backwards
-        /// (play backwards will actually play the tween in the original direction)</summary>
-        internal bool isInverted;
         /// <summary>Int ID (usable for filtering with DOTween static methods). 4X faster than using an object id, 2X faster than using a string id.
         /// Default is -999 so avoid using an ID like that or it will capture all unset intIds</summary>
         public int id = invalidId;

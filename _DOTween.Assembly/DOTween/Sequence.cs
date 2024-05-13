@@ -194,17 +194,6 @@ namespace DG.Tweening
                     if (!s.isBlendable) s.sequencedTweens[i].isRelative = true;
                 }
             }
-            if (s.isInverted) {
-                // Complete all tweens on startup and invert them, so that we can start from the end
-                for (int i = 0; i < sequencedObjsLen; i++) {
-                    ABSSequentiable sequentiable = s._sequencedObjs[i];
-                    if (sequentiable.tweenType == TweenType.Tweener) {
-                        Tween t = (Tween)sequentiable;
-                        TweenManager.Goto(t, t.duration * t.loops, false, UpdateMode.IgnoreOnComplete);
-                        t.isInverted = true;
-                    }
-                }
-            }
             return true;
         }
 
@@ -215,7 +204,6 @@ namespace DG.Tweening
             // Adapt to eventual ease position
             float prevPos = prevPosition;
             float newPos = s.position;
-            if (s.isInverted) useInversePosition = !useInversePosition;
             if (s.easeType != Ease.Linear) {
                 prevPos = s.duration * EaseManager.Evaluate(s.easeType, s.customEase, prevPos, s.duration, s.easeOvershootOrAmplitude, s.easePeriod);
                 newPos = s.duration * EaseManager.Evaluate(s.easeType, s.customEase, newPos, s.duration, s.easeOvershootOrAmplitude, s.easePeriod);
@@ -228,7 +216,6 @@ namespace DG.Tweening
             bool prevPosIsInverse = (s.loops == -1 || s.loops > 1) && s.loopType == LoopType.Yoyo
                 && (prevPos < s.duration ? prevCompletedLoops % 2 != 0 : prevCompletedLoops % 2 == 0);
             if (s.isBackwards) prevPosIsInverse = !prevPosIsInverse;
-            if (s.isInverted) prevPosIsInverse = !prevPosIsInverse;
             // Update multiple loop cycles within the same update
             if (newCompletedSteps > 0) {
 //                Debug.Log(Time.frameCount + " <color=#FFEC03>newCompletedSteps = " + newCompletedSteps + "</color> - completedLoops: " + s.completedLoops + " - updateMode: " + updateMode);
@@ -300,7 +287,6 @@ namespace DG.Tweening
                         Tween t = (Tween)sequentiable;
                         if (!t.startupDone) continue; // since we're going backwards and this tween never started just ignore it
                         t.isBackwards = true;
-                        if (s.isInverted) gotoPos = t.fullDuration - gotoPos;
                         if (TweenManager.Goto(t, gotoPos, false, updateMode)) {
                             // Nested tween failed. If it's the only tween and there's no callbacks mark for killing the whole sequence
                             // (default behaviour in any case prior to v1.2.060)...
@@ -361,7 +347,6 @@ namespace DG.Tweening
                         }
                         //
                         t.isBackwards = false;
-                        if (s.isInverted) gotoPos = t.fullDuration - gotoPos;
                         if (TweenManager.Goto(t, gotoPos, false, updateMode)) {
                             // Nested tween failed. If it's the only tween and there's no callbacks mark for killing the whole sequence
                             // (default behaviour in any case prior to v1.2.060)...
