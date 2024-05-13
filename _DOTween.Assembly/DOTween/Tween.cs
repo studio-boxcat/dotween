@@ -197,7 +197,6 @@ namespace DG.Tweening
                 else t.position = 0;
             }
             // Set playing state after update
-            bool wasPlaying = t.isPlaying;
             if (t.isPlaying) {
                 if (!t.isBackwards) t.isPlaying = !t.isComplete; // Reached the end
                 else t.isPlaying = !(t.completedLoops == 0 && t.position <= 0); // Rewinded

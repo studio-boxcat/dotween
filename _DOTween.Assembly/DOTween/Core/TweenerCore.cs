@@ -27,8 +27,6 @@ namespace DG.Tweening.Core
         public DOSetter<T1> setter;
         internal ABSTweenPlugin<T1, T2, TPlugOptions> tweenPlugin;
 
-        const string _TxtCantChangeSequencedValues = "You cannot change the values of a tween contained inside a Sequence";
-
         #region Constructor
 
         internal TweenerCore()
@@ -39,48 +37,6 @@ namespace DG.Tweening.Core
             tweenType = TweenType.Tweener;
             Reset();
         }
-
-        #endregion
-
-        #region Public Methods
-
-        #region Advanced Usage (direct from TweenerCore reference)
-
-        /// <summary>NO-GC METHOD: changes the end value of a tween and rewinds it (without pausing it).
-        /// Has no effect with tweens that are inside Sequences</summary>
-        /// <param name="newEndValue">The new end value</param>
-        /// <param name="snapStartValue">If TRUE the start value will become the current target's value, otherwise it will stay the same</param>
-        public TweenerCore<T1,T2,TPlugOptions> ChangeEndValue(T2 newEndValue, bool snapStartValue)
-        { return ChangeEndValue(newEndValue, -1, snapStartValue); }
-        /// <summary>NO-GC METHOD: changes the end value of a tween and rewinds it (without pausing it).
-        /// Has no effect with tweens that are inside Sequences</summary>
-        /// <param name="newEndValue">The new end value</param>
-        /// <param name="newDuration">If bigger than 0 applies it as the new tween duration</param>
-        /// <param name="snapStartValue">If TRUE the start value will become the current target's value, otherwise it will stay the same</param>
-        public TweenerCore<T1,T2,TPlugOptions> ChangeEndValue(T2 newEndValue, float newDuration = -1, bool snapStartValue = false)
-        {
-            if (isSequenced) {
-                Debugger.LogError(_TxtCantChangeSequencedValues, this);
-                return this;
-            }
-            return DoChangeEndValue(this, newEndValue, newDuration, snapStartValue);
-        }
-
-        /// <summary>NO-GC METHOD: changes the start and end value of a tween and rewinds it (without pausing it).
-        /// Has no effect with tweens that are inside Sequences</summary>
-        /// <param name="newStartValue">The new start value</param>
-        /// <param name="newEndValue">The new end value</param>
-        /// <param name="newDuration">If bigger than 0 applies it as the new tween duration</param>
-        public TweenerCore<T1,T2,TPlugOptions> ChangeValues(T2 newStartValue, T2 newEndValue, float newDuration = -1)
-        {
-            if (isSequenced) {
-                Debugger.LogError(_TxtCantChangeSequencedValues, this);
-                return this;
-            }
-            return DoChangeValues(this, newStartValue, newEndValue, newDuration);
-        }
-
-        #endregion
 
         #endregion
 
