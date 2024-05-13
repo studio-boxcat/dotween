@@ -157,19 +157,19 @@ namespace DG.Tweening.Core
 
         // Applies the tween set by DoGoto.
         // Returns TRUE if the tween needs to be killed
-        internal override bool ApplyTween(float prevPosition, int prevCompletedLoops, int newCompletedSteps, bool useInversePosition, UpdateMode updateMode, UpdateNotice updateNotice)
+        internal override bool ApplyTween(float prevPosition, int prevCompletedLoops, int newCompletedSteps, bool useInversePosition, UpdateMode updateMode)
         {
-            float updatePosition = useInversePosition ? duration - position : position;
+            var elapsed = useInversePosition ? duration - position : position;
             if (DOTween.useSafeMode) {
                 try {
-                    tweenPlugin.EvaluateAndApply(plugOptions, this, getter, setter, updatePosition, startValue, changeValue, duration, useInversePosition, newCompletedSteps, updateNotice);
+                    tweenPlugin.EvaluateAndApply(plugOptions, this, getter, setter, elapsed, startValue, changeValue, duration);
                 } catch (Exception e) {
                     // Target/field doesn't exist anymore: kill tween
                     Debugger.LogSafeModeCapturedError($"Target or field is missing/null ({e.TargetSite}) ► {e.Message}\n\n{e.StackTrace}\n\n", this);
                     return true;
                 }
             } else {
-                tweenPlugin.EvaluateAndApply(plugOptions, this, getter, setter, updatePosition, startValue, changeValue, duration, useInversePosition, newCompletedSteps, updateNotice);
+                tweenPlugin.EvaluateAndApply(plugOptions, this, getter, setter, elapsed, startValue, changeValue, duration);
             }
             return false;
         }

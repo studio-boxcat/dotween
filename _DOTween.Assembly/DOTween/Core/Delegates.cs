@@ -10,10 +10,6 @@ namespace DG.Tweening
     /// Used for tween callbacks
     /// </summary>
     public delegate void TweenCallback();
-    /// <summary>
-    /// Used for tween callbacks
-    /// </summary>
-    public delegate void TweenCallback<in T>(T value);
 
     /// <summary>
     /// Used for custom and animationCurve-based ease functions. Must return a value between 0 and 1.

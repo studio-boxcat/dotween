@@ -167,7 +167,7 @@ namespace DG.Tweening
             return animationType switch
             {
                 AnimationType.LocalMove => transform.DOLocalMove(endValueV3, duration),
-                AnimationType.LocalRotate => transform.DOLocalRotate(endValueV3, duration),
+                AnimationType.LocalRotate => transform.DOLocalRotateZ(endValueV3.z, duration),
                 AnimationType.Scale => transform.DOScale(optionalBool0 ? new Vector3(endValueFloat, endValueFloat, endValueFloat) : endValueV3, duration),
                 AnimationType.Color => target switch
                 {

@@ -32,7 +32,7 @@ namespace DG.Tweening.Core
 
         internal static void DestroyInstance()
         {
-            Assert.IsNotNull(_instance, "No instance of DOTween is running");
+            Assert.IsTrue(_instance is not null, "No instance of DOTween is running");
             _instance = null;
         }
     }

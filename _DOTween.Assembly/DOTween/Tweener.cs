@@ -6,8 +6,6 @@
 
 
 using System;
-using DOVector3 = UnityEngine.Vector3;
-using DOQuaternion = UnityEngine.Quaternion;
 using DG.Tweening.Core;
 using DG.Tweening.Core.Enums;
 using DG.Tweening.Plugins.Core;

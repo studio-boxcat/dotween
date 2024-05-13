@@ -78,7 +78,7 @@ namespace DG.Tweening
         // PLAY DATA /////////////////////////////////////////////////
 
         /// <summary>Returns TRUE if the tween is set to loop (either a set number of times or infinitely)</summary>
-        public bool hasLoops { get { return loops == -1 || loops > 1; } }
+        public bool hasLoops => loops is -1 or > 1;
 
         internal bool creationLocked; // TRUE after the tween was updated the first time (even if it was delayed), or when added to a Sequence
         internal bool startupDone; // TRUE the first time the actual tween starts, AFTER any delay has elapsed (unless it's a FROM tween)
@@ -145,7 +145,7 @@ namespace DG.Tweening
         // Applies the tween set by DoGoto.
         // Returns TRUE if the tween needs to be killed.
         // UpdateNotice is only used by Tweeners, since Sequences re-evaluate for it
-        internal abstract bool ApplyTween(float prevPosition, int prevCompletedLoops, int newCompletedSteps, bool useInversePosition, UpdateMode updateMode, UpdateNotice updateNotice);
+        internal abstract bool ApplyTween(float prevPosition, int prevCompletedLoops, int newCompletedSteps, bool useInversePosition, UpdateMode updateMode);
 
         #endregion
 
@@ -208,12 +208,7 @@ namespace DG.Tweening
                 && (t.position < t.duration ? t.completedLoops % 2 != 0 : t.completedLoops % 2 == 0);
 
             // Get values from plugin and set them
-            bool isRewindStep = !wasRewinded && (
-                                    t.loopType == LoopType.Restart && t.completedLoops != prevCompletedLoops && (t.loops == -1 || t.completedLoops < t.loops)
-                                    || t.position <= 0 && t.completedLoops <= 0
-                                );
-            UpdateNotice updateNotice = isRewindStep ? UpdateNotice.RewindStep : UpdateNotice.None;
-            if (t.ApplyTween(prevPosition, prevCompletedLoops, newCompletedSteps, useInversePosition, updateMode, updateNotice)) return true;
+            if (t.ApplyTween(prevPosition, prevCompletedLoops, newCompletedSteps, useInversePosition, updateMode)) return true;
 
             // Additional callbacks
             if (t.onUpdate != null && updateMode != UpdateMode.IgnoreOnUpdate) {
@@ -241,20 +236,6 @@ namespace DG.Tweening
                     return false; // Callback error
                 }
             } else callback();
-            return true;
-        }
-        internal static bool OnTweenCallback<T>(TweenCallback<T> callback, Tween t, T param)
-        {
-            if (DOTween.useSafeMode) {
-                try {
-                    callback(param);
-                } catch (Exception e) {
-                    Debugger.LogSafeModeCapturedError(string.Format(
-                        "An error inside a tween callback was taken care of ({0}) ► {1}", e.TargetSite, e.Message
-                    ), t);
-                    return false; // Callback error
-                }
-            } else callback(param);
             return true;
         }
 

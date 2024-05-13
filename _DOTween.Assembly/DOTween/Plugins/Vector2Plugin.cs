@@ -5,10 +5,7 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
-using System;
 using DG.Tweening.Core;
-using DG.Tweening.Core.Easing;
-using DG.Tweening.Core.Enums;
 using DG.Tweening.Plugins.Core;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
@@ -18,6 +15,8 @@ namespace DG.Tweening.Plugins
 {
     public class Vector2Plugin : ABSTweenPlugin<Vector2, VectorOptions>
     {
+        public static Vector2Plugin Instance = new();
+
         public override void SetFrom(TweenerCore<Vector2, Vector2, VectorOptions> t, bool isRelative)
         {
             Vector2 prevEndVal = t.endValue;
@@ -37,6 +36,7 @@ namespace DG.Tweening.Plugins
             }
             t.setter(to);
         }
+
         public override void SetFrom(TweenerCore<Vector2, Vector2, VectorOptions> t, Vector2 fromValue, bool setImmediately, bool isRelative)
         {
             if (isRelative) {
@@ -86,30 +86,25 @@ namespace DG.Tweening.Plugins
 
         public override void EvaluateAndApply(
             VectorOptions options, Tween t, DOGetter<Vector2> getter, DOSetter<Vector2> setter,
-            float elapsed, Vector2 startValue, Vector2 changeValue, float duration, bool usingInversePosition, int newCompletedSteps,
-            UpdateNotice updateNotice
-        ){
-            if (t.loopType == LoopType.Incremental) startValue += changeValue * (t.isComplete ? t.completedLoops - 1 : t.completedLoops);
-            if (t.isSequenced && t.sequenceParent.loopType == LoopType.Incremental) {
-                startValue += changeValue * (t.loopType == LoopType.Incremental ? t.loops : 1)
-                    * (t.sequenceParent.isComplete ? t.sequenceParent.completedLoops - 1 : t.sequenceParent.completedLoops);
-            }
+            float elapsed, Vector2 startValue, Vector2 changeValue, float duration
+        )
+        {
+            var pos = DOTweenUtils.CalculatePosition(t, elapsed, duration);
 
-            float easeVal = EaseManager.Evaluate(t.easeType, t.customEase, elapsed, duration, t.easeOvershootOrAmplitude, t.easePeriod);
             switch (options.axisConstraint) {
             case AxisConstraint.X:
-                Vector2 resX = getter();
-                resX.x = startValue.x + changeValue.x * easeVal;
+                var resX = getter();
+                resX.x = startValue.x + changeValue.x * pos;
                 setter(resX);
                 break;
             case AxisConstraint.Y:
-                Vector2 resY = getter();
-                resY.y = startValue.y + changeValue.y * easeVal;
+                var resY = getter();
+                resY.y = startValue.y + changeValue.y * pos;
                 setter(resY);
                 break;
             default:
-                startValue.x += changeValue.x * easeVal;
-                startValue.y += changeValue.y * easeVal;
+                startValue.x += changeValue.x * pos;
+                startValue.y += changeValue.y * pos;
                 setter(startValue);
                 break;
             }

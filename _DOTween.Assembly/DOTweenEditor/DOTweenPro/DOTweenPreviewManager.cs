@@ -61,11 +61,14 @@ namespace DG.DOTweenEditor
                 EditorApplication.update -= _update;
 
             TweenManager.RestoreToOriginal(t);
+            TweenManager.Despawn(t);
         }
 
         static EditorApplication.CallbackFunction _update;
         static void Update()
         {
+            Assert.IsTrue(_tweens.Count is not 0, "No tweens to update");
+
             var curTime = _lastUpdateTime;
             _lastUpdateTime = (float) EditorApplication.timeSinceStartup;
             var elapsed = _lastUpdateTime - curTime;
@@ -81,9 +84,14 @@ namespace DG.DOTweenEditor
         static void OnPlayModeStateChanged(PlayModeStateChange state)
         {
             EditorApplication.playModeStateChanged -= _onPlayModeStateChanged;
-            foreach (var t in _tweens.Values)
-                Internal_StopPreview(t);
-            _tweens.Clear();
+
+            if (_tweens.Count is not 0)
+            {
+                foreach (var t in _tweens.Values)
+                    Internal_StopPreview(t);
+                _tweens.Clear();
+                EditorApplication.update -= _update;
+            }
         }
     }
 }

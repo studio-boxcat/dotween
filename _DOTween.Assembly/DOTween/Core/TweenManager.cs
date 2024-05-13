@@ -922,8 +922,7 @@ namespace DG.Tweening.Core
 
         static void ClearTweenArray(Tween[] tweens)
         {
-            int len = tweens.Length;
-            for (int i = 0; i < len; i++) tweens[i] = null;
+            Array.Clear(tweens, 0, tweens.Length);
         }
 
         static void IncreaseCapacities(CapacityIncreaseMode increaseMode)

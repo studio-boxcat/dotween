@@ -1,14 +1,4 @@
-﻿#if !COMPATIBLE
-// Author: Daniele Giardini - http://www.demigiant.com
-// Created: 2014/05/06 19:35
-// 
-// License Copyright (c) Daniele Giardini.
-// This work is subject to the terms at http://dotween.demigiant.com/license.php
-
-using System;
-using DG.Tweening.Core;
-using DG.Tweening.Core.Easing;
-using DG.Tweening.Core.Enums;
+﻿using DG.Tweening.Core;
 using DG.Tweening.Plugins.Core;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
@@ -18,6 +8,8 @@ namespace DG.Tweening.Plugins
 {
     public class Vector3Plugin : ABSTweenPlugin<Vector3,VectorOptions>
     {
+        public static readonly Vector3Plugin Instance = new();
+
         public override void SetFrom(TweenerCore<Vector3, Vector3, VectorOptions> t, bool isRelative)
         {
             Vector3 prevEndVal = t.endValue;
@@ -37,6 +29,7 @@ namespace DG.Tweening.Plugins
             }
             t.setter(to);
         }
+
         public override void SetFrom(TweenerCore<Vector3, Vector3, VectorOptions> t, Vector3 fromValue, bool setImmediately, bool isRelative)
         {
             if (isRelative) {
@@ -86,35 +79,28 @@ namespace DG.Tweening.Plugins
 
         public override void EvaluateAndApply(
             VectorOptions options, Tween t, DOGetter<Vector3> getter, DOSetter<Vector3> setter,
-            float elapsed, Vector3 startValue, Vector3 changeValue, float duration, bool usingInversePosition, int newCompletedSteps,
-            UpdateNotice updateNotice
+            float elapsed, Vector3 startValue, Vector3 changeValue, float duration
         ){
-            if (t.loopType == LoopType.Incremental) startValue += changeValue * (t.isComplete ? t.completedLoops - 1 : t.completedLoops);
-            if (t.isSequenced && t.sequenceParent.loopType == LoopType.Incremental) {
-                startValue += changeValue * (t.loopType == LoopType.Incremental ? t.loops : 1)
-                    * (t.sequenceParent.isComplete ? t.sequenceParent.completedLoops - 1 : t.sequenceParent.completedLoops);
-            }
+            var pos = DOTweenUtils.CalculatePosition(t, elapsed, duration);
 
-            float easeVal = EaseManager.Evaluate(t.easeType, t.customEase, elapsed, duration, t.easeOvershootOrAmplitude, t.easePeriod);
             switch (options.axisConstraint) {
             case AxisConstraint.X:
                 Vector3 resX = getter();
-                resX.x = startValue.x + changeValue.x * easeVal;
+                resX.x = startValue.x + changeValue.x * pos;
                 setter(resX);
                 break;
             case AxisConstraint.Y:
                 Vector3 resY = getter();
-                resY.y = startValue.y + changeValue.y * easeVal;
+                resY.y = startValue.y + changeValue.y * pos;
                 setter(resY);
                 break;
             default:
-                startValue.x += changeValue.x * easeVal;
-                startValue.y += changeValue.y * easeVal;
-                startValue.z += changeValue.z * easeVal;
+                startValue.x += changeValue.x * pos;
+                startValue.y += changeValue.y * pos;
+                startValue.z += changeValue.z * pos;
                 setter(startValue);
                 break;
             }
         }
     }
 }
-#endif
