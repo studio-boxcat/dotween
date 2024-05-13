@@ -5,13 +5,12 @@
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
 using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
 
 #pragma warning disable 1591
 namespace DG.Tweening.Plugins.Core
 {
     // Public so it can be extended by custom plugins
-    public abstract class ABSTweenPlugin<T1,T2,TPlugOptions> : ITweenPlugin where TPlugOptions : struct, IPlugOptions
+    public abstract class ABSTweenPlugin<T1,T2,TPlugOptions> : ITweenPlugin where TPlugOptions : struct
     {
         public virtual void Reset(TweenerCore<T1, T2, TPlugOptions> t) { } // Resets specific TweenerCore stuff, not the plugin itself
         public abstract void SetFrom(TweenerCore<T1, T2, TPlugOptions> t, bool isRelative);
@@ -23,7 +22,7 @@ namespace DG.Tweening.Plugins.Core
         public abstract void EvaluateAndApply(TPlugOptions options, Tween t, DOGetter<T1> getter, DOSetter<T1> setter, float elapsed, T2 startValue, T2 changeValue, float duration);
     }
 
-    public abstract class ABSTweenPlugin<T1, TPlugOptions> : ABSTweenPlugin<T1, T1, TPlugOptions> where TPlugOptions : struct, IPlugOptions
+    public abstract class ABSTweenPlugin<T1, TPlugOptions> : ABSTweenPlugin<T1, T1, TPlugOptions> where TPlugOptions : struct
     {
         public override T1 ConvertToStartValue(TweenerCore<T1, T1, TPlugOptions> t, T1 value) => value;
         public override void ApplyOriginal(TweenerCore<T1, T1, TPlugOptions> t) => t.setter(t.isFrom ? t.endValue : t.startValue);

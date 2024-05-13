@@ -5,9 +5,6 @@
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
 
-using DOVector2 = UnityEngine.Vector2;
-using DOVector3 = UnityEngine.Vector3;
-using DOColor = UnityEngine.Color;
 using DG.Tweening.Core;
 using DG.Tweening.Core.Enums;
 using DG.Tweening.Plugins;
@@ -35,17 +32,6 @@ namespace DG.Tweening
         /// <summary>Behaviour in case a tween nested inside a Sequence fails (and is caught by safe mode).
         /// <para>Default: NestedTweenFailureBehaviour.TryToPreserveSequence</para></summary>
         public static NestedTweenFailureBehaviour nestedTweenFailureBehaviour = NestedTweenFailureBehaviour.TryToPreserveSequence;
-        // DEBUG OPTIONS
-        /// <summary>If TRUE activates various debug options</summary>
-        public const bool debugMode =
-#if DEBUG
-            true;
-#else
-            false;
-#endif
-        /// <summary>Stores the target id so it can be used to give more info in case of safeMode error capturing.
-        /// Only active if both <code>debugMode</code> and <code>useSafeMode</code> are TRUE</summary>
-        public const bool debugStoreTargetId = debugMode;
 
         ///////////////////////////////////////////////
         // Default options for Tweens /////////////////
@@ -58,7 +44,7 @@ namespace DG.Tweening
         public static float defaultEaseOvershootOrAmplitude = 1.70158f;
         /// <summary>Default period used for eases
         /// <para>Default: 0</para></summary>
-        public static float defaultEasePeriod = 0;
+        public static float defaultEasePeriod;
 
         internal static int maxActiveTweenersReached, maxActiveSequencesReached; // Controlled by DOTweenInspector if showUnityEditorReport is active
         internal static bool initialized; // Can be set to false by DOTweenComponent OnDestroy
@@ -136,10 +122,10 @@ namespace DG.Tweening
 
         #region Tween TO
 
-        static TweenerCore<T1, T2, TPlugOptions> ApplyTo<T1, T2, TPlugOptions>(
-            DOGetter<T1> getter, DOSetter<T1> setter, T2 endValue, float duration, ABSTweenPlugin<T1, T2, TPlugOptions> plugin = null
+        public static TweenerCore<T1, T2, TPlugOptions> To<T1, T2, TPlugOptions>(
+            DOGetter<T1> getter, DOSetter<T1> setter, T2 endValue, float duration, ABSTweenPlugin<T1, T2, TPlugOptions> plugin
         )
-            where TPlugOptions : struct, IPlugOptions
+            where TPlugOptions : struct
         {
             InitCheck();
             var tweener = TweenManager.GetTweener<T1, T2, TPlugOptions>();
@@ -158,7 +144,7 @@ namespace DG.Tweening
         /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
         /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
         public static TweenerCore<float, float, NoOptions> To(DOGetter<float> getter, DOSetter<float> setter, float endValue, float duration)
-        { return To(FloatPlugin.Instance, getter, setter, endValue, duration); }
+        { return To(getter, setter, endValue, duration, FloatPlugin.Instance); }
         /// <summary>Tweens a property or field to the given value using default plugins</summary>
         /// <param name="getter">A getter for the field or property to tween.
         /// <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
@@ -166,46 +152,31 @@ namespace DG.Tweening
         /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
         /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
         public static TweenerCore<int, int, NoOptions> To(DOGetter<int> getter, DOSetter<int> setter, int endValue,float duration)
-        { return To(IntPlugin.Instance, getter, setter, endValue, duration); }
+        { return To(getter, setter, endValue, duration, IntPlugin.Instance); }
         /// <summary>Tweens a property or field to the given value using default plugins</summary>
         /// <param name="getter">A getter for the field or property to tween.
         /// <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
         /// <param name="setter">A setter for the field or property to tween
         /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
         /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        public static TweenerCore<DOVector2, DOVector2, VectorOptions> To(DOGetter<DOVector2> getter, DOSetter<DOVector2> setter, Vector2 endValue, float duration)
-        { return To(Vector2Plugin.Instance, getter, setter, endValue, duration); }
+        public static TweenerCore<Vector2, Vector2, VectorOptions> To(DOGetter<Vector2> getter, DOSetter<Vector2> setter, Vector2 endValue, float duration)
+        { return To(getter, setter, endValue, duration, Vector2Plugin.Instance); }
         /// <summary>Tweens a property or field to the given value using default plugins</summary>
         /// <param name="getter">A getter for the field or property to tween.
         /// <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
         /// <param name="setter">A setter for the field or property to tween
         /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
         /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        public static TweenerCore<DOVector3, DOVector3, VectorOptions> To(DOGetter<DOVector3> getter, DOSetter<DOVector3> setter, Vector3 endValue, float duration)
-        { return To(Vector3Plugin.Instance, getter, setter, endValue, duration); }
+        public static TweenerCore<Vector3, Vector3, VectorOptions> To(DOGetter<Vector3> getter, DOSetter<Vector3> setter, Vector3 endValue, float duration)
+        { return To(getter, setter, endValue, duration, Vector3Plugin.Instance); }
         /// <summary>Tweens a property or field to the given value using default plugins</summary>
         /// <param name="getter">A getter for the field or property to tween.
         /// <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
         /// <param name="setter">A setter for the field or property to tween
         /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
         /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        public static TweenerCore<DOColor, DOColor, NoOptions> To(DOGetter<DOColor> getter, DOSetter<DOColor> setter, Color endValue, float duration)
-        { return To(ColorPlugin.Instance, getter, setter, endValue, duration); }
-
-        /// <summary>Tweens a property or field to the given value using a custom plugin</summary>
-        /// <param name="plugin">The plugin to use. Each custom plugin implements a static <code>Get()</code> method
-        /// you'll need to call to assign the correct plugin in the correct way, like this:
-        /// <para><code>CustomPlugin.Get()</code></para></param>
-        /// <param name="getter">A getter for the field or property to tween.
-        /// <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-        /// <param name="setter">A setter for the field or property to tween
-        /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        public static TweenerCore<T1, T2, TPlugOptions> To<T1, T2, TPlugOptions>(
-            ABSTweenPlugin<T1, T2, TPlugOptions> plugin, DOGetter<T1> getter, DOSetter<T1> setter, T2 endValue, float duration
-        )
-            where TPlugOptions : struct, IPlugOptions
-        { return ApplyTo(getter, setter, endValue, duration, plugin); }
+        public static TweenerCore<Color, Color, NoOptions> To(DOGetter<Color> getter, DOSetter<Color> setter, Color endValue, float duration)
+        { return To(getter, setter, endValue, duration, ColorPlugin.Instance); }
 
         /// <summary>Tweens only the alpha of a Color to the given value using default plugins</summary>
         /// <param name="getter">A getter for the field or property to tween.
@@ -406,7 +377,7 @@ namespace DG.Tweening
 
             float totDuration = 0;
             for (int i = 0; i < len; ++i) totDuration += durationsClone[i];
-            var t = ApplyTo<Vector3, Vector3[], Vector3ArrayOptions>(getter, setter, endValuesClone, totDuration).NoFrom();
+            var t = To(getter, setter, endValuesClone, totDuration, Vector3ArrayPlugin.Instance).NoFrom();
             t.plugOptions.durations = durationsClone;
             return t;
         }
@@ -532,17 +503,6 @@ namespace DG.Tweening
         {
             if (targetOrId == null) return 0;
             return TweenManager.FilteredOperation(OperationType.Rewind, targetOrId, includeDelay, 0);
-        }
-
-        /// <summary>Smoothly rewinds all tweens (delays excluded) with the given ID or target, then returns the number of actual tweens rewinding/rewinded
-        /// (meaning the tweens that were not already rewinded).
-        /// A "smooth rewind" animates the tween to its start position,
-        /// skipping all elapsed loops (except in case of LoopType.Incremental) while keeping the animation fluent.
-        /// <para>Note that a tween that was smoothly rewinded will have its play direction flipped</para></summary>
-        public static int SmoothRewind(object targetOrId)
-        {
-            if (targetOrId == null) return 0;
-            return TweenManager.FilteredOperation(OperationType.SmoothRewind, targetOrId, false, 0);
         }
 
         /// <summary>Toggles the play state of all tweens with the given ID or target and returns the number of actual tweens toggled

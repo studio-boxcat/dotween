@@ -52,7 +52,7 @@ namespace DG.Tweening.Core
         // Returns a new Tweener, from the pool if there's one available,
         // otherwise by instantiating a new one
         internal static TweenerCore<T1,T2,TPlugOptions> GetTweener<T1,T2,TPlugOptions>()
-            where TPlugOptions : struct, IPlugOptions
+            where TPlugOptions : struct
         {
             TweenerCore<T1,T2,TPlugOptions> t;
             // Search inside pool
@@ -88,7 +88,7 @@ namespace DG.Tweening.Core
                     int prevMaxTweeners = maxTweeners;
                     int prevMaxSequences = maxSequences;
                     IncreaseCapacities(CapacityIncreaseMode.TweenersOnly);
-                    if (Debugger.logPriority >= 1) Debugger.LogWarning(_MaxTweensReached
+                    Debugger.LogWarning(_MaxTweensReached
                         .Replace("#0", prevMaxTweeners + "/" + prevMaxSequences)
                         .Replace("#1", maxTweeners + "/" + maxSequences)
                     );
@@ -117,7 +117,7 @@ namespace DG.Tweening.Core
                 int prevMaxTweeners = maxTweeners;
                 int prevMaxSequences = maxSequences;
                 IncreaseCapacities(CapacityIncreaseMode.SequencesOnly);
-                if (Debugger.logPriority >= 1) Debugger.LogWarning(_MaxTweensReached
+                Debugger.LogWarning(_MaxTweensReached
                     .Replace("#0", prevMaxTweeners + "/" + prevMaxSequences)
                         .Replace("#1", maxTweeners + "/" + maxSequences)
                 );
@@ -488,9 +488,6 @@ namespace DG.Tweening.Core
                     case OperationType.Rewind:
                         if (Rewind(t, optionalBool)) totInvolved++;
                         break;
-                    case OperationType.SmoothRewind:
-                        if (SmoothRewind(t)) totInvolved++;
-                        break;
                     case OperationType.TogglePause:
                         if (TogglePause(t)) totInvolved++;
                         break;
@@ -681,28 +678,6 @@ namespace DG.Tweening.Core
             t.isComplete = false;
             t.position = 0;
             t.ApplyOriginal();
-        }
-
-        internal static bool SmoothRewind(Tween t)
-        {
-            bool rewinded = false;
-            if (t.delay > 0) {
-                rewinded = t.elapsedDelay < t.delay;
-                t.elapsedDelay = t.delay;
-                t.delayComplete = true;
-            }
-            if (t.position > 0 || t.completedLoops > 0 || !t.startupDone) {
-                rewinded = true;
-                if (t.loopType == LoopType.Incremental) t.PlayBackwards();
-                else {
-                    t.Goto(t.ElapsedDirectionalPercentage() * t.duration);
-                    t.PlayBackwards();
-                }
-            } else {
-                // Already rewinded
-                t.isPlaying = false;
-            }
-            return rewinded;
         }
 
         internal static bool TogglePause(Tween t)

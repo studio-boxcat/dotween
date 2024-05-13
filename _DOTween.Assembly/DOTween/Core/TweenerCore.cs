@@ -7,7 +7,6 @@
 using System;
 using DG.Tweening.Core.Enums;
 using DG.Tweening.Plugins.Core;
-using DG.Tweening.Plugins.Options;
 
 #pragma warning disable 1591
 namespace DG.Tweening.Core
@@ -17,7 +16,7 @@ namespace DG.Tweening.Core
     // T1: type of value to tween
     // T2: format in which value is stored while tweening
     // TPlugOptions: options type
-    public class TweenerCore<T1,T2,TPlugOptions> : Tweener where TPlugOptions : struct, IPlugOptions
+    public class TweenerCore<T1,T2,TPlugOptions> : Tweener where TPlugOptions : struct
     {
         // SETUP DATA ////////////////////////////////////////////////
 
@@ -69,7 +68,7 @@ namespace DG.Tweening.Core
             base.Reset();
 
             tweenPlugin?.Reset(this);
-            plugOptions.Reset(); // Alternate fix that uses IPlugOptions Reset
+            plugOptions = default; // Alternate fix that uses IPlugOptions Reset
             getter = null;
             setter = null;
             hasManuallySetStartValue = false;

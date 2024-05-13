@@ -19,13 +19,15 @@ namespace DG.Tweening.Plugins
     /// </summary>
     public class Vector3ArrayPlugin : ABSTweenPlugin<Vector3, Vector3[], Vector3ArrayOptions>
     {
+        public static readonly Vector3ArrayPlugin Instance = new();
+
         public override void Reset(TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> t)
         {
             t.startValue = t.endValue = t.changeValue = null;
         }
 
-        public override void SetFrom(TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> t, bool isRelative) {}
-        public override void SetFrom(TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> t, Vector3[] fromValue, bool setImmediately, bool isRelative) {}
+        public override void SetFrom(TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> t, bool isRelative) { }
+        public override void SetFrom(TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> t, Vector3[] fromValue, bool setImmediately, bool isRelative) { }
 
         public override Vector3[] ConvertToStartValue(TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> t, Vector3 value)
         {
@@ -74,7 +76,7 @@ namespace DG.Tweening.Plugins
             }
             if (t.isSequenced && t.sequenceParent.loopType == LoopType.Incremental) {
                 int iterations = (t.loopType == LoopType.Incremental ? t.loops : 1)
-                    * (t.sequenceParent.isComplete ? t.sequenceParent.completedLoops - 1 : t.sequenceParent.completedLoops);
+                                 * (t.sequenceParent.isComplete ? t.sequenceParent.completedLoops - 1 : t.sequenceParent.completedLoops);
                 if (iterations > 0) {
                     int end = startValue.Length - 1;
                     incrementValue += (startValue[end] + changeValue[end] - startValue[0]) * iterations;
@@ -102,22 +104,22 @@ namespace DG.Tweening.Plugins
             float easeVal = EaseManager.Evaluate(t.easeType, t.customEase, segmentElapsed, segmentDuration, t.easeOvershootOrAmplitude, t.easePeriod);
             Vector3 res;
             switch (options.axisConstraint) {
-            case AxisConstraint.X:
-                res = getter();
-                res.x = startValue[index].x + incrementValue.x + changeValue[index].x * easeVal;
-                setter(res);
-                break;
-            case AxisConstraint.Y:
-                res = getter();
-                res.y = startValue[index].y + incrementValue.y + changeValue[index].y * easeVal;
-                setter(res);
-                return;
-            default:
-                res.x = startValue[index].x + incrementValue.x + changeValue[index].x * easeVal;
-                res.y = startValue[index].y + incrementValue.y + changeValue[index].y * easeVal;
-                res.z = startValue[index].z + incrementValue.z + changeValue[index].z * easeVal;
-                setter(res);
-                break;
+                case AxisConstraint.X:
+                    res = getter();
+                    res.x = startValue[index].x + incrementValue.x + changeValue[index].x * easeVal;
+                    setter(res);
+                    break;
+                case AxisConstraint.Y:
+                    res = getter();
+                    res.y = startValue[index].y + incrementValue.y + changeValue[index].y * easeVal;
+                    setter(res);
+                    return;
+                default:
+                    res.x = startValue[index].x + incrementValue.x + changeValue[index].x * easeVal;
+                    res.y = startValue[index].y + incrementValue.y + changeValue[index].y * easeVal;
+                    res.z = startValue[index].z + incrementValue.z + changeValue[index].z * easeVal;
+                    setter(res);
+                    break;
             }
         }
     }

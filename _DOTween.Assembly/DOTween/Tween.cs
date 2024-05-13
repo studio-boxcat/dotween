@@ -57,11 +57,9 @@ namespace DG.Tweening
         public float easePeriod; // Public so it can be used with custom plugins
 #pragma warning restore 1591
 
-        // SPECIAL DEBUG DATA ////////////////////////////////////////////////
-        /// <summary>
-        /// Set by SetTarget if DOTween's Debug Mode is on (see DOTween Utility Panel -> "Store GameObject's ID" debug option
-        /// </summary>
+#if DEBUG
         public string debugTargetId;
+#endif
 
         // SETUP DATA ////////////////////////////////////////////////
 
@@ -92,7 +90,7 @@ namespace DG.Tweening
         internal bool isComplete;
         internal float elapsedDelay; // Amount of eventual delay elapsed (shared by Sequences only for compatibility reasons, otherwise not used)
         internal bool delayComplete = true; // TRUE when the delay has elapsed or isn't set, also set by Delay extension method (shared by Sequences only for compatibility reasons, otherwise not used)
-        
+
 
         #region Abstracts + Overrideables
 
@@ -229,9 +227,7 @@ namespace DG.Tweening
                 try {
                     callback();
                 } catch (Exception e) {
-                    Debugger.LogSafeModeCapturedError(string.Format(
-                        "An error inside a tween callback was taken care of ({0}) ► {1}\n\n{2}\n\n", e.TargetSite, e.Message, e.StackTrace
-                    ), t);
+                    Debugger.LogSafeModeCapturedError($"An error inside a tween callback was taken care of ({e.TargetSite}) ► {e.Message}\n\n{e.StackTrace}\n\n", t);
                     return false; // Callback error
                 }
             } else callback();

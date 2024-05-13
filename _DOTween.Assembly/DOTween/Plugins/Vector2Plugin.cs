@@ -15,7 +15,7 @@ namespace DG.Tweening.Plugins
 {
     public class Vector2Plugin : ABSTweenPlugin<Vector2, VectorOptions>
     {
-        public static Vector2Plugin Instance = new();
+        public static readonly Vector2Plugin Instance = new();
 
         public override void SetFrom(TweenerCore<Vector2, Vector2, VectorOptions> t, bool isRelative)
         {

@@ -7,7 +7,6 @@
 using DG.Tweening.Core;
 using DG.Tweening.Core.Enums;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 #pragma warning disable 1573
 namespace DG.Tweening
@@ -22,35 +21,17 @@ namespace DG.Tweening
 
         #region Runtime Operations
 
-//        /// <summary>Completes the tween</summary>
-//        /// <param name="withCallbacks">For Sequences only: if TRUE also internal Sequence callbacks will be fired,
-//        /// otherwise they will be ignored</param>
-//        public static void Complete(this Tween t, bool withCallbacks = false)
-//        {
-//            if (t == null) {
-//                if (Debugger.logPriority > 1) Debugger.LogNullTween(t); return;
-//            } else if (!t.active) {
-//                if (Debugger.logPriority > 1) Debugger.LogInvalidTween(t); return;
-//            } else if (t.isSequenced) {
-//                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t); return;
-//            }
-//
-//            TweenManager.Complete(t, true, withCallbacks ? UpdateMode.Update : UpdateMode.Goto);
-//        }
-        /// <summary>Completes the tween</summary>
-        public static void Complete(this Tween t)
-        { Complete(t, false); }
         /// <summary>Completes the tween</summary>
         /// <param name="withCallbacks">For Sequences only: if TRUE also internal Sequence callbacks will be fired,
         /// otherwise they will be ignored</param>
         public static void Complete(this Tween t, bool withCallbacks)
         {
             if (t == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNullTween(t); return;
+                Debugger.LogNullTween(t); return;
             } else if (!t.active) {
-                if (Debugger.logPriority > 1) Debugger.LogInvalidTween(t); return;
+                Debugger.LogInvalidTween(t); return;
             } else if (t.isSequenced) {
-                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t); return;
+                Debugger.LogNestedTween(t); return;
             }
 
             // Previously disused in favor of bottom code because otherwise OnComplete was called twice when fired inside am OnUpdate call,
@@ -63,33 +44,16 @@ namespace DG.Tweening
             //     : withCallbacks ? UpdateMode.Update : UpdateMode.Goto;
             // TweenManager.Complete(t, true, updateMode);
         }
-        
-        /// <summary>Optional: indicates that the tween creation has ended, to be used (optionally) as the last element of tween chaining creation.<br/>
-        /// This method won't do anything except in case of 0-duration tweens,
-        /// where it will complete them immediately instead of waiting for the next internal update routine
-        /// (unless they're nested in a Sequence, in which case the Sequence will still be the one in control and this method will be ignored)</summary>
-        public static void Done(this Tween t)
-        {
-            if (t == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNullTween(t); return;
-            } else if (!t.active) {
-                if (Debugger.logPriority > 1) Debugger.LogInvalidTween(t); return;
-            } else if (t.isSequenced) {
-                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t); return;
-            }
-            
-            if (t.duration <= 0) TweenManager.Complete(t);
-        }
 
         /// <summary>Flips the direction of this tween (backwards if it was going forward or viceversa)</summary>
         public static void Flip(this Tween t)
         {
             if (t == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNullTween(t); return;
+                Debugger.LogNullTween(t); return;
             } else if (!t.active) {
-                if (Debugger.logPriority > 1) Debugger.LogInvalidTween(t); return;
+                Debugger.LogInvalidTween(t); return;
             } else if (t.isSequenced) {
-                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t); return;
+                Debugger.LogNestedTween(t); return;
             }
 
             TweenManager.Flip(t);
@@ -99,11 +63,11 @@ namespace DG.Tweening
         public static void ForceInit(this Tween t)
         {
             if (t == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNullTween(t); return;
+                Debugger.LogNullTween(t); return;
             } else if (!t.active) {
-                if (Debugger.logPriority > 1) Debugger.LogInvalidTween(t); return;
+                Debugger.LogInvalidTween(t); return;
             } else if (t.isSequenced) {
-                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t); return;
+                Debugger.LogNestedTween(t); return;
             }
 
             TweenManager.ForceInit(t);
@@ -124,11 +88,11 @@ namespace DG.Tweening
         static void DoGoto(Tween t, float to, bool andPlay, bool withCallbacks)
         {
             if (t == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNullTween(t); return;
+                Debugger.LogNullTween(t); return;
             } else if (!t.active) {
-                if (Debugger.logPriority > 1) Debugger.LogInvalidTween(t); return;
+                Debugger.LogInvalidTween(t); return;
             } else if (t.isSequenced) {
-                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t); return;
+                Debugger.LogNestedTween(t); return;
             }
 
             if (to < 0) to = 0;
@@ -144,7 +108,7 @@ namespace DG.Tweening
             if (t is not { active: true })
                 return;
             if (t.isSequenced) {
-                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t);
+                Debugger.LogNestedTween(t);
                 return;
             }
 
@@ -185,11 +149,11 @@ namespace DG.Tweening
         public static T Pause<T>(this T t) where T : Tween
         {
             if (t == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNullTween(t); return t;
+                Debugger.LogNullTween(t); return t;
             } else if (!t.active) {
-                if (Debugger.logPriority > 1) Debugger.LogInvalidTween(t); return t;
+                Debugger.LogInvalidTween(t); return t;
             } else if (t.isSequenced) {
-                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t); return t;
+                Debugger.LogNestedTween(t); return t;
             }
 
             TweenManager.Pause(t);
@@ -200,11 +164,11 @@ namespace DG.Tweening
         public static T Play<T>(this T t) where T : Tween
         {
             if (t == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNullTween(t); return t;
+                Debugger.LogNullTween(t); return t;
             } else if (!t.active) {
-                if (Debugger.logPriority > 1) Debugger.LogInvalidTween(t); return t;
+                Debugger.LogInvalidTween(t); return t;
             } else if (t.isSequenced) {
-                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t); return t;
+                Debugger.LogNestedTween(t); return t;
             }
 
             TweenManager.Play(t);
@@ -215,11 +179,11 @@ namespace DG.Tweening
         public static void PlayBackwards(this Tween t)
         {
             if (t == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNullTween(t); return;
+                Debugger.LogNullTween(t); return;
             } else if (!t.active) {
-                if (Debugger.logPriority > 1) Debugger.LogInvalidTween(t); return;
+                Debugger.LogInvalidTween(t); return;
             } else if (t.isSequenced) {
-                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t); return;
+                Debugger.LogNestedTween(t); return;
             }
 
             TweenManager.PlayBackwards(t);
@@ -229,11 +193,11 @@ namespace DG.Tweening
         public static void PlayForward(this Tween t)
         {
             if (t == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNullTween(t); return;
+                Debugger.LogNullTween(t); return;
             } else if (!t.active) {
-                if (Debugger.logPriority > 1) Debugger.LogInvalidTween(t); return;
+                Debugger.LogInvalidTween(t); return;
             } else if (t.isSequenced) {
-                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t); return;
+                Debugger.LogNestedTween(t); return;
             }
 
             TweenManager.PlayForward(t);
@@ -245,11 +209,11 @@ namespace DG.Tweening
         public static void Restart(this Tween t, bool includeDelay = true, float changeDelayTo = -1)
         {
             if (t == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNullTween(t); return;
+                Debugger.LogNullTween(t); return;
             } else if (!t.active) {
-                if (Debugger.logPriority > 1) Debugger.LogInvalidTween(t); return;
+                Debugger.LogInvalidTween(t); return;
             } else if (t.isSequenced) {
-                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t); return;
+                Debugger.LogNestedTween(t); return;
             }
 
             TweenManager.Restart(t, includeDelay, changeDelayTo);
@@ -260,43 +224,25 @@ namespace DG.Tweening
         public static void Rewind(this Tween t, bool includeDelay = true)
         {
             if (t == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNullTween(t); return;
+                Debugger.LogNullTween(t); return;
             } else if (!t.active) {
-                if (Debugger.logPriority > 1) Debugger.LogInvalidTween(t); return;
+                Debugger.LogInvalidTween(t); return;
             } else if (t.isSequenced) {
-                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t); return;
+                Debugger.LogNestedTween(t); return;
             }
 
             TweenManager.Rewind(t, includeDelay);
-        }
-
-        /// <summary>Smoothly rewinds the tween (delays excluded).
-        /// A "smooth rewind" animates the tween to its start position,
-        /// skipping all elapsed loops (except in case of LoopType.Incremental) while keeping the animation fluent.
-        /// If called on a tween who is still waiting for its delay to happen, it will simply set the delay to 0 and pause the tween.
-        /// <para>Note that a tween that was smoothly rewinded will have its play direction flipped</para></summary>
-        public static void SmoothRewind(this Tween t)
-        {
-            if (t == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNullTween(t); return;
-            } else if (!t.active) {
-                if (Debugger.logPriority > 1) Debugger.LogInvalidTween(t); return;
-            } else if (t.isSequenced) {
-                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t); return;
-            }
-
-            TweenManager.SmoothRewind(t);
         }
 
         /// <summary>Plays the tween if it was paused, pauses it if it was playing</summary>
         public static void TogglePause(this Tween t)
         {
             if (t == null) {
-                if (Debugger.logPriority > 1) Debugger.LogNullTween(t); return;
+                Debugger.LogNullTween(t); return;
             } else if (!t.active) {
-                if (Debugger.logPriority > 1) Debugger.LogInvalidTween(t); return;
+                Debugger.LogInvalidTween(t); return;
             } else if (t.isSequenced) {
-                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t); return;
+                Debugger.LogNestedTween(t); return;
             }
 
             TweenManager.TogglePause(t);
@@ -310,7 +256,7 @@ namespace DG.Tweening
         public static int CompletedLoops(this Tween t)
         {
             if (!t.active) {
-                if (Debugger.logPriority > 0) Debugger.LogInvalidTween(t);
+                Debugger.LogInvalidTween(t);
                 return 0;
             }
 
@@ -321,7 +267,7 @@ namespace DG.Tweening
         public static float Delay(this Tween t)
         {
             if (!t.active) {
-                if (Debugger.logPriority > 0) Debugger.LogInvalidTween(t);
+                Debugger.LogInvalidTween(t);
                 return 0;
             }
 
@@ -332,7 +278,7 @@ namespace DG.Tweening
         public static float ElapsedDelay(this Tween t)
         {
             if (!t.active) {
-                if (Debugger.logPriority > 0) Debugger.LogInvalidTween(t);
+                Debugger.LogInvalidTween(t);
                 return 0;
             }
 
@@ -346,7 +292,7 @@ namespace DG.Tweening
         public static float Duration(this Tween t, bool includeLoops = true)
         {
             if (!t.active) {
-                if (Debugger.logPriority > 0) Debugger.LogInvalidTween(t);
+                Debugger.LogInvalidTween(t);
                 return 0;
             }
 
@@ -362,7 +308,7 @@ namespace DG.Tweening
         public static float ElapsedPercentage(this Tween t, bool includeLoops = true)
         {
             if (!t.active) {
-                if (Debugger.logPriority > 0) Debugger.LogInvalidTween(t);
+                Debugger.LogInvalidTween(t);
                 return 0;
             }
 
@@ -378,7 +324,7 @@ namespace DG.Tweening
         public static float ElapsedDirectionalPercentage(this Tween t)
         {
             if (!t.active) {
-                if (Debugger.logPriority > 0) Debugger.LogInvalidTween(t);
+                Debugger.LogInvalidTween(t);
                 return 0;
             }
 
@@ -402,7 +348,7 @@ namespace DG.Tweening
         public static bool IsBackwards(this Tween t)
         {
             if (!t.active) {
-                if (Debugger.logPriority > 0) Debugger.LogInvalidTween(t);
+                Debugger.LogInvalidTween(t);
                 return false;
             }
 
@@ -420,7 +366,7 @@ namespace DG.Tweening
         public static bool IsLoopingOrExecutingBackwards(this Tween t)
         {
             if (!t.active) {
-                if (Debugger.logPriority > 0) Debugger.LogInvalidTween(t);
+                Debugger.LogInvalidTween(t);
                 return false;
             }
 
@@ -436,7 +382,7 @@ namespace DG.Tweening
         public static bool IsComplete(this Tween t)
         {
             if (!t.active) {
-                if (Debugger.logPriority > 0) Debugger.LogInvalidTween(t);
+                Debugger.LogInvalidTween(t);
                 return false;
             }
 
@@ -447,7 +393,7 @@ namespace DG.Tweening
         public static bool IsInitialized(this Tween t)
         {
             if (!t.active) {
-                if (Debugger.logPriority > 0) Debugger.LogInvalidTween(t);
+                Debugger.LogInvalidTween(t);
                 return false;
             }
 
@@ -458,7 +404,7 @@ namespace DG.Tweening
         public static bool IsPlaying(this Tween t)
         {
             if (!t.active) {
-                if (Debugger.logPriority > 0) Debugger.LogInvalidTween(t);
+                Debugger.LogInvalidTween(t);
                 return false;
             }
 
@@ -470,7 +416,7 @@ namespace DG.Tweening
         public static int Loops(this Tween t)
         {
             if (!t.active) {
-                if (Debugger.logPriority > 0) Debugger.LogInvalidTween(t);
+                Debugger.LogInvalidTween(t);
                 return 0;
             }
 

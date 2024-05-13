@@ -62,31 +62,15 @@ namespace DG.Tweening
         {
             if (t is not { active: true }) return t;
 
-            if (DOTween.debugStoreTargetId) {
-                var comp = target as Object;
-                t.debugTargetId = comp != null ? comp.name : target.ToString();
-            }
+#if DEBUG
+            var obj = target as Object;
+            t.debugTargetId = obj != null ? obj.name : target.ToString();
+#endif
+
             t.target = target;
             return t;
         }
 
-        /// <summary>Sets the looping options for the tween.
-        /// Has no effect if the tween has already started</summary>
-        /// <param name="loops">Number of cycles to play (-1 for infinite - will be converted to 1 in case the tween is nested in a Sequence)</param>
-        public static T SetLoops<T>(this T t, int loops) where T : Tween
-        {
-            if (t is not { active: true } || t.creationLocked) return t;
-
-            if (loops < -1) loops = -1;
-            else if (loops == 0) loops = 1;
-            t.loops = loops;
-//            if (t.tweenType == TweenType.Tweener) t.fullDuration = loops > -1 ? t.duration * loops : Mathf.Infinity; // Mysteriously Unity doesn't like this form
-            if (t.tweenType == TweenType.Tweener) {
-                if (loops > -1) t.fullDuration = t.duration * loops;
-                else t.fullDuration = Mathf.Infinity;
-            }
-            return t;
-        }
         /// <summary>Sets the looping options for the tween.
         /// Has no effect if the tween has already started</summary>
         /// <param name="loops">Number of cycles to play (-1 for infinite - will be converted to 1 in case the tween is nested in a Sequence)</param>
@@ -404,7 +388,7 @@ namespace DG.Tweening
         /// <param name="isRelative">If TRUE the FROM/TO values will be calculated as relative to the current ones</param>
         public static TweenerCore<T1,T2,TPlugOptions> From<T1,T2,TPlugOptions>(
             this TweenerCore<T1,T2,TPlugOptions> t, T2 fromValue, bool setImmediately = true, bool isRelative = false
-        ) where TPlugOptions : struct, IPlugOptions
+        ) where TPlugOptions : struct
         {
             if (t is not { active: true } || t.creationLocked || !t.isFromAllowed) return t;
 

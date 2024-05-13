@@ -40,16 +40,13 @@ namespace DG.Tweening
         // CALLED BY DOTween when spawning/creating a new Tweener.
         // Returns TRUE if the setup is successful
         internal static bool Setup<T1, T2, TPlugOptions>(
-            TweenerCore<T1, T2, TPlugOptions> t, DOGetter<T1> getter, DOSetter<T1> setter, T2 endValue, float duration, ABSTweenPlugin<T1, T2, TPlugOptions> plugin = null
+            TweenerCore<T1, T2, TPlugOptions> t, DOGetter<T1> getter, DOSetter<T1> setter, T2 endValue, float duration, ABSTweenPlugin<T1, T2, TPlugOptions> plugin
         )
-            where TPlugOptions : struct, IPlugOptions
+            where TPlugOptions : struct
         {
-            if (plugin != null) t.tweenPlugin = plugin;
-            else {
-                t.tweenPlugin ??= PluginsManager.GetDefaultPlugin<T1, T2, TPlugOptions>();
-                Assert.IsNotNull(t.tweenPlugin, $"No suitable plugin found for this type: {typeof(T1)}, {typeof(T2)}, {typeof(TPlugOptions)}");
-            }
+            Assert.IsNotNull(plugin, "Given plugin is null");
 
+            t.tweenPlugin = plugin;
             t.getter = getter;
             t.setter = setter;
             t.endValue = endValue;
@@ -68,7 +65,7 @@ namespace DG.Tweening
         // CALLED BY TweenerCore
         // Returns the elapsed time minus delay in case of success,
         // -1 if there are missing references and the tween needs to be killed
-        internal static float DoUpdateDelay<T1, T2, TPlugOptions>(TweenerCore<T1, T2, TPlugOptions> t, float elapsed) where TPlugOptions : struct, IPlugOptions
+        internal static float DoUpdateDelay<T1, T2, TPlugOptions>(TweenerCore<T1, T2, TPlugOptions> t, float elapsed) where TPlugOptions : struct
         {
             float tweenDelay = t.delay;
             if (elapsed > tweenDelay) {
@@ -85,7 +82,7 @@ namespace DG.Tweening
         // (unless it's a FROM tween, in which case it will be called BEFORE any eventual delay).
         // Returns TRUE in case of success,
         // FALSE if there are missing references and the tween needs to be killed
-        internal static bool DoStartup<T1, T2, TPlugOptions>(TweenerCore<T1, T2, TPlugOptions> t) where TPlugOptions : struct, IPlugOptions
+        internal static bool DoStartup<T1, T2, TPlugOptions>(TweenerCore<T1, T2, TPlugOptions> t) where TPlugOptions : struct
         {
             t.startupDone = true;
 
@@ -105,9 +102,7 @@ namespace DG.Tweening
                             t.isRelative = false;
                         } else t.startValue = t.tweenPlugin.ConvertToStartValue(t, t.getter());
                     } catch (Exception e) {
-                        Debugger.LogSafeModeCapturedError(string.Format(
-                            "Tween startup failed (NULL target/property - {0}): the tween will now be killed ► {1}", e.TargetSite, e.Message
-                        ), t);
+                        Debugger.LogSafeModeCapturedError($"Tween startup failed (NULL target/property - {e.TargetSite}): the tween will now be killed ► {e.Message}", t);
                         return false; // Target/field doesn't exist: kill tween
                     }
                 } else {
@@ -137,7 +132,7 @@ namespace DG.Tweening
         // Commands shared by DOStartup/ChangeStart/End/Values if the tween has already started up
         // and thus some settings needs to be reapplied.
         // Returns TRUE in case of SUCCESS, FALSE if there were managed errors
-        static bool DOStartupSpecials<T1, T2, TPlugOptions>(TweenerCore<T1, T2, TPlugOptions> t) where TPlugOptions : struct, IPlugOptions
+        static bool DOStartupSpecials<T1, T2, TPlugOptions>(TweenerCore<T1, T2, TPlugOptions> t) where TPlugOptions : struct
         {
             try {
                 switch (t.specialStartupMode) {
@@ -157,7 +152,7 @@ namespace DG.Tweening
                 return false;
             }
         }
-        static void DOStartupDurationBased<T1, T2, TPlugOptions>(TweenerCore<T1, T2, TPlugOptions> t) where TPlugOptions : struct, IPlugOptions
+        static void DOStartupDurationBased<T1, T2, TPlugOptions>(TweenerCore<T1, T2, TPlugOptions> t) where TPlugOptions : struct
         {
             t.fullDuration = t.loops > -1 ? t.duration * t.loops : Mathf.Infinity;
         }

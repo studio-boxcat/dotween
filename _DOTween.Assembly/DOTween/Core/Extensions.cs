@@ -27,7 +27,7 @@ namespace DG.Tweening.Core
         /// INTERNAL: used by DO shortcuts and Modules to set the tween as blendable
         /// </summary>
         public static TweenerCore<T1, T2, TPlugOptions> Blendable<T1, T2, TPlugOptions>(this TweenerCore<T1, T2, TPlugOptions> t)
-            where TPlugOptions : struct, IPlugOptions
+            where TPlugOptions : struct
         {
             t.isBlendable = true;
             return t;
@@ -37,7 +37,7 @@ namespace DG.Tweening.Core
         /// INTERNAL: used by DO shortcuts and Modules to prevent a tween from using a From setup even if passed
         /// </summary>
         public static TweenerCore<T1, T2, TPlugOptions> NoFrom<T1, T2, TPlugOptions>(this TweenerCore<T1, T2, TPlugOptions> t)
-            where TPlugOptions : struct, IPlugOptions
+            where TPlugOptions : struct
         {
             t.isFromAllowed = false;
             return t;
