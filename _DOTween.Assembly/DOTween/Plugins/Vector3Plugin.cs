@@ -85,7 +85,7 @@ namespace DG.Tweening.Plugins
         }
 
         public override void EvaluateAndApply(
-            VectorOptions options, Tween t, bool isRelative, DOGetter<Vector3> getter, DOSetter<Vector3> setter,
+            VectorOptions options, Tween t, DOGetter<Vector3> getter, DOSetter<Vector3> setter,
             float elapsed, Vector3 startValue, Vector3 changeValue, float duration, bool usingInversePosition, int newCompletedSteps,
             UpdateNotice updateNotice
         ){

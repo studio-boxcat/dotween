@@ -44,7 +44,7 @@ namespace DG.Tweening.Plugins
             t.changeValue = t.endValue - t.startValue;
         }
 
-        public override void EvaluateAndApply(NoOptions options, Tween t, bool isRelative, DOGetter<int> getter, DOSetter<int> setter,
+        public override void EvaluateAndApply(NoOptions options, Tween t, DOGetter<int> getter, DOSetter<int> setter,
             float elapsed, int startValue, int changeValue, float duration, bool usingInversePosition, int newCompletedSteps,
             UpdateNotice updateNotice
         ){

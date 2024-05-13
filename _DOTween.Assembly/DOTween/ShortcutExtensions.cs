@@ -321,12 +321,10 @@ namespace DG.Tweening
         /// <summary>Tweens a Transform's localRotation to the given value.
         /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        /// <param name="mode">Rotation mode</param>
-        public static TweenerCore<DOQuaternion, DOVector3, QuaternionOptions> DOLocalRotate(this Transform target, Vector3 endValue, float duration, RotateMode mode = RotateMode.Fast)
+        public static TweenerCore<DOQuaternion, DOVector3, NoOptions> DOLocalRotate(this Transform target, Vector3 endValue, float duration)
         {
-            TweenerCore<DOQuaternion, DOVector3, QuaternionOptions> t = DOTween.To(() => target.localRotation, x => target.localRotation = x, endValue, duration);
+            TweenerCore<DOQuaternion, DOVector3, NoOptions> t = DOTween.To(() => target.localRotation, x => target.localRotation = x, endValue, duration);
             t.SetTarget(target);
-            t.plugOptions.rotateMode = mode;
             return t;
         }
 
@@ -757,56 +755,6 @@ namespace DG.Tweening
                 target.localPosition += diff;
             }, byValue, duration)
                 .Blendable().SetTarget(target);
-        }
-
-        /// <summary>EXPERIMENTAL METHOD - Tweens a Transform's rotation BY the given value (as if you chained a <code>SetRelative</code>),
-        /// in a way that allows other DOBlendableRotate tweens to work together on the same target,
-        /// instead than fight each other as multiple DORotate would do.
-        /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="byValue">The value to tween by</param><param name="duration">The duration of the tween</param>
-        /// <param name="mode">Rotation mode</param>
-        public static Tweener DOBlendableRotateBy(this Transform target, Vector3 byValue, float duration, RotateMode mode = RotateMode.Fast)
-        {
-//            Quaternion to = target.rotation;
-            Quaternion to = Quaternion.identity;
-            TweenerCore<DOQuaternion, DOVector3, QuaternionOptions> t = DOTween.To(() => to, x => {
-#if COMPATIBLE
-                Quaternion diff = x.value * Quaternion.Inverse(to);
-#else
-                Quaternion diff = x * Quaternion.Inverse(to);
-#endif
-                to = x;
-                Quaternion currRot = target.rotation;
-                target.rotation = currRot * Quaternion.Inverse(currRot) * diff * currRot;
-            }, byValue, duration)
-                .Blendable().SetTarget(target);
-            t.plugOptions.rotateMode = mode;
-            return t;
-        }
-
-        /// <summary>EXPERIMENTAL METHOD - Tweens a Transform's lcoalRotation BY the given value (as if you chained a <code>SetRelative</code>),
-        /// in a way that allows other DOBlendableRotate tweens to work together on the same target,
-        /// instead than fight each other as multiple DORotate would do.
-        /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="byValue">The value to tween by</param><param name="duration">The duration of the tween</param>
-        /// <param name="mode">Rotation mode</param>
-        public static Tweener DOBlendableLocalRotateBy(this Transform target, Vector3 byValue, float duration, RotateMode mode = RotateMode.Fast)
-        {
-//            Quaternion to = target.localRotation;
-            Quaternion to = Quaternion.identity;
-            TweenerCore<DOQuaternion, DOVector3, QuaternionOptions> t = DOTween.To(() => to, x => {
-#if COMPATIBLE
-                Quaternion diff = x.value * Quaternion.Inverse(to);
-#else
-                Quaternion diff = x * Quaternion.Inverse(to);
-#endif
-                to = x;
-                Quaternion currRot = target.localRotation;
-                target.localRotation = currRot * Quaternion.Inverse(currRot) * diff * currRot;
-            }, byValue, duration)
-                .Blendable().SetTarget(target);
-            t.plugOptions.rotateMode = mode;
-            return t;
         }
 
 #if !COMPATIBLE

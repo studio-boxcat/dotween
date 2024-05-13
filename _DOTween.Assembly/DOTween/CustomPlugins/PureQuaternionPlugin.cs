@@ -67,7 +67,7 @@ namespace DG.Tweening.CustomPlugins
 
         /// <summary>INTERNAL: do not use</summary>
         public override void EvaluateAndApply(
-            NoOptions options, Tween t, bool isRelative, DOGetter<Quaternion> getter, DOSetter<Quaternion> setter,
+            NoOptions options, Tween t, DOGetter<Quaternion> getter, DOSetter<Quaternion> setter,
             float elapsed, Quaternion startValue, Quaternion changeValue, float duration, bool usingInversePosition, int newCompletedSteps,
             UpdateNotice updateNotice
         ){

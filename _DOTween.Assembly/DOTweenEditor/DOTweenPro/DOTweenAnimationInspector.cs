@@ -180,7 +180,7 @@ namespace DG.DOTweenEditor
                     break;
                 case DOTweenAnimation.AnimationType.LocalRotate:
                     GUIEndValueV3();
-                    _src.optionalRotationMode = (RotateMode)EditorGUILayout.EnumPopup("    Rotation Mode", _src.optionalRotationMode);
+                    _src.optionalRotationMode = (byte) EditorGUILayout.IntField("    Rotation Mode", _src.optionalRotationMode);
                     break;
                 case DOTweenAnimation.AnimationType.Scale:
                     if (_src.optionalBool0) GUIEndValueFloat();

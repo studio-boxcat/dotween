@@ -214,8 +214,8 @@ namespace DG.Tweening
         /// <param name="setter">A setter for the field or property to tween
         /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
         /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        public static TweenerCore<DOQuaternion, DOVector3, QuaternionOptions> To(DOGetter<DOQuaternion> getter, DOSetter<DOQuaternion> setter, Vector3 endValue, float duration)
-        { return ApplyTo<DOQuaternion, DOVector3, QuaternionOptions>(getter, setter, endValue, duration); }
+        public static TweenerCore<DOQuaternion, DOVector3, NoOptions> To(DOGetter<DOQuaternion> getter, DOSetter<DOQuaternion> setter, Vector3 endValue, float duration)
+        { return ApplyTo<DOQuaternion, DOVector3, NoOptions>(getter, setter, endValue, duration); }
         /// <summary>Tweens a property or field to the given value using default plugins</summary>
         /// <param name="getter">A getter for the field or property to tween.
         /// <para>Example usage with lambda:</para><code>()=> myProperty</code></param>

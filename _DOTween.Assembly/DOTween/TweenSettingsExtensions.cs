@@ -6,7 +6,6 @@
 
 using DOVector2 = UnityEngine.Vector2;
 using DOVector3 = UnityEngine.Vector3;
-using DOQuaternion = UnityEngine.Quaternion;
 using DG.Tweening.Core;
 using DG.Tweening.Core.Easing;
 using DG.Tweening.Plugins.Options;
@@ -494,17 +493,6 @@ namespace DG.Tweening
             if (t is not { active: true }) return t;
 
             t.plugOptions.axisConstraint = axisConstraint;
-            return t;
-        }
-
-        /// <summary>Options for Quaternion tweens</summary>
-        /// <param name="useShortest360Route">If TRUE (default) the rotation will take the shortest route, and will not rotate more than 360°.
-        /// If FALSE the rotation will be fully accounted. Is always FALSE if the tween is set as relative</param>
-        public static Tweener SetOptions(this TweenerCore<DOQuaternion, DOVector3, QuaternionOptions> t, bool useShortest360Route = true)
-        {
-            if (t is not { active: true }) return t;
-
-            t.plugOptions.rotateMode = useShortest360Route ? RotateMode.Fast : RotateMode.FastBeyond360;
             return t;
         }
 

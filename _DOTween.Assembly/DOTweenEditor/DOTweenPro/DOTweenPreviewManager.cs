@@ -125,8 +125,7 @@ namespace DG.DOTweenEditor
                 Logger.Warning("DOTween Preview ► Couldn't find tween to stop");
                 return;
             }
-            t.ApplyOriginal();
-            t.Kill();
+            t.KillRewind();
             EditorUtility.SetDirty(anim); // Refresh views
 
             if (_AnimationToTween.Count == 0) StopAllPreviews();

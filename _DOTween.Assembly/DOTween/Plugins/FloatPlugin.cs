@@ -45,7 +45,7 @@ namespace DG.Tweening.Plugins
         }
 
         public override void EvaluateAndApply(
-            NoOptions options, Tween t, bool isRelative, DOGetter<float> getter, DOSetter<float> setter,
+            NoOptions options, Tween t, DOGetter<float> getter, DOSetter<float> setter,
             float elapsed, float startValue, float changeValue, float duration, bool usingInversePosition, int newCompletedSteps,
             UpdateNotice updateNotice
         ){
