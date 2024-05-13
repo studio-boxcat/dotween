@@ -1,8 +1,3 @@
-// Author: Daniele Giardini - http://www.demigiant.com
-// Created: 2015/03/12 15:55
-
-// ReSharper disable InconsistentNaming
-
 using System;
 using JetBrains.Annotations;
 using Sirenix.OdinInspector;
@@ -27,7 +22,7 @@ namespace DG.Tweening
         {
             None,
             Unused_8, LocalMove,
-            Unused_9, LocalRotate,
+            Unused_9, LocalRotateZ,
             Scale,
             Color, Fade,
             Unused_0,
@@ -167,7 +162,7 @@ namespace DG.Tweening
             return animationType switch
             {
                 AnimationType.LocalMove => transform.DOLocalMove(endValueV3, duration),
-                AnimationType.LocalRotate => transform.DOLocalRotateZ(endValueV3.z, duration),
+                AnimationType.LocalRotateZ => transform.DOLocalRotateZ(endValueV3.z, duration),
                 AnimationType.Scale => transform.DOScale(optionalBool0 ? new Vector3(endValueFloat, endValueFloat, endValueFloat) : endValueV3, duration),
                 AnimationType.Color => target switch
                 {
@@ -234,13 +229,12 @@ namespace DG.Tweening
                     result.AddError("Punch and Shake animations cannot have snapping enabled");
             }
 
-            if (animationType is AnimationType.LocalRotate)
+            if (animationType is AnimationType.LocalRotateZ)
             {
                 if (optionalRotationMode != 1)
                     result.AddError("LocalRotate animation must have a rotation mode set to 1");
-
-                if (isRelative is false)
-                    result.AddWarning("LocalRotate with no relative option is expensive, consider using it");
+                if (endValueV3.x != 0 || endValueV3.y != 0)
+                    result.AddError("LocalRotate animation can only rotate on the Z axis");
             }
 
             if (animationType

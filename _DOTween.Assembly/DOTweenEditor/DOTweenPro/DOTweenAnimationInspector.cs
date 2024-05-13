@@ -16,7 +16,7 @@ namespace DG.DOTweenEditor
         static readonly Dictionary<DOTweenAnimation.AnimationType, Type[]> _eligibleTargetTypes = new()
         {
             { DOTweenAnimation.AnimationType.LocalMove, new[] { typeof(Transform) } },
-            { DOTweenAnimation.AnimationType.LocalRotate, new[] { typeof(Transform) } },
+            { DOTweenAnimation.AnimationType.LocalRotateZ, new[] { typeof(Transform) } },
             { DOTweenAnimation.AnimationType.Scale, new[] { typeof(Transform) } },
             { DOTweenAnimation.AnimationType.Color, new[] { typeof(Graphic), typeof(SpriteRenderer), typeof(Renderer), } },
             { DOTweenAnimation.AnimationType.Fade, new[] { typeof(CanvasGroup), typeof(Graphic), typeof(SpriteRenderer), typeof(Renderer) } },
@@ -83,7 +83,7 @@ namespace DG.DOTweenEditor
                 switch (_src.animationType)
                 {
                     case DOTweenAnimation.AnimationType.LocalMove:
-                    case DOTweenAnimation.AnimationType.LocalRotate:
+                    case DOTweenAnimation.AnimationType.LocalRotateZ:
                     case DOTweenAnimation.AnimationType.Scale:
                         _src.endValueV3 = Vector3.zero;
                         _src.endValueFloat = 0;
@@ -152,7 +152,7 @@ namespace DG.DOTweenEditor
                 case DOTweenAnimation.AnimationType.LocalMove:
                     GUIEndValueV3();
                     break;
-                case DOTweenAnimation.AnimationType.LocalRotate:
+                case DOTweenAnimation.AnimationType.LocalRotateZ:
                     GUIEndValueV3();
                     _src.optionalRotationMode = (byte) EditorGUILayout.IntField("    Rotation Mode", _src.optionalRotationMode);
                     break;

@@ -68,9 +68,7 @@ namespace DG.Tweening.Core
         {
             base.Reset();
 
-            if (tweenPlugin != null) tweenPlugin.Reset(this);
-//            plugOptions = new TPlugOptions(); // Generates GC because converts to an Activator.CreateInstance
-//            plugOptions = DOTweenUtils.InstanceCreator<TPlugOptions>.Create(); // Fixes GC allocation using workaround (doesn't work with IL2CPP)
+            tweenPlugin?.Reset(this);
             plugOptions.Reset(); // Alternate fix that uses IPlugOptions Reset
             getter = null;
             setter = null;
