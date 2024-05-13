@@ -13,33 +13,19 @@ using UnityEngine;
 
 namespace DG.DOTweenEditor.UI
 {
-    [CustomEditor(typeof(DOTweenComponent))]
+    [CustomEditor(typeof(DOTweenUnityBridge))]
     public class DOTweenComponentInspector : Editor
     {
         static DOTweenSettings _settings => DOTweenSettings.Instance;
         readonly StringBuilder _strb = new();
         readonly GUIContent _gcPlay = new("►");
         readonly GUIContent _gcPause = new("❚❚");
-        GUIContent _gcTitle;
 
         #region Unity + GUI
-
-        void OnEnable()
-        {
-            _gcTitle = new GUIContent("DOTween v" + DOTween.Version);
-        }
 
         public override void OnInspectorGUI()
         {
             var playing = EditorApplication.isPlaying;
-
-            GUILayout.Label(playing ? "RUNTIME MODE" : "EDITOR MODE");
-            GUILayout.Label(_gcTitle);
-
-            GUILayout.Space(6);
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Check Updates")) Application.OpenURL("http://dotween.demigiant.com/download.php?v=" + DOTween.Version);
-            GUILayout.EndHorizontal();
 
             if (playing)
             {
@@ -53,8 +39,10 @@ namespace DG.DOTweenEditor.UI
                 _strb.Clear();
                 _strb.Append("Active tweens: ").Append(totActiveTweens)
                     .Append(" (").Append(TweenManager.totActiveTweeners).Append(" TW, ")
-                    .Append(TweenManager.totActiveSequences).Append(" SE)")
-                    .Append("\nDefault/Manual tweens: ").Append(totActiveDefaultTweens)
+                    .Append(TweenManager.totActiveSequences).Append(" SE)");
+                GUILayout.Label(_strb.ToString());
+                _strb.Clear();
+                _strb.Append("\nDefault/Manual tweens: ").Append(totActiveDefaultTweens)
                     .Append("/").Append(totActiveManualTweens);
                 GUILayout.Label(_strb.ToString());
 

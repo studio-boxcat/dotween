@@ -9,12 +9,12 @@ using DOVector2 = UnityEngine.Vector2;
 using DOVector3 = UnityEngine.Vector3;
 using DOQuaternion = UnityEngine.Quaternion;
 using DOColor = UnityEngine.Color;
-using System.Collections.Generic;
 using DG.Tweening.Core;
 using DG.Tweening.Core.Enums;
 using DG.Tweening.Plugins.Core;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace DG.Tweening
 {
@@ -23,8 +23,7 @@ namespace DG.Tweening
     /// </summary>
     public class DOTween
     {
-        /// <summary>DOTween's version</summary>
-        public static readonly string Version = "1.2.751"; // Last version before modules: 1.1.755
+        // public static readonly string Version = "1.2.751"; // Last version before modules: 1.1.755
 
         ///////////////////////////////////////////////
         // Options ////////////////////////////////////
@@ -61,43 +60,22 @@ namespace DG.Tweening
         /// <para>Default: 0</para></summary>
         public static float defaultEasePeriod = 0;
 
-        /// <summary>Used internally. Assigned/removed by DOTweenComponent.Create/DestroyInstance</summary>
-        public static DOTweenComponent instance;
-
-        // Set by DOTweenComponent when the application is quitting.
-        // Resets isQuitting if the frame count when it was set to TRUE changed (in order to work with no-domain-reload quick enter playmode)
-        internal static bool isQuitting {
-            get {
-                if (!_foo_isQuitting) return false;
-                // if (Time.frameCount > 0 && _isQuittingFrame != Time.frameCount) { // Doesn't work with domain reload if checking with a > 0 frameCount
-                if (Time.frameCount >= 0 && _isQuittingFrame != Time.frameCount) {
-                    _foo_isQuitting = false;
-                    return false;
-                }
-                return true;
-            }
-            set { _foo_isQuitting = value; if (value)_isQuittingFrame = Time.frameCount; }
-        }
-        static bool _foo_isQuitting;
         internal static int maxActiveTweenersReached, maxActiveSequencesReached; // Controlled by DOTweenInspector if showUnityEditorReport is active
         internal static bool initialized; // Can be set to false by DOTweenComponent OnDestroy
-        static int _isQuittingFrame = -1; // Frame when isQuitting was set. Sets isQuitting to false after this frame (so no-domain-reload playmode can work)
 
         #region Public Methods
 
-        // Auto-init
-        static void AutoInit()
+        static void InitCheck()
         {
-            if (!Application.isPlaying || isQuitting) return;
-
-            var settings = DOTweenSettings.Instance;
+            if (initialized || !Application.isPlaying)
+                return;
 
             initialized = true;
 
-            // Gameobject - also assign instance
-            DOTweenComponent.Create();
+            DOTweenUnityBridge.Create();
 
             // Assign settings
+            var settings = DOTweenSettings.Instance;
             useSafeMode = settings.useSafeMode;
             nestedTweenFailureBehaviour = settings.safeModeOptions.nestedTweenFailureBehaviour;
             defaultEaseType = settings.defaultEaseType;
@@ -106,37 +84,14 @@ namespace DG.Tweening
         }
 
         /// <summary>
-        /// Directly sets the current max capacity of Tweeners and Sequences
-        /// (meaning how many Tweeners and Sequences can be running at the same time),
-        /// so that DOTween doesn't need to automatically increase them in case the max is reached
-        /// (which might lead to hiccups when that happens).
-        /// Sequences capacity must be less or equal to Tweeners capacity
-        /// (if you pass a low Tweener capacity it will be automatically increased to match the Sequence's).
-        /// Beware: use this method only when there are no tweens running.
-        /// </summary>
-        /// <param name="tweenersCapacity">Max Tweeners capacity.
-        /// Default: 200</param>
-        /// <param name="sequencesCapacity">Max Sequences capacity.
-        /// Default: 50</param>
-        public static void SetTweensCapacity(int tweenersCapacity, int sequencesCapacity)
-        {
-            TweenManager.SetCapacities(tweenersCapacity, sequencesCapacity);
-        }
-
-        /// <summary>
         /// Kills all tweens, clears all cached tween pools and plugins and resets the max Tweeners/Sequences capacities to the default values.
         /// </summary>
-        /// <param name="destroy">If TRUE also destroys DOTween's gameObject and resets its initializiation, default settings and everything else
         /// (so that next time you use it it will need to be re-initialized)</param>
-        public static void Clear(bool destroy = false)
+        public static void Clear()
         {
-            Clear(destroy, false);
-        }
+            TweenManager.PurgeAll();
 
-        internal static void Clear(bool destroy, bool isApplicationQuitting)
-        {
-            TweenManager.PurgeAll(isApplicationQuitting);
-            if (!destroy) return;
+            DOTweenUnityBridge.DestroyInstance();
 
             initialized = false;
             useSafeMode = false;
@@ -145,20 +100,21 @@ namespace DG.Tweening
             defaultEaseOvershootOrAmplitude = 1.70158f;
             defaultEasePeriod = 0;
             maxActiveTweenersReached = maxActiveSequencesReached = 0;
-
-            DOTweenComponent.DestroyInstance();
         }
 
-        /// <summary>
-        /// Updates all tweens that are set to <see cref="UpdateType.Manual"/>.
-        /// </summary>
-        /// <param name="deltaTime">Manual deltaTime</param>
-        /// <param name="unscaledDeltaTime">Unscaled delta time (used with tweens set as timeScaleIndependent)</param>
+        public static void Update()
+        {
+            if (TweenManager.hasActiveDefaultTweens)
+            {
+                Assert.IsTrue(initialized, "hasActiveTweens but DOTween is not initialized");
+                TweenManager.Update(UpdateType.Normal, Time.deltaTime, Time.unscaledDeltaTime);
+            }
+        }
+
         public static void ManualUpdate(float deltaTime, float unscaledDeltaTime)
         {
-            InitCheck();
-//            instance.ManualUpdate(deltaTime, unscaledDeltaTime);
-            if (TweenManager.hasActiveManualTweens) {
+            if (TweenManager.hasActiveManualTweens)
+            {
                 TweenManager.Update(UpdateType.Manual, deltaTime, unscaledDeltaTime);
             }
         }
@@ -175,6 +131,21 @@ namespace DG.Tweening
         // and additional parameters, so in those cases I have to create overloads instead than using optionals. ARARGH!
 
         #region Tween TO
+
+        static TweenerCore<T1, T2, TPlugOptions> ApplyTo<T1, T2, TPlugOptions>(
+            DOGetter<T1> getter, DOSetter<T1> setter, T2 endValue, float duration, ABSTweenPlugin<T1, T2, TPlugOptions> plugin = null
+        )
+            where TPlugOptions : struct, IPlugOptions
+        {
+            InitCheck();
+            var tweener = TweenManager.GetTweener<T1, T2, TPlugOptions>();
+            var setupSuccessful = Tweener.Setup(tweener, getter, setter, endValue, duration, plugin);
+            if (!setupSuccessful) {
+                TweenManager.Despawn(tweener);
+                return null;
+            }
+            return tweener;
+        }
 
         /// <summary>Tweens a property or field to the given value using default plugins</summary>
         /// <param name="getter">A getter for the field or property to tween.
@@ -457,9 +428,7 @@ namespace DG.Tweening
 
             float totDuration = 0;
             for (int i = 0; i < len; ++i) totDuration += durationsClone[i];
-            TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> t =
-                ApplyTo<Vector3, Vector3[], Vector3ArrayOptions>(getter, setter, endValuesClone, totDuration)
-                    .NoFrom();
+            var t = ApplyTo<Vector3, Vector3[], Vector3ArrayOptions>(getter, setter, endValuesClone, totDuration).NoFrom();
             t.plugOptions.durations = durationsClone;
             return t;
         }
@@ -625,30 +594,5 @@ namespace DG.Tweening
         }
 
         #endregion
-
-        // ===================================================================================
-        // METHODS ---------------------------------------------------------------------------
-
-        static void InitCheck()
-        {
-            if (initialized || !Application.isPlaying || isQuitting) return;
-
-            AutoInit();
-        }
-
-        static TweenerCore<T1, T2, TPlugOptions> ApplyTo<T1, T2, TPlugOptions>(
-            DOGetter<T1> getter, DOSetter<T1> setter, T2 endValue, float duration, ABSTweenPlugin<T1, T2, TPlugOptions> plugin = null
-        )
-            where TPlugOptions : struct, IPlugOptions
-        {
-            InitCheck();
-            var tweener = TweenManager.GetTweener<T1, T2, TPlugOptions>();
-            var setupSuccessful = Tweener.Setup(tweener, getter, setter, endValue, duration, plugin);
-            if (!setupSuccessful) {
-                TweenManager.Despawn(tweener);
-                return null;
-            }
-            return tweener;
-        }
     }
 }

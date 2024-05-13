@@ -7,6 +7,7 @@
 using DG.Tweening.Core;
 using DG.Tweening.Core.Enums;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 #pragma warning disable 1573
 namespace DG.Tweening
@@ -140,10 +141,11 @@ namespace DG.Tweening
         public static void Kill(this Tween t, bool complete = false)
         {
             if (!DOTween.initialized) return;
-            if (t == null || !t.active) {
+            if (t is not { active: true })
                 return;
-            } else if (t.isSequenced) {
-                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t); return;
+            if (t.isSequenced) {
+                if (Debugger.logPriority > 1) Debugger.LogNestedTween(t);
+                return;
             }
 
             if (complete) {
@@ -159,8 +161,17 @@ namespace DG.Tweening
 
         public static void KillRewind(this Tweener t)
         {
-            if (!DOTween.initialized) return;
-            if (t == null || !t.active) return;
+            if (!DOTween.initialized)
+            {
+                L.E("DOTween is not initialized.");
+                return;
+            }
+
+            if (t is not { active: true })
+            {
+                L.E("Tween is not active.");
+                return;
+            }
 
             TweenManager.RestoreToOriginal(t);
 

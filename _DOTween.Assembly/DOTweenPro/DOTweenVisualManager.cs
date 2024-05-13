@@ -1,10 +1,3 @@
-// Decompiled with JetBrains decompiler
-// Type: DG.Tweening.DOTweenVisualManager
-// Assembly: DOTweenPro, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 3BD1A734-E28E-44F1-8B34-16C95521FE16
-// Assembly location: /Users/jameskim/Develop/meow-tower/Assets/Plugins/Demigiant/DOTweenPro/DOTweenPro.dll
-// XML documentation location: /Users/jameskim/Develop/meow-tower/Assets/Plugins/Demigiant/DOTweenPro/DOTweenPro.xml
-
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Sirenix.OdinInspector;
@@ -18,29 +11,28 @@ namespace DG.Tweening
         , ISelfValidator
 #endif
     {
-        static readonly Stack<List<DOTweenAnimation>> _animListPool = new();
-
-        [CanBeNull] List<DOTweenAnimation> _animList;
+        static readonly List<DOTweenAnimation> _animBuf = new();
+        static readonly Stack<List<Tweener>> _tweenListPool = new();
+        [CanBeNull] List<Tweener> _tweenList;
 
         void OnEnable()
         {
-            if (_animList == null)
+            if (_tweenList is null)
             {
-                _animList = _animListPool.Count > 0 ? _animListPool.Pop() : new List<DOTweenAnimation>();
+                _tweenList = _tweenListPool.Count > 0 ? _tweenListPool.Pop() : new List<Tweener>();
             }
             else
             {
-                Assert.AreEqual(0, _animList!.Count);
+                Assert.AreEqual(0, _tweenList!.Count);
             }
 
             var id = GetInstanceID();
-            GetComponents(_animList);
-            foreach (var anim in _animList!)
+            GetComponents(_animBuf);
+            foreach (var anim in _animBuf)
             {
-                anim.CreateTween(false, true);
-                var tween = anim.tween;
-                if (tween is null) continue;
-                anim.tween.id = id;
+                var tween = anim.CreateTweenInstance();
+                tween.id = id;
+                _tweenList!.Add(tween);
             }
         }
 
@@ -48,40 +40,39 @@ namespace DG.Tweening
         {
             var id = GetInstanceID();
 
-            foreach (var anim in _animList!)
+            foreach (var tween in _tweenList!)
             {
-                var tween = anim.tween;
                 // XXX: Even if AutoKill is set to false, tween can be killed accidentally, like transform.DOKill().
                 if (tween is null || tween.id != id)
                     continue;
                 tween.KillRewind();
             }
 
-            _animList.Clear();
+            _tweenList.Clear();
         }
 
         void OnDestroy()
         {
-            if (_animList != null)
+            if (_tweenList is not null)
             {
-                Assert.AreEqual(0, _animList.Count);
-                _animListPool.Push(_animList);
-                _animList = null;
+                Assert.AreEqual(0, _tweenList.Count);
+                _tweenListPool.Push(_tweenList);
+                _tweenList = null;
             }
         }
 
 #if UNITY_EDITOR
         void ISelfValidator.Validate(SelfValidationResult result)
         {
-            var anims = GetComponents<DOTweenAnimation>();
+            GetComponents(_animBuf);
 
-            if (anims.Length == 0)
+            if (_animBuf.Count is 0)
             {
                 result.AddError("적어도 하나의 트윈 애니메이션이 존재해야합니다.");
                 return;
             }
 
-            foreach (var anim in anims)
+            foreach (var anim in _animBuf)
             {
                 if (anim.autoGenerate)
                 {

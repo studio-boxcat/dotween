@@ -1,149 +1,89 @@
-﻿// Author: Daniele Giardini - http://www.demigiant.com
-// Created: 2015/03/12 16:03
-
+﻿using System;
 using System.Collections.Generic;
 using DG.Tweening;
+using DG.Tweening.Core;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
-using Logger = DG.Tweening.Logger;
+using UnityEngine.Assertions;
 
 namespace DG.DOTweenEditor
 {
     public static class DOTweenPreviewManager
     {
-        static readonly Dictionary<DOTweenAnimation, Tweener> _AnimationToTween = new();
-        static readonly List<DOTweenAnimation> _TmpKeys = new();
+        static readonly Dictionary<int, Tweener> _tweens = new();
+        static float _lastUpdateTime;
 
-        #region Public Methods & GUI
-
-        /// <summary>
-        /// Returns TRUE if its actually previewing animations
-        /// </summary>
-        public static bool PreviewGUI(DOTweenAnimation src)
+        public static bool IsPreviewing(int id, out Tweener t)
         {
-            if (EditorApplication.isPlaying) return false;
-
-            var isPreviewing = _AnimationToTween.Count > 0;
-            var isPreviewingThis = isPreviewing && _AnimationToTween.ContainsKey(src);
-
-            // Preview - Play
-            GUILayout.BeginHorizontal();
-            if (isPreviewingThis == false)
-            {
-                EditorGUI.BeginDisabledGroup(
-                    src.animationType == DOTweenAnimation.AnimationType.None);
-                if (GUILayout.Button("► Play")) {
-                    if (!isPreviewing) StartupGlobalPreview();
-                    AddAnimationToGlobalPreview(src);
-                }
-                EditorGUI.EndDisabledGroup();
-                EditorGUI.BeginDisabledGroup(isPreviewing);
-                if (GUILayout.Button("► Play (GameObject)")) {
-                    if (!isPreviewing) StartupGlobalPreview();
-                    DOTweenAnimation[] anims = src.gameObject.GetComponents<DOTweenAnimation>();
-                    foreach (DOTweenAnimation anim in anims) AddAnimationToGlobalPreview(anim);
-                }
-                EditorGUI.EndDisabledGroup();
-            }
-            // Preview - Stop
-            else
-            {
-                if (GUILayout.Button("■ Stop")) {
-                    if (_AnimationToTween.TryGetValue(src, out var tween))
-                        StopPreview(tween);
-                }
-                if (GUILayout.Button("■ Stop (GameObject)")) {
-                    StopPreview(src.gameObject);
-                }
-            }
-            GUILayout.EndHorizontal();
-
-            return isPreviewing;
+            return _tweens.TryGetValue(id, out t);
         }
 
-        static void StopAllPreviews(PlayModeStateChange state)
+        public static void StartPreview(Tweener t)
         {
-            StopAllPreviews();
+            Assert.AreNotEqual(Tween.invalidId, t.id, "Tween to preview must have a valid id");
+
+            if (_tweens.Count is 0)
+            {
+                _lastUpdateTime = (float) EditorApplication.timeSinceStartup;
+                EditorApplication.update += (_update ??= Update);
+                EditorApplication.playModeStateChanged += (_onPlayModeStateChanged ??= OnPlayModeStateChanged);
+            }
+
+            _tweens.Add(t.id, t);
+
+            t.SetUpdate(UpdateType.Manual);
+            t.SetAutoKill(false);
+            t.OnStart(null).OnUpdate(null)
+                .OnComplete(null).OnKill(null);
+            t.Play();
         }
 
-        public static void StopAllPreviews()
+        public static bool TryStopPreview(int id)
         {
-            _TmpKeys.Clear();
-            _TmpKeys.AddRange(_AnimationToTween.Keys);
-            StopPreview(_TmpKeys);
-            _TmpKeys.Clear();
-            _AnimationToTween.Clear();
+            if (_tweens.Remove(id, out var t) is false)
+                return false;
+            Internal_StopPreview(t);
+            return true;
+        }
 
-            DOTweenEditorPreview.Stop();
-            EditorApplication.playModeStateChanged -= StopAllPreviews;
+        public static void StopPreview(Tweener t)
+        {
+            var removed = _tweens.Remove(t.id, out var oldTween);
+            Assert.IsTrue(removed, "Tween to stop preview not found");
+            Assert.AreEqual(t, oldTween, "Tween to stop preview is not the same as the one playing");
+            Internal_StopPreview(t);
+        }
+
+        static void Internal_StopPreview(Tweener t)
+        {
+            if (_tweens.Count is 0)
+                EditorApplication.update -= _update;
+
+            TweenManager.RestoreToOriginal(t);
+        }
+
+        static EditorApplication.CallbackFunction _update;
+        static void Update()
+        {
+            var curTime = _lastUpdateTime;
+            _lastUpdateTime = (float) EditorApplication.timeSinceStartup;
+            var elapsed = _lastUpdateTime - curTime;
+            DOTween.ManualUpdate(elapsed, elapsed);
+
+            // Force visual refresh of UI objects
+            // (a simple SceneView.RepaintAll won't work with UI elements)
+            Canvas.ForceUpdateCanvases();
             InternalEditorUtility.RepaintAllViews();
         }
 
-#endregion
-
-#region Methods
-
-        static void StartupGlobalPreview()
+        static Action<PlayModeStateChange> _onPlayModeStateChanged;
+        static void OnPlayModeStateChanged(PlayModeStateChange state)
         {
-            DOTweenEditorPreview.Start();
-            EditorApplication.playModeStateChanged += StopAllPreviews;
+            EditorApplication.playModeStateChanged -= _onPlayModeStateChanged;
+            foreach (var t in _tweens.Values)
+                Internal_StopPreview(t);
+            _tweens.Clear();
         }
-
-        static void AddAnimationToGlobalPreview(DOTweenAnimation src)
-        {
-            var t = src.CreateEditorPreview();
-            if (t == null) return;
-            _AnimationToTween.Add(src, t);
-            DOTweenEditorPreview.PrepareTweenForPreview(t);
-        }
-
-        static void StopPreview(GameObject go)
-        {
-            _TmpKeys.Clear();
-            foreach (var kvp in _AnimationToTween) {
-                if (kvp.Key.gameObject != go) continue;
-                _TmpKeys.Add(kvp.Key);
-            }
-            StopPreview(_TmpKeys);
-            _TmpKeys.Clear();
-
-            if (_AnimationToTween.Count == 0) StopAllPreviews();
-            else InternalEditorUtility.RepaintAllViews();
-        }
-
-        static void StopPreview(Tweener t)
-        {
-            DOTweenAnimation anim = null;
-            foreach (var (curAnim, curTween) in _AnimationToTween) {
-                if (curTween != t) continue;
-                anim = curAnim;
-                _AnimationToTween.Remove(curAnim);
-                break;
-            }
-            if (anim is null) {
-                Logger.Warning("DOTween Preview ► Couldn't find tween to stop");
-                return;
-            }
-            t.KillRewind();
-            EditorUtility.SetDirty(anim); // Refresh views
-
-            if (_AnimationToTween.Count == 0) StopAllPreviews();
-            else InternalEditorUtility.RepaintAllViews();
-        }
-
-        // Stops while iterating inversely, which deals better with tweens that overwrite each other
-        static void StopPreview(List<DOTweenAnimation> keys)
-        {
-            for (var i = keys.Count - 1; i > -1; --i) {
-                var anim = keys[i];
-                var tween = _AnimationToTween[anim];
-                tween.KillRewind();
-                EditorUtility.SetDirty(anim); // Refresh views
-                _AnimationToTween.Remove(anim);
-            }
-        }
-
-#endregion
     }
 }

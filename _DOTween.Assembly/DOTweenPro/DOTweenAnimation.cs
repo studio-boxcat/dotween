@@ -4,6 +4,7 @@
 // ReSharper disable InconsistentNaming
 
 using System;
+using JetBrains.Annotations;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -37,21 +38,6 @@ namespace DG.Tweening
             UIAnchors,
         }
 
-        public enum TargetType : byte
-        {
-            Unset,
-
-            Unused_0,
-            CanvasGroup,
-            Graphic,
-            Unused_1,
-            RectTransform,
-            Renderer, SpriteRenderer,
-            Unused_2, Unused_3,
-            Unused_4,
-            Transform,
-        }
-
         [NonSerialized]
         public Tweener tween;
 
@@ -69,7 +55,6 @@ namespace DG.Tweening
         [Required, ChildGameObjectsOnly]
         public Component target;
         public AnimationType animationType;
-        public TargetType targetType;
         public bool autoPlay = true;
 
         public float endValueFloat;
@@ -121,81 +106,55 @@ namespace DG.Tweening
         /// <param name="andPlay">If TRUE also plays the tween, otherwise only creates it</param>
         public void CreateTween(bool regenerateIfExists = false, bool andPlay = true)
         {
-            Assert.AreNotEqual(TargetType.Unset, targetType, "TargetType is Unset");
             Assert.AreNotEqual(AnimationType.None, animationType, "AnimationType is None");
+            Assert.IsNotNull(target, "Target is null");
 
-            if (tween != null) {
-                if (tween.active) {
+            if (tween != null)
+            {
+                if (tween.active)
+                {
                     if (regenerateIfExists) tween.Kill();
                     else return;
                 }
                 tween = null;
             }
 
-            if (target == null) {
-                Logger.Warning($"{gameObject.name} :: This DOTweenAnimation's target/GameObject is unset: the tween will not be created.", gameObject);
-                return;
-            }
+            tween = CreateTweenInstance();
+            tween.OnKill(() => tween = null);
+            if (andPlay is false)
+                tween.Pause();
+        }
 
+        [MustUseReturnValue]
+        public Tweener CreateTweenInstance()
+        {
             // Create tween.
-            tween = CreateTween(
-                target, transform, animationType, targetType, duration,
+            var t = CreateTween(
+                target, transform, animationType, duration,
                 endValueFloat, endValueV3, endValueColor,
                 optionalBool0, optionalBool1, optionalFloat0, optionalInt0);
 
-            if (tween == null) return;
-
-            // For AnimationType.Fade and AnimationType.Color, tween cannot not be relative.
-            var relative = isRelative;
-            if (animationType is AnimationType.Fade or AnimationType.Color)
-                relative = false;
-
             // Set from or relative.
-            if (isFrom) {
-                tween.From(relative);
-            } else {
-                tween.SetRelative(relative);
-            }
+            if (isFrom) t.From(isRelative);
+            else t.SetRelative(isRelative);
 
             // Set basic tween settings.
-            tween.SetTarget(gameObject)
-                .SetDelay(delay).SetLoops(loops, loopType).SetAutoKill(autoKill)
-                .OnKill(()=> tween = null);
+            t.SetTarget(gameObject)
+                .SetDelay(delay).SetLoops(loops, loopType).SetAutoKill(autoKill);
 
             // Set easeType.
-            if (easeType == Ease.INTERNAL_Custom) tween.SetEase(easeCurve);
-            else tween.SetEase(easeType);
+            if (easeType is Ease.INTERNAL_Custom) t.SetEase(easeCurve);
+            else t.SetEase(easeType);
 
-            if (andPlay) tween.Play();
-            else tween.Pause();
+            return t;
         }
 
         #endregion
 
-        #region Public Methods
-
-        #region Internal (also used by Inspector)
-
-        // Editor preview system
-        /// <summary>
-        /// Previews the tween in the editor. Only for DOTween internal usage: don't use otherwise.
-        /// </summary>
-        public Tweener CreateEditorPreview()
-        {
-            if (Application.isPlaying) return null;
-
-            // CHANGE: first param switched to TRUE otherwise changing an animation and replaying in editor would still play old one
-            CreateTween(true, autoPlay);
-            return tween;
-        }
-
-        #endregion
-
-        #endregion
-
+        [NotNull]
         static Tweener CreateTween(
             Object target, Transform transform,
-            AnimationType animationType, TargetType targetType,
+            AnimationType animationType,
             float duration,
             float endValueFloat,
             Vector3 endValueV3,
@@ -205,92 +164,50 @@ namespace DG.Tweening
             float optionalFloat0,
             int optionalInt0)
         {
-            switch (animationType)
+            return animationType switch
             {
-                case AnimationType.None:
-                    break;
-                case AnimationType.LocalMove:
-                    return transform.DOLocalMove(endValueV3, duration);
-                case AnimationType.LocalRotate:
-                    return transform.DOLocalRotate(endValueV3, duration);
-                case AnimationType.Scale:
-                    return transform.DOScale(optionalBool0 ? new Vector3(endValueFloat, endValueFloat, endValueFloat) : endValueV3, duration);
-                case AnimationType.Color:
-                    switch (targetType)
-                    {
-                        case TargetType.Renderer:
-                            return ((Renderer) target).material.DOColor(endValueColor, duration);
-                        case TargetType.SpriteRenderer:
-                            return ((SpriteRenderer) target).DOColor(endValueColor, duration);
-                        case TargetType.Graphic:
-                            return ((Graphic) target).DOColor(endValueColor, duration);
-                    }
-                    break;
-                case AnimationType.Fade:
-                    switch (targetType)
-                    {
-                        case TargetType.Renderer:
-                            return ((Renderer) target).material.DOFade(endValueFloat, duration);
-                        case TargetType.SpriteRenderer:
-                            return ((SpriteRenderer) target).DOFade(endValueFloat, duration);
-                        case TargetType.Graphic:
-                            return ((Graphic) target).DOFade(endValueFloat, duration);
-                        case TargetType.CanvasGroup:
-                            return ((CanvasGroup) target).DOFade(endValueFloat, duration);
-                    }
-                    break;
-                case AnimationType.PunchPosition:
-                    switch (targetType)
-                    {
-                        case TargetType.Transform:
-                            return ((Transform) target).DOPunchPosition(endValueV3, duration, optionalInt0, optionalFloat0);
-                        case TargetType.RectTransform:
-                            return ((RectTransform) target).DOPunchAnchorPos(endValueV3, duration, optionalInt0, optionalFloat0);
-                    }
-                    break;
-                case AnimationType.PunchScale:
-                    return transform.DOPunchScale(endValueV3, duration, optionalInt0, optionalFloat0);
-                case AnimationType.PunchRotation:
-                    return transform.DOPunchRotation(endValueV3, duration, optionalInt0, optionalFloat0);
-                case AnimationType.ShakePosition:
-                    switch (targetType)
-                    {
-                        case TargetType.Transform:
-                            return ((Transform) target).DOShakePosition(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool1);
-                        case TargetType.RectTransform:
-                            return ((RectTransform) target).DOShakeAnchorPos(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool1);
-                    }
-                    break;
-                case AnimationType.ShakeScale:
-                    return transform.DOShakeScale(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool1);
-                case AnimationType.ShakeRotation:
-                    return transform.DOShakeRotation(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool1);
-                case AnimationType.UIAnchors:
-                    return DOTween.To(
-                        () => ((RectTransform) target).anchorMin,
-                        x => ((RectTransform) target).anchorMin = ((RectTransform) target).anchorMax = x,
-                        (Vector2) endValueV3, duration);
-            }
-
-            Debug.LogError("[DOTweenAnimation] animationType not implemented: " + animationType);
-            return null;
+                AnimationType.LocalMove => transform.DOLocalMove(endValueV3, duration),
+                AnimationType.LocalRotate => transform.DOLocalRotate(endValueV3, duration),
+                AnimationType.Scale => transform.DOScale(optionalBool0 ? new Vector3(endValueFloat, endValueFloat, endValueFloat) : endValueV3, duration),
+                AnimationType.Color => target switch
+                {
+                    Graphic t => t.DOColor(endValueColor, duration),
+                    SpriteRenderer t => t.DOColor(endValueColor, duration),
+                    Renderer t => t.material.DOColor(endValueColor, duration),
+                    _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)
+                },
+                AnimationType.Fade => target switch
+                {
+                    CanvasGroup t => t.DOFade(endValueFloat, duration),
+                    Graphic t => t.DOFade(endValueFloat, duration),
+                    SpriteRenderer t => t.DOFade(endValueFloat, duration),
+                    Renderer t => t.material.DOFade(endValueFloat, duration),
+                    _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)
+                },
+                AnimationType.PunchPosition => target switch
+                {
+                    RectTransform t => t.DOPunchAnchorPos(endValueV3, duration, optionalInt0, optionalFloat0),
+                    Transform t => t.DOPunchPosition(endValueV3, duration, optionalInt0, optionalFloat0),
+                    _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)
+                },
+                AnimationType.PunchScale => transform.DOPunchScale(endValueV3, duration, optionalInt0, optionalFloat0),
+                AnimationType.PunchRotation => transform.DOPunchRotation(endValueV3, duration, optionalInt0, optionalFloat0),
+                AnimationType.ShakePosition => target switch
+                {
+                    RectTransform t => t.DOShakeAnchorPos(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool1),
+                    Transform t => t.DOShakePosition(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool1),
+                    _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)
+                },
+                AnimationType.ShakeScale => transform.DOShakeScale(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool1),
+                AnimationType.ShakeRotation => transform.DOShakeRotation(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool1),
+                AnimationType.UIAnchors => DOTween.To(() => ((RectTransform) target).anchorMin, x => ((RectTransform) target).anchorMin = ((RectTransform) target).anchorMax = x, (Vector2) endValueV3, duration),
+                _ => throw new ArgumentOutOfRangeException(nameof(animationType), animationType, null)
+            };
         }
 
 #if UNITY_EDITOR
         void ISelfValidator.Validate(SelfValidationResult result)
         {
-            if (targetType
-                is TargetType.Unset
-                or TargetType.Unused_0
-                or TargetType.Unused_1
-                or TargetType.Unused_2
-                or TargetType.Unused_3
-                or TargetType.Unused_4
-               )
-            {
-                result.AddError("TargetType must be set to a valid value");
-            }
-
             if (animationType
                 is AnimationType.None
                 or AnimationType.Unused_0
@@ -324,6 +241,21 @@ namespace DG.Tweening
 
                 if (isRelative is false)
                     result.AddWarning("LocalRotate with no relative option is expensive, consider using it");
+            }
+
+            if (animationType
+                is AnimationType.Fade
+                or AnimationType.Color
+                or AnimationType.PunchPosition
+                or AnimationType.PunchRotation
+                or AnimationType.PunchScale
+                or AnimationType.ShakePosition
+                or AnimationType.ShakeRotation
+                or AnimationType.ShakeScale
+                or AnimationType.UIAnchors)
+            {
+                if (isRelative)
+                    result.AddError("Fade and Color animations cannot be relative");
             }
         }
 #endif

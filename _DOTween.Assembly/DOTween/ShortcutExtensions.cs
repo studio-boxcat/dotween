@@ -620,20 +620,6 @@ namespace DG.Tweening
 
         #endregion
 
-        #region Tween
-
-        /// <summary>Tweens a Tween's timeScale to the given value.
-        /// Also stores the Tween as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float, float, NoOptions> DOTimeScale(this Tween target, float endValue, float duration)
-        {
-            TweenerCore<float, float, NoOptions> t = DOTween.To(() => target.timeScale, x => target.timeScale = x, endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
-
-        #endregion
-
         #region Blendables
 
         #region Material

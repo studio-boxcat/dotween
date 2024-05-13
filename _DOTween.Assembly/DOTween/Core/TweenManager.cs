@@ -246,19 +246,8 @@ namespace DG.Tweening.Core
 
         // Destroys any active tween without putting them back in a pool,
         // then purges all pools and resets capacities
-        internal static void PurgeAll(bool isApplicationQuitting)
+        internal static void PurgeAll()
         {
-            if (!isApplicationQuitting) {
-                // Fire eventual onKill callbacks
-                for (int i = 0; i < maxActive; ++i) {
-                    Tween t = _activeTweens[i];
-                    if (t != null && t.active) {
-                        t.active = false;
-                        if (t.onKill != null) Tween.OnTweenCallback(t.onKill, t);
-                    }
-                }
-            }
-
             ClearTweenArray(_activeTweens);
             hasActiveTweens = hasActiveDefaultTweens = hasActiveManualTweens = false;
             totActiveTweens = totActiveDefaultTweens = totActiveManualTweens = 0;
@@ -364,7 +353,7 @@ namespace DG.Tweening.Core
             }
             if (!t.isPlaying) return false;
             t.creationLocked = true; // Lock tween creation methods from now on
-            float tDeltaTime = (t.isIndependentUpdate ? independentTime : deltaTime) * t.timeScale;
+            float tDeltaTime = t.isIndependentUpdate ? independentTime : deltaTime;
             if (tDeltaTime < _EpsilonVsTimeCheck && tDeltaTime > -_EpsilonVsTimeCheck) return false; // Skip update in case time is approximately 0
             if (!t.delayComplete) {
                 tDeltaTime = t.UpdateDelay(t.elapsedDelay + tDeltaTime);

@@ -20,8 +20,6 @@ namespace DG.Tweening
         // OPTIONS ///////////////////////////////////////////////////
 
         // Modifiable at runtime
-        /// <summary>TimeScale for the tween</summary>
-        public float timeScale;
         /// <summary>If TRUE the tween will play backwards</summary>
         public bool isBackwards;
         /// <summary>Int ID (usable for filtering with DOTween static methods). 4X faster than using an object id, 2X faster than using a string id.
@@ -102,7 +100,6 @@ namespace DG.Tweening
         // Doesn't reset default values since those are set when Tweener.Setup is called
         internal virtual void Reset()
         {
-            timeScale = 1;
             isBackwards = false;
             id = invalidId;
             isIndependentUpdate = false;
@@ -126,18 +123,6 @@ namespace DG.Tweening
             isPlaying = isComplete = false;
             elapsedDelay = 0;
             delayComplete = true;
-
-            // The following are set during a tween's Setup
-//            isRecyclable = DOTween.defaultRecyclable;
-//            autoKill = DOTween.defaultAutoKill;
-//            loopType = DOTween.defaultLoopType;
-//            easeType = DOTween.defaultEaseType;
-//            easeOvershootOrAmplitude = DOTween.defaultEaseOvershootOrAmplitude;
-//            easePeriod = DOTween.defaultEasePeriod
-
-            // The following are set during TweenManager.AddActiveTween
-            // (so the previous updateType is still stored while removing tweens)
-//            updateType = UpdateType.Normal;
         }
 
         // Called by TweenManager.Validate.

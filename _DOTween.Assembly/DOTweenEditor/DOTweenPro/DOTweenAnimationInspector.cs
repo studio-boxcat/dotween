@@ -13,23 +13,23 @@ namespace DG.DOTweenEditor
     [CustomEditor(typeof(DOTweenAnimation))]
     public class DOTweenAnimationInspector : Editor
     {
-        static readonly Dictionary<DOTweenAnimation.AnimationType, Type[]> _AnimationTypeToComponent = new() {
+        static readonly Dictionary<DOTweenAnimation.AnimationType, Type[]> _eligibleTargetTypes = new()
+        {
             { DOTweenAnimation.AnimationType.LocalMove, new[] { typeof(Transform) } },
             { DOTweenAnimation.AnimationType.LocalRotate, new[] { typeof(Transform) } },
             { DOTweenAnimation.AnimationType.Scale, new[] { typeof(Transform) } },
-            { DOTweenAnimation.AnimationType.Color, new[] { typeof(Graphic), typeof(SpriteRenderer), typeof(Renderer), }},
-            { DOTweenAnimation.AnimationType.Fade, new[] { typeof(CanvasGroup), typeof(Graphic), typeof(SpriteRenderer), typeof(Renderer) }},
-            { DOTweenAnimation.AnimationType.PunchPosition, new[] { typeof(RectTransform), typeof(Transform) }},
+            { DOTweenAnimation.AnimationType.Color, new[] { typeof(Graphic), typeof(SpriteRenderer), typeof(Renderer), } },
+            { DOTweenAnimation.AnimationType.Fade, new[] { typeof(CanvasGroup), typeof(Graphic), typeof(SpriteRenderer), typeof(Renderer) } },
+            { DOTweenAnimation.AnimationType.PunchPosition, new[] { typeof(RectTransform), typeof(Transform) } },
             { DOTweenAnimation.AnimationType.PunchRotation, new[] { typeof(Transform) } },
             { DOTweenAnimation.AnimationType.PunchScale, new[] { typeof(Transform) } },
-            { DOTweenAnimation.AnimationType.ShakePosition, new[] { typeof(RectTransform), typeof(Transform) }},
+            { DOTweenAnimation.AnimationType.ShakePosition, new[] { typeof(RectTransform), typeof(Transform) } },
             { DOTweenAnimation.AnimationType.ShakeRotation, new[] { typeof(Transform) } },
             { DOTweenAnimation.AnimationType.ShakeScale, new[] { typeof(Transform) } },
             { DOTweenAnimation.AnimationType.UIAnchors, new[] { typeof(RectTransform) } },
         };
 
         DOTweenAnimation _src;
-        bool _runtimeEditMode; // If TRUE allows to change and save stuff at runtime
         int _totComponentsOnSrc; // Used to determine if a Component is added or removed from the source
 
         #region MonoBehaviour Methods
@@ -39,80 +39,49 @@ namespace DG.DOTweenEditor
             _src = target as DOTweenAnimation;
         }
 
-        void OnDisable()
-        {
-            DOTweenPreviewManager.StopAllPreviews();
-        }
-
         static readonly List<Component> _componentBuf = new();
 
         public override void OnInspectorGUI()
         {
-            bool playMode = Application.isPlaying;
-            _runtimeEditMode = _runtimeEditMode && playMode;
-
-            if (playMode) {
-                if (_runtimeEditMode) {
-
-                } else {
-                    GUILayout.Space(8);
-                    GUILayout.Label("Animation Editor disabled while in play mode");
-                    if (GUILayout.Button(new GUIContent("Activate Edit Mode", "Switches to Runtime Edit Mode, where you can change animations values and restart them"))) {
-                        _runtimeEditMode = true;
-                    }
-                    GUILayout.Label("NOTE: when using DOPlayNext, the sequence is determined by the DOTweenAnimation Components order in the target GameObject's Inspector");
-                    GUILayout.Space(10);
-                    if (!_runtimeEditMode) return;
-                }
+            if (Application.isPlaying)
+            {
+                GUILayout.Label("Animation Editor disabled while in play mode");
+                return;
             }
 
             Undo.RecordObject(_src, "DOTween Animation");
 
             EditorGUIUtility.labelWidth = 100;
 
-            if (playMode) {
-                    GUILayout.BeginHorizontal();
-                    if (GUILayout.Button("TogglePause")) _src.tween.TogglePause();
-                    if (GUILayout.Button("Rewind")) _src.tween.Rewind();
-                    if (GUILayout.Button("Restart")) _src.tween.Restart();
-                    GUILayout.EndHorizontal();
-                    if (GUILayout.Button("Commit changes and restart")) {
-                        _src.tween.Rewind();
-                        _src.tween.Kill();
-                        _src.CreateTween();
-                        _src.tween.Play();
-                    }
-            } else {
-                GUILayout.BeginHorizontal();
-                bool hasManager = _src.GetComponent<DOTweenVisualManager>() != null;
-                if (!hasManager) {
-                    if (GUILayout.Button(new GUIContent("Add Manager", "Adds a manager component which allows you to choose additional options for this gameObject"))) {
-                        _src.gameObject.AddComponent<DOTweenVisualManager>();
-                    }
-                }
-                GUILayout.EndHorizontal();
-            }
 
             // Preview in editor
-            var isPreviewing = DOTweenPreviewManager.PreviewGUI(_src);
+            var previewId = _src.GetInstanceID();
+            var wasPreviewing = DOTweenPreviewManager.IsPreviewing(previewId, out var previewingTween);
+            var previewChanged = DrawPreview(wasPreviewing);
+            if (previewChanged)
+            {
+                if (wasPreviewing is false)
+                {
+                    var t = _src.CreateTweenInstance();
+                    t.id = previewId;
+                    DOTweenPreviewManager.StartPreview(t);
+                }
+                else
+                {
+                    DOTweenPreviewManager.StopPreview(previewingTween);
+                }
+            }
             EditorGUILayout.Space(6);
 
-            EditorGUI.BeginDisabledGroup(isPreviewing);
 
-            GameObject targetGO = _src.gameObject;
-
-            if (targetGO == null) {
-                // Uses external target gameObject but it's not set
-                if (_src.target != null) {
-                    _src.target = null;
-                    GUI.changed = true;
-                }
-            } else {
-                var prevAnimType = _src.animationType;
-                _src.animationType = (DOTweenAnimation.AnimationType) EditorGUILayout.EnumPopup("Animation Type",_src.animationType);
-                if (prevAnimType != _src.animationType) {
-                    // Set default optional values based on animation type
-                    switch (_src.animationType) {
+            // Reset properties if the animation type changed.
+            var prevAnimType = _src.animationType;
+            _src.animationType = (DOTweenAnimation.AnimationType) EditorGUILayout.EnumPopup("Animation Type", _src.animationType);
+            if (prevAnimType != _src.animationType)
+            {
+                // Set default optional values based on animation type
+                switch (_src.animationType)
+                {
                     case DOTweenAnimation.AnimationType.LocalMove:
                     case DOTweenAnimation.AnimationType.LocalRotate:
                     case DOTweenAnimation.AnimationType.Scale:
@@ -144,37 +113,42 @@ namespace DG.DOTweenEditor
                     case DOTweenAnimation.AnimationType.UIAnchors:
                         _src.endValueV3 = new Vector3(0.5f, 0.5f, 0);
                         break;
-                    }
                 }
+            }
 
-                if (_src.animationType == DOTweenAnimation.AnimationType.None) {
-                    if (GUI.changed) EditorUtility.SetDirty(_src);
-                    return;
-                }
-
-                CollectMatchingTargets(targetGO, _src.animationType, _componentBuf);
-                var newTarget = _componentBuf.Count is not 1
-                    ? ComponentSelector("Target", _src.target, _componentBuf)
-                    : _componentBuf[0];
-                _componentBuf.Clear();
-                if (ReferenceEquals(_src.target, newTarget) is false) {
-                    _src.target = newTarget;
-                    _src.targetType = TypeToDOTargetType(newTarget.GetType());
-                }
-
-                EditorGUILayout.BeginHorizontal();
-                _src.duration = EditorGUILayout.FloatField("Duration", _src.duration);
-                if (_src.duration < 0) _src.duration = 0;
-                EditorGUILayout.Space(18, false);
-                _src.delay = EditorGUILayout.FloatField("Delay", _src.delay);
-                if (_src.delay < 0) _src.delay = 0;
-                EditorGUILayout.EndHorizontal();
-                EditorGUILayout.Space(6);
+            if (_src.animationType == DOTweenAnimation.AnimationType.None)
+            {
+                if (GUI.changed) EditorUtility.SetDirty(_src);
+                return;
+            }
 
 
-                bool canBeRelative = true;
-                // End value and eventual specific options
-                switch (_src.animationType) {
+            // Draw the target selector.
+            CollectMatchingTargets(_src.gameObject, _src.animationType, _componentBuf);
+            var newTarget = _componentBuf.Count is not 1
+                ? ComponentSelector("Target", _src.target, _componentBuf)
+                : _componentBuf[0];
+            _componentBuf.Clear();
+            if (ReferenceEquals(_src.target, newTarget) is false)
+                _src.target = newTarget;
+
+
+            // Draw Duration & Delay.
+            EditorGUILayout.BeginHorizontal();
+            _src.duration = EditorGUILayout.FloatField("Duration", _src.duration);
+            if (_src.duration < 0) _src.duration = 0;
+            EditorGUILayout.Space(18, false);
+            _src.delay = EditorGUILayout.FloatField("Delay", _src.delay);
+            if (_src.delay < 0) _src.delay = 0;
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space(6);
+
+
+            // Draw the rest of the properties.
+            bool canBeRelative = true;
+            // End value and eventual specific options
+            switch (_src.animationType)
+            {
                 case DOTweenAnimation.AnimationType.LocalMove:
                     GUIEndValueV3();
                     break;
@@ -217,20 +191,18 @@ namespace DG.DOTweenEditor
                     GUIEndValueV2();
                     canBeRelative = false;
                     break;
-                }
-
-                // Final settings
-                if (canBeRelative) _src.isRelative = EditorGUILayout.Toggle("    Relative", _src.isRelative);
             }
+
+            // Final settings
+            if (canBeRelative) _src.isRelative = EditorGUILayout.Toggle("    Relative", _src.isRelative);
 
             _src.easeType = (Ease) EditorGUILayout.EnumPopup("Ease", _src.easeType);
-            if (_src.easeType == Ease.INTERNAL_Custom) {
+            if (_src.easeType == Ease.INTERNAL_Custom)
                 _src.easeCurve = EditorGUILayout.CurveField("   Ease Curve", _src.easeCurve);
-            }
             _src.loops = EditorGUILayout.IntField(new GUIContent("Loops", "Set to -1 for infinite loops"), _src.loops);
             if (_src.loops < -1) _src.loops = -1;
-            if (_src.loops > 1 || _src.loops == -1)
-                _src.loopType = (LoopType)EditorGUILayout.EnumPopup("   Loop Type", _src.loopType);
+            if (_src.loops is > 1 or -1)
+                _src.loopType = (LoopType) EditorGUILayout.EnumPopup("   Loop Type", _src.loopType);
 
             EditorGUI.EndDisabledGroup();
             GUILayout.Space(6);
@@ -239,9 +211,8 @@ namespace DG.DOTweenEditor
             GUILayout.BeginHorizontal();
             EditorGUIUtility.labelWidth = 70;
             _src.autoGenerate = EditorGUILayout.ToggleLeft(new GUIContent("AutoGenerate", "If selected, the tween will be generated at startup (during Start for RectTransform position tween, Awake for all the others)"), _src.autoGenerate);
-            if (_src.autoGenerate) {
+            if (_src.autoGenerate)
                 _src.autoPlay = EditorGUILayout.ToggleLeft(new GUIContent("AutoPlay", "If selected, the tween will play automatically"), _src.autoPlay);
-            }
             _src.autoKill = EditorGUILayout.ToggleLeft(new GUIContent("AutoKill", "If selected, the tween will be killed when it completes, and won't be reusable"), _src.autoKill);
             GUILayout.FlexibleSpace();
             EditorGUIUtility.labelWidth = 110;
@@ -253,29 +224,43 @@ namespace DG.DOTweenEditor
 
         #endregion
 
+        /// <summary>
+        /// Returns TRUE if its actually previewing animations
+        /// </summary>
+        public static bool DrawPreview(bool previewing)
+        {
+            if (EditorApplication.isPlaying)
+                return false;
+
+            // Preview - Play
+            if (previewing is false)
+            {
+                if (GUILayout.Button("► Play"))
+                    return true;
+            }
+            // Preview - Stop
+            else
+            {
+                if (GUILayout.Button("■ Stop"))
+                    return true;
+            }
+
+            return false;
+        }
+
         #region Methods
 
         static void CollectMatchingTargets(GameObject targetGO, DOTweenAnimation.AnimationType animType, List<Component> result)
         {
-            var types = _AnimationTypeToComponent[animType];
-            foreach (var t in types) {
+            var types = _eligibleTargetTypes[animType];
+            foreach (var t in types)
+            {
                 if (targetGO.TryGetComponent(t, out var targetComp)
                     && result.Contains(targetComp) is false)
                 {
                     result.Add(targetComp);
                 }
             }
-        }
-
-        static DOTweenAnimation.TargetType TypeToDOTargetType(Type t)
-        {
-            if (t == typeof(RectTransform)) return DOTweenAnimation.TargetType.RectTransform;
-            if (t == typeof(Transform)) return DOTweenAnimation.TargetType.Transform;
-            if (t == typeof(CanvasGroup)) return DOTweenAnimation.TargetType.CanvasGroup;
-            if (t.IsSubclassOf(typeof(Graphic))) return DOTweenAnimation.TargetType.Graphic;
-            if (t == typeof(SpriteRenderer)) return DOTweenAnimation.TargetType.SpriteRenderer;
-            if (t.IsSubclassOf(typeof(Renderer))) return DOTweenAnimation.TargetType.Renderer;
-            throw new Exception("Unsupported Component type: " + t);
         }
 
         static Component ComponentSelector(string label, Component cur, List<Component> components)
