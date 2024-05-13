@@ -153,7 +153,7 @@ namespace DG.DOTweenEditor
                     GUIEndValueV3();
                     break;
                 case DOTweenAnimation.AnimationType.LocalRotateZ:
-                    GUIEndValueV3();
+                    GUIEndValueZ();
                     _src.optionalRotationMode = (byte) EditorGUILayout.IntField("    Rotation Mode", _src.optionalRotationMode);
                     break;
                 case DOTweenAnimation.AnimationType.Scale:
@@ -308,6 +308,14 @@ namespace DG.DOTweenEditor
             GUILayout.BeginHorizontal();
             GUIToFromButton();
             _src.endValueV3 = EditorGUILayout.Vector3Field("", _src.endValueV3, GUILayout.Height(16));
+            GUILayout.EndHorizontal();
+        }
+
+        void GUIEndValueZ()
+        {
+            GUILayout.BeginHorizontal();
+            GUIToFromButton();
+            _src.endValueV3.z = EditorGUILayout.FloatField("", _src.endValueV3.z, GUILayout.Height(16));
             GUILayout.EndHorizontal();
         }
 
