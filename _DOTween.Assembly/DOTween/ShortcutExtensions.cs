@@ -319,66 +319,60 @@ namespace DG.Tweening
         /// <summary>Tweens a Transform's position to the given value.
         /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static TweenerCore<Vector3, Vector3, VectorOptions> DOMove(this Transform target, Vector3 endValue, float duration, bool snapping = false)
+        public static TweenerCore<Vector3, Vector3, VectorOptions> DOMove(this Transform target, Vector3 endValue, float duration)
         {
             TweenerCore<Vector3, Vector3, VectorOptions> t = DOTween.To(() => target.position, x => target.position = x, endValue, duration);
-            t.SetOptions(snapping).SetTarget(target);
+            t.SetTarget(target);
             return t;
         }
 
         /// <summary>Tweens a Transform's X position to the given value.
         /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static TweenerCore<DOVector3,DOVector3,VectorOptions> DOMoveX(this Transform target, float endValue, float duration, bool snapping = false)
+        public static TweenerCore<DOVector3,DOVector3,VectorOptions> DOMoveX(this Transform target, float endValue, float duration)
         {
             TweenerCore<DOVector3,DOVector3,VectorOptions> t = DOTween.To(() => target.position, x => target.position = x, new Vector3(endValue, 0, 0), duration);
-            t.SetOptions(AxisConstraint.X, snapping).SetTarget(target);
+            t.SetOptions(AxisConstraint.X).SetTarget(target);
             return t;
         }
 
         /// <summary>Tweens a Transform's Y position to the given value.
         /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static TweenerCore<Vector3, Vector3, VectorOptions> DOMoveY(this Transform target, float endValue, float duration, bool snapping = false)
+        public static TweenerCore<Vector3, Vector3, VectorOptions> DOMoveY(this Transform target, float endValue, float duration)
         {
             TweenerCore<Vector3, Vector3, VectorOptions> t = DOTween.To(() => target.position, x => target.position = x, new Vector3(0, endValue, 0), duration);
-            t.SetOptions(AxisConstraint.Y, snapping).SetTarget(target);
+            t.SetOptions(AxisConstraint.Y).SetTarget(target);
             return t;
         }
 
         /// <summary>Tweens a Transform's localPosition to the given value.
         /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static TweenerCore<Vector3, Vector3, VectorOptions> DOLocalMove(this Transform target, Vector3 endValue, float duration, bool snapping = false)
+        public static TweenerCore<Vector3, Vector3, VectorOptions> DOLocalMove(this Transform target, Vector3 endValue, float duration)
         {
             TweenerCore<Vector3, Vector3, VectorOptions> t = DOTween.To(() => target.localPosition, x => target.localPosition = x, endValue, duration);
-            t.SetOptions(snapping).SetTarget(target);
+            t.SetTarget(target);
             return t;
         }
 
         /// <summary>Tweens a Transform's X localPosition to the given value.
         /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static TweenerCore<Vector3, Vector3, VectorOptions> DOLocalMoveX(this Transform target, float endValue, float duration, bool snapping = false)
+        public static TweenerCore<Vector3, Vector3, VectorOptions> DOLocalMoveX(this Transform target, float endValue, float duration)
         {
             TweenerCore<Vector3, Vector3, VectorOptions> t = DOTween.To(() => target.localPosition, x => target.localPosition = x, new Vector3(endValue, 0, 0), duration);
-            t.SetOptions(AxisConstraint.X, snapping).SetTarget(target);
+            t.SetOptions(AxisConstraint.X).SetTarget(target);
             return t;
         }
 
         /// <summary>Tweens a Transform's Y localPosition to the given value.
         /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static TweenerCore<Vector3, Vector3, VectorOptions> DOLocalMoveY(this Transform target, float endValue, float duration, bool snapping = false)
+        public static TweenerCore<Vector3, Vector3, VectorOptions> DOLocalMoveY(this Transform target, float endValue, float duration)
         {
             TweenerCore<Vector3, Vector3, VectorOptions> t = DOTween.To(() => target.localPosition, x => target.localPosition = x, new Vector3(0, endValue, 0), duration);
-            t.SetOptions(AxisConstraint.Y, snapping).SetTarget(target);
+            t.SetOptions(AxisConstraint.Y).SetTarget(target);
             return t;
         }
 
@@ -485,15 +479,14 @@ namespace DG.Tweening
         /// <param name="elasticity">Represents how much (0 to 1) the vector will go beyond the starting position when bouncing backwards.
         /// 1 creates a full oscillation between the punch direction and the opposite direction,
         /// while 0 oscillates only between the punch and the start position</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static Tweener DOPunchPosition(this Transform target, Vector3 punch, float duration, int vibrato = 10, float elasticity = 1, bool snapping = false)
+        public static Tweener DOPunchPosition(this Transform target, Vector3 punch, float duration, int vibrato = 10, float elasticity = 1)
         {
             if (duration <= 0) {
                 if (Debugger.logPriority > 0) Debug.LogWarning("DOPunchPosition: duration can't be 0, returning NULL without creating a tween");
                 return null;
             }
             return DOTween.Punch(() => target.localPosition, x => target.localPosition = x, punch, duration, vibrato, elasticity)
-                .SetTarget(target).SetOptions(snapping);
+                .SetTarget(target);
         }
         /// <summary>Punches a Transform's localScale towards the given size and then back to the starting one
         /// as if it was connected to the starting scale via an elastic.</summary>
@@ -536,17 +529,16 @@ namespace DG.Tweening
         /// <param name="vibrato">Indicates how much will the shake vibrate</param>
         /// <param name="randomness">Indicates how much the shake will be random (0 to 180 - values higher than 90 kind of suck, so beware). 
         /// Setting it to 0 will shake along a single direction.</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         /// <param name="fadeOut">If TRUE the shake will automatically fadeOut smoothly within the tween's duration, otherwise it will not</param>
         /// <param name="randomnessMode">Randomness mode</param>
-        public static Tweener DOShakePosition(this Transform target, float duration, float strength = 1, int vibrato = 10, float randomness = 90, bool snapping = false, bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full)
+        public static Tweener DOShakePosition(this Transform target, float duration, float strength = 1, int vibrato = 10, float randomness = 90, bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full)
         {
             if (duration <= 0) {
                 if (Debugger.logPriority > 0) Debug.LogWarning("DOShakePosition: duration can't be 0, returning NULL without creating a tween");
                 return null;
             }
             return DOTween.Shake(() => target.localPosition, x => target.localPosition = x, duration, strength, vibrato, randomness, false, fadeOut, randomnessMode)
-                .SetTarget(target).SetSpecialStartupMode(SpecialStartupMode.SetShake).SetOptions(snapping);
+                .SetTarget(target).SetSpecialStartupMode(SpecialStartupMode.SetShake);
         }
         /// <summary>Shakes a Transform's localPosition with the given values.</summary>
         /// <param name="duration">The duration of the tween</param>
@@ -554,17 +546,16 @@ namespace DG.Tweening
         /// <param name="vibrato">Indicates how much will the shake vibrate</param>
         /// <param name="randomness">Indicates how much the shake will be random (0 to 180 - values higher than 90 kind of suck, so beware). 
         /// Setting it to 0 will shake along a single direction.</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         /// <param name="fadeOut">If TRUE the shake will automatically fadeOut smoothly within the tween's duration, otherwise it will not</param>
         /// <param name="randomnessMode">Randomness mode</param>
-        public static Tweener DOShakePosition(this Transform target, float duration, Vector3 strength, int vibrato = 10, float randomness = 90, bool snapping = false, bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full)
+        public static Tweener DOShakePosition(this Transform target, float duration, Vector3 strength, int vibrato = 10, float randomness = 90, bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full)
         {
             if (duration <= 0) {
                 if (Debugger.logPriority > 0) Debug.LogWarning("DOShakePosition: duration can't be 0, returning NULL without creating a tween");
                 return null;
             }
             return DOTween.Shake(() => target.localPosition, x => target.localPosition = x, duration, strength, vibrato, randomness, fadeOut, randomnessMode)
-                .SetTarget(target).SetSpecialStartupMode(SpecialStartupMode.SetShake).SetOptions(snapping);
+                .SetTarget(target).SetSpecialStartupMode(SpecialStartupMode.SetShake);
         }
         /// <summary>Shakes a Transform's localRotation.</summary>
         /// <param name="duration">The duration of the tween</param>
@@ -645,8 +636,7 @@ namespace DG.Tweening
         /// <param name="jumpPower">Power of the jump (the max height of the jump is represented by this plus the final Y offset)</param>
         /// <param name="numJumps">Total number of jumps</param>
         /// <param name="duration">The duration of the tween</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static Sequence DOJump(this Transform target, Vector2 endValue, float jumpPower, int numJumps, float duration, bool snapping = false)
+        public static Sequence DOJump(this Transform target, Vector2 endValue, float jumpPower, int numJumps, float duration)
         {
             if (numJumps < 1) numJumps = 1;
             float startPosY = target.position.y; // Temporary fix for OnStart not being called when using Goto instead of GotoWithCallbacks
@@ -657,11 +647,11 @@ namespace DG.Tweening
             // (in case users add a delay or other elements to the Sequence)
             Sequence s = DOTween.Sequence();
             Tween yTween = DOTween.To(() => target.position, x => target.position = x, new Vector3(0, jumpPower, 0), duration / (numJumps * 2))
-                .SetOptions(AxisConstraint.Y, snapping).SetEase(Ease.OutQuad).SetRelative()
+                .SetOptions(AxisConstraint.Y).SetEase(Ease.OutQuad).SetRelative()
                 .SetLoops(numJumps * 2, LoopType.Yoyo)
                 .OnStart(()=> startPosY = target.position.y); // FIXME not called if you only use Goto (and not GotoWithCallbacks)
             s.Append(DOTween.To(() => target.position, x => target.position = x, new Vector3(endValue.x, 0, 0), duration)
-                    .SetOptions(AxisConstraint.X, snapping).SetEase(Ease.Linear)
+                    .SetOptions(AxisConstraint.X).SetEase(Ease.Linear)
                 ).Join(yTween)
                 .SetTarget(target).SetEase(DOTween.defaultEaseType);
             yTween.OnUpdate(() => {
@@ -682,8 +672,7 @@ namespace DG.Tweening
         /// <param name="jumpPower">Power of the jump (the max height of the jump is represented by this plus the final Y offset)</param>
         /// <param name="numJumps">Total number of jumps</param>
         /// <param name="duration">The duration of the tween</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static Sequence DOLocalJump(this Transform target, Vector3 endValue, float jumpPower, int numJumps, float duration, bool snapping = false)
+        public static Sequence DOLocalJump(this Transform target, Vector3 endValue, float jumpPower, int numJumps, float duration)
         {
             if (numJumps < 1) numJumps = 1;
             float startPosY = target.localPosition.y; // Temporary fix for OnStart not being called when using Goto instead of GotoWithCallbacks
@@ -694,11 +683,11 @@ namespace DG.Tweening
             // (in case users add a delay or other elements to the Sequence)
             Sequence s = DOTween.Sequence();
             Tween yTween = DOTween.To(() => target.localPosition, x => target.localPosition = x, new Vector3(0, jumpPower, 0), duration / (numJumps * 2))
-                .SetOptions(AxisConstraint.Y, snapping).SetEase(Ease.OutQuad).SetRelative()
+                .SetOptions(AxisConstraint.Y).SetEase(Ease.OutQuad).SetRelative()
                 .SetLoops(numJumps * 2, LoopType.Yoyo)
                 .OnStart(()=> startPosY = target.localPosition.y); // FIXME not called if you only use Goto (and not GotoWithCallbacks)
             s.Append(DOTween.To(() => target.localPosition, x => target.localPosition = x, new Vector3(endValue.x, 0, 0), duration)
-                    .SetOptions(AxisConstraint.X, snapping).SetEase(Ease.Linear)
+                    .SetOptions(AxisConstraint.X).SetEase(Ease.Linear)
                 ).Join(yTween)
                 .SetTarget(target).SetEase(DOTween.defaultEaseType);
             yTween.OnUpdate(() => {
@@ -819,8 +808,7 @@ namespace DG.Tweening
         /// instead than fight each other as multiple DOMove would do.
         /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
         /// <param name="byValue">The value to tween by</param><param name="duration">The duration of the tween</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static Tweener DOBlendableMoveBy(this Transform target, Vector3 byValue, float duration, bool snapping = false)
+        public static Tweener DOBlendableMoveBy(this Transform target, Vector3 byValue, float duration)
         {
             Vector3 to = Vector3.zero;
             return DOTween.To(() => to, x => {
@@ -832,7 +820,7 @@ namespace DG.Tweening
                 to = x;
                 target.position += diff;
             }, byValue, duration)
-                .Blendable().SetOptions(snapping).SetTarget(target);
+                .Blendable().SetTarget(target);
         }
 
         /// <summary>Tweens a Transform's localPosition BY the given value (as if you chained a <code>SetRelative</code>),
@@ -840,8 +828,7 @@ namespace DG.Tweening
         /// instead than fight each other as multiple DOMove would do.
         /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
         /// <param name="byValue">The value to tween by</param><param name="duration">The duration of the tween</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static Tweener DOBlendableLocalMoveBy(this Transform target, Vector3 byValue, float duration, bool snapping = false)
+        public static Tweener DOBlendableLocalMoveBy(this Transform target, Vector3 byValue, float duration)
         {
             Vector3 to = Vector3.zero;
             return DOTween.To(() => to, x => {
@@ -853,7 +840,7 @@ namespace DG.Tweening
                 to = x;
                 target.localPosition += diff;
             }, byValue, duration)
-                .Blendable().SetOptions(snapping).SetTarget(target);
+                .Blendable().SetTarget(target);
         }
 
         /// <summary>EXPERIMENTAL METHOD - Tweens a Transform's rotation BY the given value (as if you chained a <code>SetRelative</code>),

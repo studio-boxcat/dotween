@@ -478,44 +478,22 @@ namespace DG.Tweening
         #region Tweeners Extra Options
 
         /// <summary>Options for Vector2 tweens</summary>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static Tweener SetOptions(this TweenerCore<DOVector2, DOVector2, VectorOptions> t, bool snapping)
-        {
-            if (t is not { active: true }) return t;
-
-            t.plugOptions.snapping = snapping;
-            return t;
-        }
-        /// <summary>Options for Vector2 tweens</summary>
         /// <param name="axisConstraint">Selecting an axis will tween the vector only on that axis, leaving the others untouched</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static Tweener SetOptions(this TweenerCore<DOVector2, DOVector2, VectorOptions> t, AxisConstraint axisConstraint, bool snapping = false)
+        public static Tweener SetOptions(this TweenerCore<DOVector2, DOVector2, VectorOptions> t, AxisConstraint axisConstraint)
         {
             if (t is not { active: true }) return t;
 
             t.plugOptions.axisConstraint = axisConstraint;
-            t.plugOptions.snapping = snapping;
             return t;
         }
 
-        /// <summary>Options for Vector3 tweens</summary>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static Tweener SetOptions(this TweenerCore<DOVector3, DOVector3, VectorOptions> t, bool snapping)
-        {
-            if (t is not { active: true }) return t;
-
-            t.plugOptions.snapping = snapping;
-            return t;
-        }
         /// <summary>Options for Vector3 tweens</summary>
         /// <param name="axisConstraint">Selecting an axis will tween the vector only on that axis, leaving the others untouched</param>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static Tweener SetOptions(this TweenerCore<DOVector3, DOVector3, VectorOptions> t, AxisConstraint axisConstraint, bool snapping = false)
+        public static Tweener SetOptions(this TweenerCore<DOVector3, DOVector3, VectorOptions> t, AxisConstraint axisConstraint)
         {
             if (t is not { active: true }) return t;
 
             t.plugOptions.axisConstraint = axisConstraint;
-            t.plugOptions.snapping = snapping;
             return t;
         }
 
@@ -527,16 +505,6 @@ namespace DG.Tweening
             if (t is not { active: true }) return t;
 
             t.plugOptions.rotateMode = useShortest360Route ? RotateMode.Fast : RotateMode.FastBeyond360;
-            return t;
-        }
-
-        /// <summary>Options for Vector3Array tweens</summary>
-        /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        public static Tweener SetOptions(this TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> t, bool snapping)
-        {
-            if (t is not { active: true }) return t;
-
-            t.plugOptions.snapping = snapping;
             return t;
         }
 

@@ -212,7 +212,7 @@ namespace DG.Tweening
                 case AnimationType.None:
                     break;
                 case AnimationType.LocalMove:
-                    return transform.DOLocalMove(endValueV3, duration, optionalBool0);
+                    return transform.DOLocalMove(endValueV3, duration);
                 case AnimationType.LocalRotate:
                     return transform.DOLocalRotate(endValueV3, duration, optionalRotationMode);
                 case AnimationType.Scale:
@@ -222,14 +222,10 @@ namespace DG.Tweening
                     {
                         case TargetType.Renderer:
                             return ((Renderer) target).material.DOColor(endValueColor, duration);
-#if true // SPRITE_MARKER
                         case TargetType.SpriteRenderer:
                             return ((SpriteRenderer) target).DOColor(endValueColor, duration);
-#endif
-#if true // UI_MARKER
                         case TargetType.Graphic:
                             return ((Graphic) target).DOColor(endValueColor, duration);
-#endif
                     }
                     break;
                 case AnimationType.Fade:
@@ -237,27 +233,21 @@ namespace DG.Tweening
                     {
                         case TargetType.Renderer:
                             return ((Renderer) target).material.DOFade(endValueFloat, duration);
-#if true // SPRITE_MARKER
                         case TargetType.SpriteRenderer:
                             return ((SpriteRenderer) target).DOFade(endValueFloat, duration);
-#endif
-#if true // UI_MARKER
                         case TargetType.Graphic:
                             return ((Graphic) target).DOFade(endValueFloat, duration);
                         case TargetType.CanvasGroup:
                             return ((CanvasGroup) target).DOFade(endValueFloat, duration);
-#endif
                     }
                     break;
                 case AnimationType.PunchPosition:
                     switch (targetType)
                     {
                         case TargetType.Transform:
-                            return ((Transform) target).DOPunchPosition(endValueV3, duration, optionalInt0, optionalFloat0, optionalBool0);
-#if true // UI_MARKER
+                            return ((Transform) target).DOPunchPosition(endValueV3, duration, optionalInt0, optionalFloat0);
                         case TargetType.RectTransform:
-                            return ((RectTransform) target).DOPunchAnchorPos(endValueV3, duration, optionalInt0, optionalFloat0, optionalBool0);
-#endif
+                            return ((RectTransform) target).DOPunchAnchorPos(endValueV3, duration, optionalInt0, optionalFloat0);
                     }
                     break;
                 case AnimationType.PunchScale:
@@ -268,11 +258,9 @@ namespace DG.Tweening
                     switch (targetType)
                     {
                         case TargetType.Transform:
-                            return ((Transform) target).DOShakePosition(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool0, optionalBool1);
-#if true // UI_MARKER
+                            return ((Transform) target).DOShakePosition(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool1);
                         case TargetType.RectTransform:
-                            return ((RectTransform) target).DOShakeAnchorPos(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool0, optionalBool1);
-#endif
+                            return ((RectTransform) target).DOShakeAnchorPos(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool1);
                     }
                     break;
                 case AnimationType.ShakeScale:
@@ -320,6 +308,15 @@ namespace DG.Tweening
                )
             {
                 result.AddError("AnimationType must be set to a valid value");
+            }
+
+            if (animationType
+                is AnimationType.LocalMove
+                or AnimationType.PunchPosition
+                or AnimationType.ShakePosition)
+            {
+                if (optionalBool0)
+                    result.AddError("Punch and Shake animations cannot have snapping enabled");
             }
         }
 #endif

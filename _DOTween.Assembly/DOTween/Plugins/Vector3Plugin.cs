@@ -35,11 +35,6 @@ namespace DG.Tweening.Plugins
                 to = t.startValue;
                 break;
             }
-            if (t.plugOptions.snapping) {
-                to.x = (float)Math.Round(to.x);
-                to.y = (float)Math.Round(to.y);
-                to.z = (float)Math.Round(to.z);
-            }
             t.setter(to);
         }
         public override void SetFrom(TweenerCore<Vector3, Vector3, VectorOptions> t, Vector3 fromValue, bool setImmediately, bool isRelative)
@@ -64,11 +59,6 @@ namespace DG.Tweening.Plugins
                 default:
                     to = fromValue;
                     break;
-                }
-                if (t.plugOptions.snapping) {
-                    to.x = (float)Math.Round(to.x);
-                    to.y = (float)Math.Round(to.y);
-                    to.z = (float)Math.Round(to.z);
                 }
                 t.setter(to);
             }
@@ -110,24 +100,17 @@ namespace DG.Tweening.Plugins
             case AxisConstraint.X:
                 Vector3 resX = getter();
                 resX.x = startValue.x + changeValue.x * easeVal;
-                if (options.snapping) resX.x = (float)Math.Round(resX.x);
                 setter(resX);
                 break;
             case AxisConstraint.Y:
                 Vector3 resY = getter();
                 resY.y = startValue.y + changeValue.y * easeVal;
-                if (options.snapping) resY.y = (float)Math.Round(resY.y);
                 setter(resY);
                 break;
             default:
                 startValue.x += changeValue.x * easeVal;
                 startValue.y += changeValue.y * easeVal;
                 startValue.z += changeValue.z * easeVal;
-                if (options.snapping) {
-                    startValue.x = (float)Math.Round(startValue.x);
-                    startValue.y = (float)Math.Round(startValue.y);
-                    startValue.z = (float)Math.Round(startValue.z);
-                }
                 setter(startValue);
                 break;
             }

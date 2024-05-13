@@ -35,10 +35,6 @@ namespace DG.Tweening.Plugins
                 to = t.startValue;
                 break;
             }
-            if (t.plugOptions.snapping) {
-                to.x = (float)Math.Round(to.x);
-                to.y = (float)Math.Round(to.y);
-            }
             t.setter(to);
         }
         public override void SetFrom(TweenerCore<Vector2, Vector2, VectorOptions> t, Vector2 fromValue, bool setImmediately, bool isRelative)
@@ -63,10 +59,6 @@ namespace DG.Tweening.Plugins
                 default:
                     to = fromValue;
                     break;
-                }
-                if (t.plugOptions.snapping) {
-                    to.x = (float)Math.Round(to.x);
-                    to.y = (float)Math.Round(to.y);
                 }
                 t.setter(to);
             }
@@ -108,22 +100,16 @@ namespace DG.Tweening.Plugins
             case AxisConstraint.X:
                 Vector2 resX = getter();
                 resX.x = startValue.x + changeValue.x * easeVal;
-                if (options.snapping) resX.x = (float)Math.Round(resX.x);
                 setter(resX);
                 break;
             case AxisConstraint.Y:
                 Vector2 resY = getter();
                 resY.y = startValue.y + changeValue.y * easeVal;
-                if (options.snapping) resY.y = (float)Math.Round(resY.y);
                 setter(resY);
                 break;
             default:
                 startValue.x += changeValue.x * easeVal;
                 startValue.y += changeValue.y * easeVal;
-                if (options.snapping) {
-                    startValue.x = (float)Math.Round(startValue.x);
-                    startValue.y = (float)Math.Round(startValue.y);
-                }
                 setter(startValue);
                 break;
             }

@@ -177,7 +177,6 @@ namespace DG.DOTweenEditor
                 switch (_src.animationType) {
                 case DOTweenAnimation.AnimationType.LocalMove:
                     GUIEndValueV3();
-                    _src.optionalBool0 = EditorGUILayout.Toggle("    Snapping", _src.optionalBool0);
                     break;
                 case DOTweenAnimation.AnimationType.LocalRotate:
                     GUIEndValueV3();
@@ -204,7 +203,6 @@ namespace DG.DOTweenEditor
                     canBeRelative = false;
                     _src.optionalInt0 = EditorGUILayout.IntSlider(new GUIContent("    Vibrato", "How much will the punch vibrate"), _src.optionalInt0, 1, 50);
                     _src.optionalFloat0 = EditorGUILayout.Slider(new GUIContent("    Elasticity", "How much the vector will go beyond the starting position when bouncing backwards"), _src.optionalFloat0, 0, 1);
-                    if (_src.animationType == DOTweenAnimation.AnimationType.PunchPosition) _src.optionalBool0 = EditorGUILayout.Toggle("    Snapping", _src.optionalBool0);
                     break;
                 case DOTweenAnimation.AnimationType.ShakePosition:
                 case DOTweenAnimation.AnimationType.ShakeRotation:
@@ -214,7 +212,6 @@ namespace DG.DOTweenEditor
                     _src.optionalInt0 = EditorGUILayout.IntSlider(new GUIContent("    Vibrato", "How much will the shake vibrate"), _src.optionalInt0, 1, 50);
                     _src.optionalFloat0 = EditorGUILayout.Slider(new GUIContent("    Randomness", "The shake randomness"), _src.optionalFloat0, 0, 90);
                     _src.optionalBool1 = EditorGUILayout.Toggle(new GUIContent("    FadeOut", "If selected the shake will fade out, otherwise it will constantly play with full force"), _src.optionalBool1);
-                    if (_src.animationType == DOTweenAnimation.AnimationType.ShakePosition) _src.optionalBool0 = EditorGUILayout.Toggle("    Snapping", _src.optionalBool0);
                     break;
                 case DOTweenAnimation.AnimationType.UIAnchors:
                     GUIEndValueV2();
