@@ -12,7 +12,7 @@ namespace DG.Tweening.Plugins.Options
 {
     public class Vector3ArrayOptions
     {
-        readonly float[] startTimes;
+        readonly float[] startTimes; // normalized time values (0-1)
         readonly Vector3[] startValues;
 
         public Vector3ArrayOptions(float[] startTimes, Vector3[] startValues)
@@ -49,16 +49,16 @@ namespace DG.Tweening.Plugins.Options
 
             for (var i = 0; i < startTimes.Length - 1; i++)
             {
-                var nextTime = startTimes[i + 1];
-                if (t < nextTime) continue;
+                var curEndTime = startTimes[i + 1];
+                if (curEndTime < t) continue;
 
                 var curStartTime = startTimes[i];
                 segmentTime = t - curStartTime;
-                segmentDuration = nextTime - curStartTime;
+                segmentDuration = curEndTime - curStartTime;
 
                 segmentStartValue = startValues[i];
-                var nextValue = startValues[i + 1];
-                segmentChangeValue = nextValue - segmentStartValue;
+                var curEndValue = startValues[i + 1];
+                segmentChangeValue = curEndValue - segmentStartValue;
                 return;
             }
 

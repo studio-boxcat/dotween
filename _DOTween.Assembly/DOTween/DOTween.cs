@@ -222,7 +222,9 @@ namespace DG.Tweening
         /// while 0 oscillates only between the starting position and the decaying direction</param>
         public static TweenerCore<Vector3> Punch(DOGetter<Vector3> getter, DOSetter<Vector3> setter, Vector3 direction, float duration, int vibrato = 10, float elasticity = 1)
         {
-            var opts = SpecialTweenUtils.CalculatePunch(direction, duration, vibrato, elasticity);
+            var segmentCount = (int) (vibrato * duration);
+            if (segmentCount < 2) segmentCount = 2;
+            var opts = SpecialTweenUtils.CalculatePunch(direction, segmentCount, elasticity);
             var t = ToArray(getter, setter, duration, opts);
             SpecialTweenUtils.SetupPunch(t);
             return t;
@@ -272,7 +274,9 @@ namespace DG.Tweening
             bool fadeOut, ShakeRandomnessMode randomnessMode
         )
         {
-            var opts = SpecialTweenUtils.CalculateShake(duration, strength, vibrato, randomness, ignoreZAxis, vectorBased, fadeOut, randomnessMode);
+            var segmentCount = (int) (vibrato * duration);
+            if (segmentCount < 2) segmentCount = 2;
+            var opts = SpecialTweenUtils.CalculateShake(strength, segmentCount, randomness, ignoreZAxis, vectorBased, fadeOut, randomnessMode);
             var t = ToArray(getter, setter, duration, opts);
             SpecialTweenUtils.SetupShake(t);
             return t;

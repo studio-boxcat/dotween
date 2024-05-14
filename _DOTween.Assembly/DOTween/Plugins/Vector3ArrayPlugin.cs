@@ -33,9 +33,10 @@ namespace DG.Tweening.Plugins
 
         public override void EvaluateAndApply(TweenerCore<Vector3> t, bool useInversePosition)
         {
-            var elapsed = useInversePosition ? t.duration - t.position : t.position;
+            var duration = t.duration;
+            var elapsed = useInversePosition ? duration - t.position : t.position;
             var opts = (Vector3ArrayOptions) t.plugOptions;
-            opts.Resolve(elapsed, out var segmentTime, out var segmentDuration, out var startValue, out var changeValue);
+            opts.Resolve(elapsed / duration, out var segmentTime, out var segmentDuration, out var startValue, out var changeValue);
 
             if (segmentDuration is 0)
             {

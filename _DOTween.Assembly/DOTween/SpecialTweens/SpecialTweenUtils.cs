@@ -22,14 +22,11 @@ namespace DG.Tweening
             t.NoFrom();
         }
 
-        public static Vector3ArrayOptions CalculatePunch(Vector3 direction, float duration, int vibrato, float elasticity)
+        public static Vector3ArrayOptions CalculatePunch(Vector3 direction, int segmentCount, float elasticity)
         {
-            var segmentCount = (int) (vibrato * duration);
-            if (segmentCount < 2) segmentCount = 2;
-
             // Calculate and store the duration of each tween
             var startTimes = new float[segmentCount - 1]; // Start time for the first segment is omitted.
-            var segmentDuration = duration / segmentCount;
+            var segmentDuration = 1f / segmentCount;
             for (var i = 0; i < segmentCount - 1; ++i)
                 startTimes[i] = segmentDuration * (i + 1);
 
@@ -51,32 +48,29 @@ namespace DG.Tweening
             return new Vector3ArrayOptions(startTimes, startValues);
         }
 
-        public static Vector3ArrayOptions CalculateShake(float duration,
-            Vector3 strength, int vibrato, float randomness, bool ignoreZAxis, bool vectorBased,
+        public static Vector3ArrayOptions CalculateShake(
+            Vector3 strength, int segmentCount, float randomness, bool ignoreZAxis, bool vectorBased,
             bool fadeOut, ShakeRandomnessMode randomnessMode)
         {
-            var segmentCount = (int) (vibrato * duration);
-            if (segmentCount < 2) segmentCount = 2;
-
             // Calculate and store the duration of each tween
             var startTimes = new float[segmentCount - 1]; // Start time for the first segment is omitted.
             if (fadeOut)
             {
-                var sum = duration; // Init with the last segment duration.
+                var sum = 1f; // Init with the last segment duration.
                 for (var i = 0; i < segmentCount - 1; ++i)
                 {
-                    var segmentDuration = duration * ((i + 1) / (float) segmentCount);
+                    var segmentDuration = (i + 1) / (float) segmentCount;
                     sum += segmentDuration;
                     startTimes[i] = sum;
                 }
 
-                var durationMultiplier = duration / sum; // Multiplier that allows the sum of tDurations to equal the set duration
+                var durationMultiplier = 1f / sum; // Multiplier that allows the sum of tDurations to equal the set duration
                 for (var i = 0; i < segmentCount - 1; ++i)
                     startTimes[i] *= durationMultiplier;
             }
             else
             {
-                var segmentDuration = duration / segmentCount;
+                var segmentDuration = 1 / segmentCount;
                 for (var i = 0; i < segmentCount - 1; ++i)
                     startTimes[i] = segmentDuration * (i + 1);
             }
