@@ -4,13 +4,16 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
+using System.Diagnostics;
 using DOVector2 = UnityEngine.Vector2;
 using DOVector3 = UnityEngine.Vector3;
 using DG.Tweening.Core;
 using DG.Tweening.Core.Easing;
+using DG.Tweening.Plugins;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Debugger = DG.Tweening.Core.Debugger;
 
 #pragma warning disable 1573
 namespace DG.Tweening
@@ -101,6 +104,7 @@ namespace DG.Tweening
             if (EaseManager.IsFlashEase(ease)) t.easeOvershootOrAmplitude = (int)t.easeOvershootOrAmplitude;
 
             t.customEase = null;
+            ValidateEase(t);
             return t;
         }
         /// <summary>Sets the ease of the tween.
@@ -118,6 +122,7 @@ namespace DG.Tweening
             if (EaseManager.IsFlashEase(ease)) overshoot = (int)overshoot;
             t.easeOvershootOrAmplitude = overshoot;
             t.customEase = null;
+            ValidateEase(t);
             return t;
         }
         /// <summary>Sets the ease of the tween.
@@ -139,6 +144,7 @@ namespace DG.Tweening
             t.easeOvershootOrAmplitude = amplitude;
             t.easePeriod = period;
             t.customEase = null;
+            ValidateEase(t);
             return t;
         }
         /// <summary>Sets the ease of the tween using an AnimationCurve.
@@ -149,6 +155,7 @@ namespace DG.Tweening
 
             t.easeType = Ease.INTERNAL_Custom;
             t.customEase = new EaseCurve(animCurve).Evaluate;
+            ValidateEase(t);
             return t;
         }
         /// <summary>Sets the ease of the tween using a custom ease function (which must return a value between 0 and 1).
@@ -159,7 +166,18 @@ namespace DG.Tweening
 
             t.easeType = Ease.INTERNAL_Custom;
             t.customEase = customEase;
+            ValidateEase(t);
             return t;
+        }
+
+        [Conditional("DEBUG")]
+        static void ValidateEase(Tween t)
+        {
+            if (t is TweenerCore<DOVector3> { tweenPlugin: Vector3ArrayPlugin }
+                && t.easeType is not (Ease.Linear or Ease.OutQuad))
+            {
+                L.W("Vector3ArrayPlugin only supports Linear and OutQuad ease types", t);
+            }
         }
 
         /// <summary>Allows the tween to be recycled after being killed.</summary>
@@ -170,6 +188,7 @@ namespace DG.Tweening
             t.isRecyclable = true;
             return t;
         }
+
         /// <summary>Sets the recycling behaviour for the tween.</summary>
         /// <param name="recyclable">If TRUE the tween will be recycled after being killed, otherwise it will be destroyed.</param>
         public static T SetRecyclable<T>(this T t, bool recyclable) where T : Tween

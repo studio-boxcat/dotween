@@ -37,8 +37,10 @@ namespace DG.Tweening.Plugins
             Assert.IsFalse(t.isRelative, "Vector3ArrayPlugin does not support relative values");
             Assert.IsFalse(t.isFrom, "Vector3ArrayPlugin does not support From values");
 
+#if DEBUG
             if (t.easeType is not (Ease.Linear or Ease.OutQuad))
                 L.W("Vector3ArrayPlugin only supports Linear and OutQuad ease types", t);
+#endif
 
             var duration = t.duration;
             var elapsed = useInversePosition ? duration - t.position : t.position;

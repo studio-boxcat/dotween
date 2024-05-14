@@ -35,7 +35,9 @@ namespace DG.Tweening
             startValues[0] = direction;
             var strength = direction.magnitude;
             direction /= strength; // Normalize the direction.
-            var strengthDecay = strength / segmentCount;
+            var strengthDecay = strength / (segmentCount - 1);
+            strength -= strengthDecay; // Decrease the strength. (First segment uses max strength)
+
             elasticity = Mathf.Clamp01(elasticity);
             for (var i = 1; i < segmentCount - 1; ++i)
             {
