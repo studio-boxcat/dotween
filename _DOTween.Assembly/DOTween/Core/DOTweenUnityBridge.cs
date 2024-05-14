@@ -17,7 +17,14 @@ namespace DG.Tweening.Core
     [AddComponentMenu("")]
     class DOTweenUnityBridge : MonoBehaviour
     {
-        public static bool IsPlaying() => Application.isPlaying;
+        public static bool IsPlaying()
+        {
+#if UNITY_EDITOR
+            return _editor_IsPlaying;
+#else
+            return Application.isPlaying;
+#endif
+        }
 
         static GameObject _instance;
 
@@ -41,5 +48,26 @@ namespace DG.Tweening.Core
             DontDestroyOnLoad(_instance);
             _instance.AddComponent<DOTweenUnityBridge>();
         }
+
+#if UNITY_EDITOR
+        static bool _editor_IsPlaying;
+
+        static DOTweenUnityBridge()
+        {
+            UnityEditor.EditorApplication.playModeStateChanged += state =>
+            {
+                if (state is UnityEditor.PlayModeStateChange.ExitingPlayMode)
+                {
+                    Assert.IsTrue(_editor_IsPlaying, "DOTweenUnityBridge is not playing");
+                    _editor_IsPlaying = false;
+                }
+                else if (state is UnityEditor.PlayModeStateChange.ExitingEditMode)
+                {
+                    Assert.IsFalse(_editor_IsPlaying, "DOTweenUnityBridge is playing");
+                    _editor_IsPlaying = true;
+                }
+            };
+        }
+#endif
     }
 }
