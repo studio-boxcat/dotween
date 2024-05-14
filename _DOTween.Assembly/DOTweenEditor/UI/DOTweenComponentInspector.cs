@@ -1,11 +1,4 @@
-﻿#if UNITY_EDITOR
-// Author: Daniele Giardini - http://www.demigiant.com
-// Created: 2014/06/29 20:37
-// 
-// License Copyright (c) Daniele Giardini.
-// This work is subject to the terms at http://dotween.demigiant.com/license.php
-
-using System.Text;
+﻿using System.Text;
 using DG.Tweening;
 using DG.Tweening.Core;
 using UnityEditor;
@@ -16,8 +9,7 @@ namespace DG.DOTweenEditor.UI
     [CustomEditor(typeof(DOTweenUnityBridge))]
     public class DOTweenComponentInspector : Editor
     {
-        static DOTweenSettings _settings => DOTweenSettings.Instance;
-        readonly StringBuilder _strb = new();
+        readonly StringBuilder _sb = new();
         readonly GUIContent _gcPlay = new("►");
         readonly GUIContent _gcPause = new("❚❚");
 
@@ -25,44 +17,29 @@ namespace DG.DOTweenEditor.UI
 
         public override void OnInspectorGUI()
         {
-            var playing = EditorApplication.isPlaying;
+            if (EditorApplication.isPlaying is false)
+                return;
 
-            if (playing)
-            {
-                int totActiveTweens = TweenManager.totActiveTweens;
-                int totActiveDefaultTweens = TweenManager.totActiveDefaultTweens;
-                int totActiveManualTweens = TweenManager.totActiveManualTweens;
+            GUILayout.Space(5);
+            _sb.Clear();
+            _sb.Append("Active tweens: ").Append(TweenManager.totActiveTweens)
+                .Append(" (").Append(TweenManager.totActiveTweeners).Append(" TW, ")
+                .Append(TweenManager.totActiveSequences).Append(" SE)");
+            GUILayout.Label(_sb.ToString());
+            _sb.Clear();
+            _sb.Append("\nDefault/Manual tweens: ").Append(TweenManager.totActiveDefaultTweens)
+                .Append("/").Append(TweenManager.totActiveManualTweens);
+            GUILayout.Label(_sb.ToString());
 
-                GUILayout.Space(5);
-                _strb.Clear();
-                _strb.Append("Active tweens: ").Append(totActiveTweens)
-                    .Append(" (").Append(TweenManager.totActiveTweeners).Append(" TW, ")
-                    .Append(TweenManager.totActiveSequences).Append(" SE)");
-                GUILayout.Label(_strb.ToString());
-                _strb.Clear();
-                _strb.Append("\nDefault/Manual tweens: ").Append(totActiveDefaultTweens)
-                    .Append("/").Append(totActiveManualTweens);
-                GUILayout.Label(_strb.ToString());
+            GUILayout.Space(4);
+            DrawTweensButtons();
 
-                GUILayout.Space(4);
-                DrawTweensButtons();
-
-                GUILayout.Space(2);
-                _strb.Clear();
-                _strb.Append("Pooled tweens")
-                    .Append(" (").Append(TweenManager.totPooledTweeners).Append(" TW, ")
-                    .Append(TweenManager.totPooledSequences).Append(" SE)");
-                GUILayout.Label(_strb.ToString());
-
-                GUILayout.Space(2);
-                _strb.Clear();
-                _strb.Append("Tweens Capacity: ").Append(TweenManager.maxTweeners).Append(" TW, ").Append(TweenManager.maxSequences).Append(" SE")
-                    .Append("\nMax Simultaneous Active Tweens: ").Append(DOTween.maxActiveTweenersReached).Append(" TW, ")
-                    .Append(DOTween.maxActiveSequencesReached).Append(" SE");
-                GUILayout.Label(_strb.ToString());
-            }
-
-            GUILayout.Space(10);
+            GUILayout.Space(2);
+            _sb.Clear();
+            _sb.Append("Pooled tweens")
+                .Append(" (").Append(TweenPool.SumPooledTweeners()).Append(" TW, ")
+                .Append(TweenPool.SumPooledSequences()).Append(" SE)");
+            GUILayout.Label(_sb.ToString());
         }
 
         #endregion
@@ -88,7 +65,7 @@ namespace DG.DOTweenEditor.UI
 
         void DrawTweenButton(Tween tween, bool isPlaying, bool isSequenced = false)
         {
-            _strb.Length = 0;
+            _sb.Length = 0;
 
             switch (tween.tweenType)
             {
@@ -111,8 +88,8 @@ namespace DG.DOTweenEditor.UI
                     }
                     else
                     {
-                        BuildTweenButtonLabel(tween, _strb);
-                        GUILayout.Label(_strb.ToString());
+                        BuildTweenButtonLabel(tween, _sb);
+                        GUILayout.Label(_sb.ToString());
                     }
 
                     if (!isSequenced) GUILayout.EndHorizontal();
@@ -127,8 +104,8 @@ namespace DG.DOTweenEditor.UI
                             else TweenManager.Play(tween);
                         }
                     }
-                    BuildTweenButtonLabel(tween, _strb);
-                    GUILayout.Label(_strb.ToString());
+                    BuildTweenButtonLabel(tween, _sb);
+                    GUILayout.Label(_sb.ToString());
                     if (!isSequenced) GUILayout.EndHorizontal();
 
                     var s = (Sequence) tween;
@@ -157,4 +134,3 @@ namespace DG.DOTweenEditor.UI
         #endregion
     }
 }
-#endif

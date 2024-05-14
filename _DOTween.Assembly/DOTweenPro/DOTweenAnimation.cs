@@ -21,27 +21,17 @@ namespace DG.Tweening
         public enum AnimationType : byte
         {
             None = 0,
-            // Unused_8 = 1,
             LocalMove = 2,
-            // Unused_9 = 3,
             LocalRotateZ = 4,
             Scale = 5,
             Color = 6,
             Fade = 7,
-            // Unused_0 = 8,
             PunchPosition = 9,
             PunchRotation = 10,
             PunchScale = 11,
             ShakePosition = 12,
             ShakeRotation = 13,
             ShakeScale = 14,
-            // Unused_1 = 15,
-            // Unused_2 = 16,
-            // Unused_3 = 17,
-            // Unused_4 = 18,
-            // Unused_5 = 19,
-            // Unused_6 = 20,
-            // Unused_7 = 21,
             UIAnchors = 22,
         }
 

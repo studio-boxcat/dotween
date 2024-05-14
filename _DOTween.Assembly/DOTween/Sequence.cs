@@ -32,6 +32,17 @@ namespace DG.Tweening
             Reset();
         }
 
+        // Called by DOTween when spawning/creating a new Sequence.
+        internal void Setup()
+        {
+            autoKill = true;
+            isPlaying = true;
+            loopType = LoopType.Restart;
+            easeType = Ease.Linear;
+            easeOvershootOrAmplitude = DOTween.defaultEaseOvershootOrAmplitude;
+            easePeriod = 0;
+        }
+
         #endregion
 
         #region Creation Methods
@@ -163,17 +174,6 @@ namespace DG.Tweening
         internal override bool ApplyTween(float prevPosition, int prevCompletedLoops, int newCompletedSteps, bool useInversePosition, UpdateMode updateMode)
         {
             return DoApplyTween(this, prevPosition, prevCompletedLoops, newCompletedSteps, useInversePosition, updateMode);
-        }
-
-        // Called by DOTween when spawning/creating a new Sequence.
-        internal static void Setup(Sequence s)
-        {
-            s.autoKill = true;
-            s.isPlaying = true;
-            s.loopType = LoopType.Restart;
-            s.easeType = Ease.Linear;
-            s.easeOvershootOrAmplitude = DOTween.defaultEaseOvershootOrAmplitude;
-            s.easePeriod = 0;
         }
 
         // Applies the tween set by DoGoto.

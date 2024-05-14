@@ -99,7 +99,7 @@ namespace DG.Tweening
         static TweenerCore<T> To<T>(DOGetter<T> getter, DOSetter<T> setter, T endValue, float duration, TweenPlugin<T> plugin)
         {
             InitCheck();
-            L.I($"[DOTween] To: endValue={endValue}, duration={duration}");
+            L.I($"[DOTween] To ({typeof(T).Name}): endValue={endValue}, duration={duration}");
             var t = TweenManager.GetTweener<T>();
             t.Setup(getter, setter, endValue, duration, plugin);
             return t;
@@ -234,8 +234,8 @@ namespace DG.Tweening
         public static Sequence Sequence()
         {
             InitCheck();
-            Sequence sequence = TweenManager.GetSequence();
-            Tweening.Sequence.Setup(sequence);
+            var sequence = TweenManager.GetSequence();
+            sequence.Setup();
             return sequence;
         }
         /// <summary>
