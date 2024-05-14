@@ -33,30 +33,6 @@ namespace DG.Tweening
         // ===================================================================================
         // INTERNAL METHODS ------------------------------------------------------------------
 
-        // CALLED BY DOTween when spawning/creating a new Tweener.
-        // Returns TRUE if the setup is successful
-        internal static bool Setup<T>(
-            TweenerCore<T> t, DOGetter<T> getter, DOSetter<T> setter, T endValue, float duration, TweenPlugin<T> plugin
-        )
-        {
-            Assert.IsNotNull(plugin, "Given plugin is null");
-
-            t.tweenPlugin = plugin;
-            t.getter = getter;
-            t.setter = setter;
-            t.endValue = endValue;
-            t.duration = duration;
-            // Defaults
-            t.autoKill = true;
-            t.isRecyclable = true;
-            t.easeType = DOTween.defaultEaseType; // Set to INTERNAL_Zero in case of 0 duration, but in DoStartup
-            t.easeOvershootOrAmplitude = DOTween.defaultEaseOvershootOrAmplitude;
-            t.easePeriod = DOTween.defaultEasePeriod;
-            t.loopType = LoopType.Restart;
-            t.isPlaying = true;
-            return true;
-        }
-
         // CALLED BY TweenerCore
         // Returns the elapsed time minus delay in case of success,
         // -1 if there are missing references and the tween needs to be killed

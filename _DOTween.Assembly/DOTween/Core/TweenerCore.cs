@@ -35,6 +35,37 @@ namespace DG.Tweening.Core
             Reset();
         }
 
+        public void Setup(DOGetter<T> getter, DOSetter<T> setter, T endValue, float duration, TweenPlugin<T> plugin)
+        {
+            this.getter = getter;
+            this.setter = setter;
+            this.endValue = endValue;
+            this.duration = duration;
+            tweenPlugin = plugin;
+
+            // Defaults
+            autoKill = true;
+            isRecyclable = true;
+            easeType = DOTween.defaultEaseType;
+            easeOvershootOrAmplitude = DOTween.defaultEaseOvershootOrAmplitude;
+            easePeriod = DOTween.defaultEasePeriod;
+            loopType = LoopType.Restart;
+            isPlaying = true;
+        }
+
+        // _tweenPlugin is not reset since it's useful to keep it as a reference
+        internal sealed override void Reset()
+        {
+            base.Reset();
+
+            getter = null;
+            setter = null;
+            tweenPlugin = null;
+            plugOptions = null;
+            hasManuallySetStartValue = false;
+            isFromAllowed = true;
+        }
+
         #endregion
 
         // Sets From tweens, immediately sending the target to its endValue and assigning new start/endValues.
@@ -58,19 +89,6 @@ namespace DG.Tweening.Core
             tweenPlugin.SetFrom(this, fromValue, setImmediately, relative);
             hasManuallySetStartValue = true;
             return this;
-        }
-
-        // _tweenPlugin is not reset since it's useful to keep it as a reference
-        internal sealed override void Reset()
-        {
-            base.Reset();
-
-            tweenPlugin = null;
-            plugOptions = null;
-            getter = null;
-            setter = null;
-            hasManuallySetStartValue = false;
-            isFromAllowed = true;
         }
 
         // CALLED BY TweenManager at each update.

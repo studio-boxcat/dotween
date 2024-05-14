@@ -250,8 +250,7 @@ namespace DG.Tweening
                 (() => target.localEulerAngles.z,
                 x => target.localEulerAngles = new Vector3(0, 0, x),
                 endValue,
-                duration,
-                FloatPlugin.Instance);
+                duration);
             t.SetTarget(target);
             return t;
         }

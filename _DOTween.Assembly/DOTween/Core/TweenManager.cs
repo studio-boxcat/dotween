@@ -50,6 +50,7 @@ namespace DG.Tweening.Core
 
         // Returns a new Tweener, from the pool if there's one available,
         // otherwise by instantiating a new one
+        [NotNull]
         internal static TweenerCore<T> GetTweener<T>()
         {
             // Search inside pool
@@ -87,6 +88,7 @@ namespace DG.Tweening.Core
                     );
                 }
             }
+
             // Not found: create new TweenerController
             {
                 var t = new TweenerCore<T>();

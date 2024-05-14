@@ -22,9 +22,6 @@ namespace DG.Tweening
     {
         // public static readonly string Version = "1.2.751"; // Last version before modules: 1.1.755
 
-        ///////////////////////////////////////////////
-        // Options ////////////////////////////////////
-
         /// <summary>If TRUE (default) makes tweens slightly slower but safer, automatically taking care of a series of things
         /// (like targets becoming null while a tween is playing).
         /// <para>Default: TRUE</para></summary>
@@ -32,9 +29,6 @@ namespace DG.Tweening
         /// <summary>Behaviour in case a tween nested inside a Sequence fails (and is caught by safe mode).
         /// <para>Default: NestedTweenFailureBehaviour.TryToPreserveSequence</para></summary>
         public static NestedTweenFailureBehaviour nestedTweenFailureBehaviour = NestedTweenFailureBehaviour.TryToPreserveSequence;
-
-        ///////////////////////////////////////////////
-        // Default options for Tweens /////////////////
 
         /// <summary>Default ease applied to all new Tweeners (not to Sequences which always have Ease.Linear as default).
         /// <para>Default: Ease.InOutQuad</para></summary>
@@ -111,26 +105,15 @@ namespace DG.Tweening
         // ===================================================================================
         // PUBLIC TWEEN CREATION METHODS -----------------------------------------------------
 
-        // Sadly can't make generic versions of default tweens with additional options
-        // where the TO method doesn't contain the options param, otherwise the correct Option type won't be inferred.
-        // So: overloads. Sigh.
-        // Also, Unity has a bug which doesn't allow method overloading with its own implicitly casteable types (like Vector4 and Color)
-        // and additional parameters, so in those cases I have to create overloads instead than using optionals. ARARGH!
-
         #region Tween TO
 
-        public static TweenerCore<T> To<T>(
-            DOGetter<T> getter, DOSetter<T> setter, T endValue, float duration, TweenPlugin<T> plugin
-        )
+        static TweenerCore<T> To<T>(DOGetter<T> getter, DOSetter<T> setter, T endValue, float duration, TweenPlugin<T> plugin)
         {
             InitCheck();
-            var tweener = TweenManager.GetTweener<T>();
-            var setupSuccessful = Tweener.Setup(tweener, getter, setter, endValue, duration, plugin);
-            if (!setupSuccessful) {
-                TweenManager.Despawn(tweener);
-                return null;
-            }
-            return tweener;
+            L.I($"[DOTween] To: endValue={endValue}, duration={duration}");
+            var t = TweenManager.GetTweener<T>();
+            t.Setup(getter, setter, endValue, duration, plugin);
+            return t;
         }
 
         /// <summary>Tweens a property or field to the given value using default plugins</summary>
