@@ -53,10 +53,10 @@ namespace DG.Tweening
 
         static void InitCheck()
         {
-            if (initialized || !Application.isPlaying)
+            if (initialized || !DOTweenUnityBridge.IsPlaying())
                 return;
 
-            L.I("[DOTween] Init");
+            L.I("[DOTween] Init: " + Time.frameCount);
 
             initialized = true;
 
@@ -76,13 +76,12 @@ namespace DG.Tweening
         /// (so that next time you use it it will need to be re-initialized)</param>
         public static void Clear()
         {
-            L.I("[DOTween] Clear");
+            L.I("[DOTween] Clear: " + Time.frameCount);
+
+            initialized = false;
 
             TweenManager.PurgeAll();
 
-            DOTweenUnityBridge.DestroyInstance();
-
-            initialized = false;
             nestedTweenFailureBehaviour = NestedTweenFailureBehaviour.TryToPreserveSequence;
             defaultEaseType = Ease.OutQuad;
             defaultEaseOvershootOrAmplitude = 1.70158f;

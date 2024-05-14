@@ -43,7 +43,7 @@ namespace DG.DOTweenEditor
 
         public override void OnInspectorGUI()
         {
-            if (Application.isPlaying)
+            if (EditorApplication.isPlaying)
             {
                 GUILayout.Label("Animation Editor disabled while in play mode");
                 return;

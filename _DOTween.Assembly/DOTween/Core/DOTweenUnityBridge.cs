@@ -17,10 +17,40 @@ namespace DG.Tweening.Core
     [AddComponentMenu("")]
     class DOTweenUnityBridge : MonoBehaviour
     {
+        public static bool IsPlaying()
+        {
+#if UNITY_EDITOR
+            if (_quitFrame == Time.frameCount)
+                return false;
+#else
+            if (_quitCalled)
+                return false;
+#endif
+            return Application.isPlaying;
+        }
+
         static GameObject _instance;
+#if UNITY_EDITOR
+        static int _quitFrame;
+#else
+        static bool _quitCalled;
+#endif
 
         void Update() => DOTween.Update();
-        void OnApplicationQuit() => DOTween.Clear();
+
+        void OnDestroy()
+        {
+            Assert.IsTrue(ReferenceEquals(_instance, gameObject), "Instance mismatch");
+            _instance = null;
+
+#if UNITY_EDITOR
+            _quitFrame = Time.frameCount;
+#else
+            _quitCalled = true;
+#endif
+
+            DOTween.Clear();
+        }
 
         internal static void Create()
         {
@@ -32,13 +62,6 @@ namespace DG.Tweening.Core
 #endif
             DontDestroyOnLoad(_instance);
             _instance.AddComponent<DOTweenUnityBridge>();
-        }
-
-        internal static void DestroyInstance()
-        {
-            Assert.IsTrue(_instance is not null, "No instance of DOTween is running");
-            Destroy(_instance);
-            _instance = null;
         }
     }
 }

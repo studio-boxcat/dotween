@@ -1,5 +1,4 @@
 ﻿using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
 using UnityEngine;
 
 #pragma warning disable 1591
