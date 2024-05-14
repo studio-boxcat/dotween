@@ -175,7 +175,7 @@ namespace DG.Tweening.Core.Easing
 
         public static float Evaluate(float from, float to, float lifetimePercentage, Ease easeType)
         {
-            var value = Evaluate(easeType, null, lifetimePercentage, 1, DOTween.defaultEaseOvershootOrAmplitude, 0);
+            var value = Evaluate(easeType, null, lifetimePercentage, 1, Const.defaultEaseOvershootOrAmplitude, 0);
             return from + (to - from) * value;
         }
 

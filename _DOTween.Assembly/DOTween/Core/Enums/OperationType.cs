@@ -19,6 +19,5 @@ namespace DG.Tweening.Core.Enums
         Rewind,
         Restart,
         TogglePause,
-        IsTweening
     }
 }

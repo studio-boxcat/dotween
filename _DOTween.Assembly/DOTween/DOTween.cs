@@ -10,8 +10,8 @@ using DG.Tweening.Core.Enums;
 using DG.Tweening.Plugins;
 using DG.Tweening.Plugins.Core;
 using DG.Tweening.Plugins.Options;
+using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace DG.Tweening
 {
@@ -21,6 +21,7 @@ namespace DG.Tweening
     public static class DOTween
     {
         // public static readonly string Version = "1.2.751"; // Last version before modules: 1.1.755
+        internal static bool initialized; // Can be set to false by DOTweenComponent OnDestroy
 
         /// <summary>If TRUE (default) makes tweens slightly slower but safer, automatically taking care of a series of things
         /// (like targets becoming null while a tween is playing).
@@ -29,14 +30,6 @@ namespace DG.Tweening
         /// <summary>Behaviour in case a tween nested inside a Sequence fails (and is caught by safe mode).
         /// <para>Default: NestedTweenFailureBehaviour.TryToPreserveSequence</para></summary>
         public static NestedTweenFailureBehaviour nestedTweenFailureBehaviour = NestedTweenFailureBehaviour.TryToPreserveSequence;
-
-        /// <summary>Default ease applied to all new Tweeners (not to Sequences which always have Ease.Linear as default).</summary>
-        public const Ease defaultEaseType = Ease.OutQuad;
-        /// <summary>Default overshoot/amplitude used for eases.</summary>
-        public const float defaultEaseOvershootOrAmplitude = 1.70158f;
-
-        internal static int maxActiveTweenersReached, maxActiveSequencesReached; // Controlled by DOTweenInspector if showUnityEditorReport is active
-        internal static bool initialized; // Can be set to false by DOTweenComponent OnDestroy
 
         #region Public Methods
 
@@ -66,27 +59,15 @@ namespace DG.Tweening
 
             initialized = false;
 
-            TweenManager.PurgeAll();
+            TweenManager.DetachAllTweens();
 
             nestedTweenFailureBehaviour = NestedTweenFailureBehaviour.TryToPreserveSequence;
-            maxActiveTweenersReached = maxActiveSequencesReached = 0;
         }
 
         public static void Update()
         {
-            if (TweenManager.hasActiveDefaultTweens)
-            {
-                Assert.IsTrue(initialized, "hasActiveTweens but DOTween is not initialized");
-                TweenManager.Update(UpdateType.Normal, Time.deltaTime, Time.unscaledDeltaTime);
-            }
-        }
-
-        public static void ManualUpdate(float deltaTime, float unscaledDeltaTime)
-        {
-            if (TweenManager.hasActiveManualTweens)
-            {
-                TweenManager.Update(UpdateType.Manual, deltaTime, unscaledDeltaTime);
-            }
+            if (!initialized) return;
+            TweenManager.Update(Time.deltaTime);
         }
 
         #endregion
@@ -99,7 +80,6 @@ namespace DG.Tweening
         static TweenerCore<T> To<T>(DOGetter<T> getter, DOSetter<T> setter, T endValue, float duration, TweenPlugin<T> plugin)
         {
             InitCheck();
-            L.I($"[DOTween] To ({typeof(T).Name}): endValue={endValue}, duration={duration}");
             var t = TweenManager.GetTweener<T>();
             t.Setup(getter, setter, endValue, duration, plugin);
             return t;
@@ -272,12 +252,11 @@ namespace DG.Tweening
         /// <para><code>transform.DOMoveX(45, 1); // transform is automatically added as the tween target</code></para>
         /// <para><code>DOTween.IsTweening(transform); // Returns true</code></para>
         /// </summary>
-        /// <param name="targetOrId">The target or ID to look for</param>
-        /// <param name="alsoCheckIfIsPlaying">If FALSE (default) returns TRUE as long as a tween for the given target/ID is active,
+        /// <param name="target">The target or ID to look for</param>
         /// otherwise also requires it to be playing</param>
-        public static bool IsTweening(object targetOrId, bool alsoCheckIfIsPlaying = false)
+        public static bool IsTweening([NotNull] Object target)
         {
-            return TweenManager.FilteredOperation(OperationType.IsTweening, targetOrId, alsoCheckIfIsPlaying, 0) > 0;
+            return TweenManager.IsTweening(target);
         }
 
         #endregion

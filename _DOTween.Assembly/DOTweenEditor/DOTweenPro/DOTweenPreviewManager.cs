@@ -32,7 +32,7 @@ namespace DG.DOTweenEditor
 
             _tweens.Add(t.id, t);
 
-            t.SetUpdate(UpdateType.Manual);
+            TweenManager.DetachTween(t);
             t.SetAutoKill(false);
             t.OnStart(null).OnUpdate(null)
                 .OnComplete(null).OnKill(null);
@@ -61,7 +61,7 @@ namespace DG.DOTweenEditor
                 EditorApplication.update -= _update;
 
             TweenManager.RestoreToOriginal(t);
-            TweenManager.Despawn(t);
+            TweenManager.KillTween(t);
         }
 
         static EditorApplication.CallbackFunction _update;
@@ -72,7 +72,16 @@ namespace DG.DOTweenEditor
             var curTime = _lastUpdateTime;
             _lastUpdateTime = (float) EditorApplication.timeSinceStartup;
             var elapsed = _lastUpdateTime - curTime;
-            DOTween.ManualUpdate(elapsed, elapsed);
+
+            var tweenToKill = new List<Tweener>();
+            foreach (var tween in _tweens.Values)
+            {
+                var needKill = tween.ForceUpdate(elapsed);
+                if (needKill) tweenToKill.Add(tween);
+            }
+
+            foreach (var tween in tweenToKill)
+                StopPreview(tween);
 
             // Force visual refresh of UI objects
             // (a simple SceneView.RepaintAll won't work with UI elements)

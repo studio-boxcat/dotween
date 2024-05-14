@@ -1,8 +1,10 @@
 ﻿using System.Text;
 using DG.Tweening;
 using DG.Tweening.Core;
+using DG.Tweening.Core.Enums;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace DG.DOTweenEditor.UI
 {
@@ -20,21 +22,9 @@ namespace DG.DOTweenEditor.UI
             if (EditorApplication.isPlaying is false)
                 return;
 
-            GUILayout.Space(5);
-            _sb.Clear();
-            _sb.Append("Active tweens: ").Append(TweenManager.totActiveTweens)
-                .Append(" (").Append(TweenManager.totActiveTweeners).Append(" TW, ")
-                .Append(TweenManager.totActiveSequences).Append(" SE)");
-            GUILayout.Label(_sb.ToString());
-            _sb.Clear();
-            _sb.Append("\nDefault/Manual tweens: ").Append(TweenManager.totActiveDefaultTweens)
-                .Append("/").Append(TweenManager.totActiveManualTweens);
-            GUILayout.Label(_sb.ToString());
-
-            GUILayout.Space(4);
             DrawTweensButtons();
-
             GUILayout.Space(2);
+
             _sb.Clear();
             _sb.Append("Pooled tweens")
                 .Append(" (").Append(TweenPool.SumPooledTweeners()).Append(" TW, ")
@@ -48,19 +38,31 @@ namespace DG.DOTweenEditor.UI
 
         void DrawTweensButtons()
         {
+            var tweens = TweenManager.Tweens.StartIterate(out var lastUpdateId);
+
             GUILayout.Label("Playing tweens");
-            foreach (var t in TweenManager._activeTweens)
+            foreach (var t in tweens)
             {
-                if (t is not { isPlaying: true }) continue;
-                DrawTweenButton(t, true);
+                if (t.updateId.IsInvalid()) continue;
+                if (t.updateId > lastUpdateId) break;
+                Assert.IsTrue(t.active, "Tween is not active");
+
+                if (t.isPlaying)
+                    DrawTweenButton(t, true);
             }
 
             GUILayout.Label("Paused tweens");
-            foreach (var t in TweenManager._activeTweens)
+            foreach (var t in tweens)
             {
-                if (t is null || t.isPlaying) continue;
-                DrawTweenButton(t, false);
+                if (t.updateId.IsInvalid()) continue;
+                if (t.updateId > lastUpdateId) break;
+                Assert.IsTrue(t.active, "Tween is not active");
+
+                if (t.isPlaying is false)
+                    DrawTweenButton(t, false);
             }
+
+            TweenManager.Tweens.EndIterate();
         }
 
         void DrawTweenButton(Tween tween, bool isPlaying, bool isSequenced = false)
@@ -124,8 +126,8 @@ namespace DG.DOTweenEditor.UI
             if (t.tweenType == TweenType.Sequence)
                 sb.Append("[SEQUENCE] ");
 
-            if (string.IsNullOrEmpty(t.debugTargetId) == false)
-                sb.Append(t.debugTargetId).Append(';');
+            if (string.IsNullOrEmpty(t.debugHint) == false)
+                sb.Append(t.debugHint).Append(';');
             if (t.id != Tween.invalidId)
                 sb.Append(t.id).Append(";");
             sb.Append(t.target ?? "null");

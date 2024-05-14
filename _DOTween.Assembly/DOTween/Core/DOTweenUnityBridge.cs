@@ -54,6 +54,8 @@ namespace DG.Tweening.Core
 
         static DOTweenUnityBridge()
         {
+            _editor_IsPlaying = UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode;
+
             UnityEditor.EditorApplication.playModeStateChanged += state =>
             {
                 if (state is UnityEditor.PlayModeStateChange.ExitingPlayMode)

@@ -281,7 +281,7 @@ namespace DG.Tweening
             s.Append(DOTween.To(() => target.anchoredPosition, x => target.anchoredPosition = x, new Vector2(endValue.x, 0), duration)
                     .SetOptions(AxisConstraint.X).SetEase(Ease.Linear)
                 ).Join(yTween)
-                .SetTarget(target).SetEase(DOTween.defaultEaseType);
+                .SetTarget(target).SetEase(Const.defaultEaseType);
             s.OnUpdate(() => {
                 if (!offsetYSet) {
                     offsetYSet = true;

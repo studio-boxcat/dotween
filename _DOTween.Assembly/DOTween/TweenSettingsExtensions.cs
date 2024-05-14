@@ -68,7 +68,7 @@ namespace DG.Tweening
 
 #if DEBUG
             var obj = target as Object;
-            t.debugTargetId = obj != null ? obj.name : target.ToString();
+            t.debugHint = obj != null ? obj.name : target.ToString();
 #endif
 
             t.target = target;
@@ -182,21 +182,11 @@ namespace DG.Tweening
         [Conditional("DEBUG")]
         static void ValidateEase(Tween t)
         {
-            if (t is TweenerCore<DOVector3> { tweenPlugin: Vector3ArrayPlugin }
+            if (t is TweenerCore<DOVector3> { plugin: Vector3ArrayPlugin }
                 && t.easeType is not (Ease.Linear or Ease.OutQuad))
             {
                 L.W("Vector3ArrayPlugin only supports Linear and OutQuad ease types", t);
             }
-        }
-
-        /// <summary>Sets the type of update for the tween</summary>
-        /// <param name="updateType">The type of update (defalt: UpdateType.Normal)</param>
-        public static T SetUpdate<T>(this T t, UpdateType updateType) where T : Tween
-        {
-            if (t is not { active: true }) return t;
-
-            TweenManager.SetUpdateType(t, updateType, false);
-            return t;
         }
 
         /// <summary>Sets the <code>onStart</code> callback for the tween, clearing any previous <code>onStart</code> callback that was set.

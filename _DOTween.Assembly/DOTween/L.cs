@@ -10,6 +10,8 @@ namespace DG.Tweening
         [Conditional("DEBUG")]
         public static void I(string message, Object context = null) => Debug.Log(message, context);
         [Conditional("DEBUG")]
+        public static void I(string message, Tween t) => Debug.Log(message, t.target as Object);
+        [Conditional("DEBUG")]
         public static void W(string message, Object context = null) => Debug.LogWarning(message, context);
         [Conditional("DEBUG")]
         public static void W(string message, Tween t) => Debug.LogWarning(message, t.target as Object);

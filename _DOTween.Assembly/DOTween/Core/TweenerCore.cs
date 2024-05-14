@@ -22,10 +22,10 @@ namespace DG.Tweening.Core
         // SETUP DATA ////////////////////////////////////////////////
 
         public T startValue, endValue, changeValue;
-        public object plugOptions;
         public DOGetter<T> getter;
         public DOSetter<T> setter;
-        internal TweenPlugin<T> tweenPlugin;
+        internal TweenPlugin<T> plugin;
+        public object plugOptions;
 
         #region Constructor
 
@@ -37,16 +37,18 @@ namespace DG.Tweening.Core
 
         public void Setup(DOGetter<T> getter, DOSetter<T> setter, T endValue, float duration, TweenPlugin<T> plugin)
         {
+            // L.I($"[DOTween] Setup TweenerCore<{typeof(T).Name}>: endValue={endValue}, duration={duration}");
+
             this.getter = getter;
             this.setter = setter;
             this.endValue = endValue;
             this.duration = duration;
-            tweenPlugin = plugin;
+            this.plugin = plugin;
 
             // Defaults
             autoKill = true;
-            easeType = DOTween.defaultEaseType;
-            easeOvershootOrAmplitude = DOTween.defaultEaseOvershootOrAmplitude;
+            easeType = Const.defaultEaseType;
+            easeOvershootOrAmplitude = Const.defaultEaseOvershootOrAmplitude;
             easePeriod = 0;
             loopType = LoopType.Restart;
             isPlaying = true;
@@ -59,10 +61,8 @@ namespace DG.Tweening.Core
 
             getter = null;
             setter = null;
-            tweenPlugin = null;
+            plugin = null;
             plugOptions = null;
-            hasManuallySetStartValue = false;
-            isFromAllowed = true;
         }
 
         #endregion
@@ -74,7 +74,7 @@ namespace DG.Tweening.Core
         // - Pro > PathPlugin, SpiralPlugin
         internal override Tweener SetFrom(bool relative)
         {
-            tweenPlugin.SetFrom(this, relative);
+            plugin.SetFrom(this, relative);
             hasManuallySetStartValue = true;
             return this;
         }
@@ -85,16 +85,9 @@ namespace DG.Tweening.Core
         // - Pro > PathPlugin, SpiralPlugin
         internal Tweener SetFrom(T fromValue, bool setImmediately, bool relative)
         {
-            tweenPlugin.SetFrom(this, fromValue, setImmediately, relative);
+            plugin.SetFrom(this, fromValue, setImmediately, relative);
             hasManuallySetStartValue = true;
             return this;
-        }
-
-        // CALLED BY TweenManager at each update.
-        // Returns TRUE if the tween needs to be killed
-        internal override float UpdateDelay(float elapsed)
-        {
-            return DoUpdateDelay(this, elapsed);
         }
 
         // CALLED BY Tween the moment the tween starts, AFTER any delay has elapsed
@@ -130,9 +123,9 @@ namespace DG.Tweening.Core
                 }
             }
 
-            if (isRelative) tweenPlugin.SetRelativeEndValue(this);
+            if (isRelative) plugin.SetRelativeEndValue(this);
 
-            tweenPlugin.SetChangeValue(this);
+            plugin.SetChangeValue(this);
 
             // Duration based startup operations
             fullDuration = loops > -1 ? duration * loops : Mathf.Infinity;
@@ -155,14 +148,14 @@ namespace DG.Tweening.Core
             var elapsed = useInversePosition ? duration - position : position;
             if (DOTween.useSafeMode) {
                 try {
-                    tweenPlugin.EvaluateAndApply(this, elapsed);
+                    plugin.EvaluateAndApply(this, elapsed);
                 } catch (Exception e) {
                     // Target/field doesn't exist anymore: kill tween
                     Debugger.LogSafeModeCapturedError(e, this);
                     return true;
                 }
             } else {
-                tweenPlugin.EvaluateAndApply(this, elapsed);
+                plugin.EvaluateAndApply(this, elapsed);
             }
             return false;
         }

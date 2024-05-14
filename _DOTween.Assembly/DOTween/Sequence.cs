@@ -10,6 +10,7 @@ using DG.Tweening.Core;
 using DG.Tweening.Core.Easing;
 using DG.Tweening.Core.Enums;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace DG.Tweening
 {
@@ -20,8 +21,8 @@ namespace DG.Tweening
     {
         // SETUP DATA ////////////////////////////////////////////////
 
-        internal readonly List<Tween> sequencedTweens = new List<Tween>(); // Only Tweens (used for despawning and validation)
-        readonly List<ABSSequentiable> _sequencedObjs = new List<ABSSequentiable>(); // Tweens plus SequenceCallbacks
+        internal readonly List<Tween> sequencedTweens = new(); // Only Tweens (used for despawning and validation)
+        readonly List<ABSSequentiable> _sequencedObjs = new(); // Tweens plus SequenceCallbacks
         internal float lastTweenInsertTime; // Used to insert a tween at the position of the previous one
 
         #region Constructor
@@ -39,7 +40,7 @@ namespace DG.Tweening
             isPlaying = true;
             loopType = LoopType.Restart;
             easeType = Ease.Linear;
-            easeOvershootOrAmplitude = DOTween.defaultEaseOvershootOrAmplitude;
+            easeOvershootOrAmplitude = Const.defaultEaseOvershootOrAmplitude;
             easePeriod = 0;
         }
 
@@ -68,7 +69,7 @@ namespace DG.Tweening
 
         internal static Sequence DoInsert(Sequence inSequence, Tween t, float atPosition)
         {
-            TweenManager.AddActiveTweenToSequence(t);
+            TweenManager.DetachTween(t);
 
             // If t has a delay add it as an interval
             atPosition += t.delay;
@@ -106,7 +107,7 @@ namespace DG.Tweening
             inSequence.duration += interval;
             int len = inSequence._sequencedObjs.Count;
             for (int i = 0; i < len; ++i) {
-                ABSSequentiable sequentiable = inSequence._sequencedObjs[i];
+                var sequentiable = inSequence._sequencedObjs[i];
                 sequentiable.sequencedPosition += interval;
                 sequentiable.sequencedEndPosition += interval;
             }
@@ -126,23 +127,17 @@ namespace DG.Tweening
 
         #endregion
 
-        // NOTE: up to v1.2.340 Sequences didn't implement this method and delays were always included as prepended intervals
-        internal override float UpdateDelay(float elapsed)
-        {
-            float tweenDelay = delay;
-            if (elapsed > tweenDelay) {
-                // Delay complete
-                elapsedDelay = tweenDelay;
-                delayComplete = true;
-                return elapsed - tweenDelay;
-            }
-            elapsedDelay = elapsed;
-            return 0;
-        }
-
         internal override void Reset()
         {
             base.Reset();
+
+#if DEBUG
+            foreach (var t in sequencedTweens)
+            {
+                Assert.IsFalse(t.active, "Tween is not active");
+                Assert.IsTrue(t.updateId.IsValid(), "Tween has an invalid updateId");
+            }
+#endif
 
             sequencedTweens.Clear();
             _sequencedObjs.Clear();
@@ -169,6 +164,20 @@ namespace DG.Tweening
                 }
             }
             return true;
+
+            static void StableSortSequencedObjs(List<ABSSequentiable> list)
+            {
+                var len = list.Count;
+                for (var i = 1; i < len; i++) {
+                    var j = i;
+                    var temp = list[i];
+                    while (j > 0 && list[j - 1].sequencedPosition > temp.sequencedPosition) {
+                        list[j] = list[j - 1];
+                        j -= 1;
+                    }
+                    list[j] = temp;
+                }
+            }
         }
 
         internal override bool ApplyTween(float prevPosition, int prevCompletedLoops, int newCompletedSteps, bool useInversePosition, UpdateMode updateMode)
@@ -267,7 +276,7 @@ namespace DG.Tweening
                             if (DOTween.nestedTweenFailureBehaviour == NestedTweenFailureBehaviour.KillWholeSequence) return true;
                             if (s.sequencedTweens.Count == 1 && s._sequencedObjs.Count == 1 && !IsAnyCallbackSet(s)) return true;
                             // ...otherwise remove failed tween from Sequence and continue
-                            TweenManager.Despawn(t, false);
+                            TweenManager.KillTween(t);
                             s._sequencedObjs.RemoveAt(i);
                             s.sequencedTweens.Remove(t);
                             --i; --len;
@@ -324,7 +333,7 @@ namespace DG.Tweening
                             if (DOTween.nestedTweenFailureBehaviour == NestedTweenFailureBehaviour.KillWholeSequence) return true;
                             if (s.sequencedTweens.Count == 1 && s._sequencedObjs.Count == 1 && !IsAnyCallbackSet(s)) return true;
                             // ...otherwise remove failed tween from Sequence and continue
-                            TweenManager.Despawn(t, false);
+                            TweenManager.KillTween(t);
                             s._sequencedObjs.RemoveAt(i);
                             s.sequencedTweens.Remove(t);
                             --i; --len;
@@ -346,20 +355,6 @@ namespace DG.Tweening
                 }
             }
             return false;
-        }
-
-        static void StableSortSequencedObjs(List<ABSSequentiable> list)
-        {
-            int len = list.Count;
-            for (int i = 1; i < len; i++) {
-                int j = i;
-                ABSSequentiable temp = list[i];
-                while (j > 0 && list[j - 1].sequencedPosition > temp.sequencedPosition) {
-                    list[j] = list[j - 1];
-                    j = j - 1;
-                }
-                list[j] = temp;
-            }
         }
 
         static bool IsAnyCallbackSet(Sequence s)
