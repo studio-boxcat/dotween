@@ -35,23 +35,24 @@ namespace DG.Tweening.Plugins
         public override void EvaluateAndApply(TweenerCore<Vector3> t, bool useInversePosition)
         {
             Assert.IsFalse(t.isRelative, "Vector3ArrayPlugin does not support relative values");
-            Assert.IsTrue(t.easeType is Ease.Linear or Ease.OutQuad, "Vector3ArrayPlugin only supports Linear and OutQuad ease types");
             Assert.IsFalse(t.isFrom, "Vector3ArrayPlugin does not support From values");
+
+            if (t.easeType is not (Ease.Linear or Ease.OutQuad))
+                L.W("Vector3ArrayPlugin only supports Linear and OutQuad ease types", t);
 
             var duration = t.duration;
             var elapsed = useInversePosition ? duration - t.position : t.position;
             var opts = (Vector3ArrayOptions) t.plugOptions;
-            opts.Resolve(elapsed / duration, out var segmentTime, out var segmentDuration, out var startValue, out var changeValue);
+            opts.Resolve(elapsed / duration, out var segmentTime, out var segmentDuration, out var segmentStartValue, out var segmentChangeValue);
 
-            if (segmentDuration is 0)
+            var value = t.startValue + segmentStartValue;
+            if (segmentDuration is not 0)
             {
-                t.setter(startValue);
-                return;
+                var easeVal = EaseManager.Evaluate(t.easeType, t.customEase, segmentTime, segmentDuration, t.easeOvershootOrAmplitude, t.easePeriod);
+                value += segmentChangeValue * easeVal;
             }
 
-            // Evaluate
-            var easeVal = EaseManager.Evaluate(t.easeType, t.customEase, segmentTime, segmentDuration, t.easeOvershootOrAmplitude, t.easePeriod);
-            t.setter(startValue + changeValue * easeVal);
+            t.setter(value);
         }
     }
 }
