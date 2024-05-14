@@ -7,11 +7,11 @@ using UnityEngine;
 #pragma warning disable 1591
 namespace DG.Tweening.Plugins
 {
-    public class Vector3Plugin : ABSTweenPlugin<Vector3>
+    public class Vector3Plugin : TweenPlugin<Vector3>
     {
         public static readonly Vector3Plugin Instance = new();
 
-        public override void SetFrom(TweenerCore<Vector3, Vector3> t, bool isRelative)
+        public override void SetFrom(TweenerCore<Vector3> t, bool isRelative)
         {
             var prevEndVal = t.endValue;
             t.endValue = t.getter();
@@ -29,7 +29,7 @@ namespace DG.Tweening.Plugins
             t.setter(to);
         }
 
-        public override void SetFrom(TweenerCore<Vector3, Vector3> t, Vector3 fromValue, bool setImmediately, bool isRelative)
+        public override void SetFrom(TweenerCore<Vector3> t, Vector3 fromValue, bool setImmediately, bool isRelative)
         {
             if (isRelative)
             {
@@ -56,12 +56,12 @@ namespace DG.Tweening.Plugins
             }
         }
 
-        public override void SetRelativeEndValue(TweenerCore<Vector3, Vector3> t)
+        public override void SetRelativeEndValue(TweenerCore<Vector3> t)
         {
             t.endValue += t.startValue;
         }
 
-        public override void SetChangeValue(TweenerCore<Vector3, Vector3> t)
+        public override void SetChangeValue(TweenerCore<Vector3> t)
         {
             if (VectorOptions.GetAxisConstraints(t.plugOptions, out var x, out var y))
             {
@@ -75,7 +75,7 @@ namespace DG.Tweening.Plugins
             }
         }
 
-        public override void EvaluateAndApply(TweenerCore<Vector3, Vector3> t, bool useInversePosition)
+        public override void EvaluateAndApply(TweenerCore<Vector3> t, bool useInversePosition)
         {
             var pos = DOTweenUtils.CalculateCumulativePosition(t, useInversePosition);
             if (VectorOptions.GetAxisConstraints(t.plugOptions, out var x, out var y))

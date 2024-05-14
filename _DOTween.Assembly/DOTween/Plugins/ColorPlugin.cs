@@ -6,11 +6,11 @@ using UnityEngine.Assertions;
 #pragma warning disable 1591
 namespace DG.Tweening.Plugins
 {
-    public class ColorPlugin : ABSTweenPlugin<Color>
+    public class ColorPlugin : TweenPlugin<Color>
     {
         public static readonly ColorPlugin Instance = new();
 
-        public override void SetFrom(TweenerCore<Color, Color> t, bool isRelative)
+        public override void SetFrom(TweenerCore<Color> t, bool isRelative)
         {
             Assert.IsFalse(isRelative, "Color tweens cannot be relative");
             t.endValue = t.getter();
@@ -18,7 +18,7 @@ namespace DG.Tweening.Plugins
             t.setter(t.startValue);
         }
 
-        public override void SetFrom(TweenerCore<Color, Color> t, Color fromValue, bool setImmediately, bool isRelative)
+        public override void SetFrom(TweenerCore<Color> t, Color fromValue, bool setImmediately, bool isRelative)
         {
             if (isRelative)
             {
@@ -31,17 +31,17 @@ namespace DG.Tweening.Plugins
                 t.setter(fromValue);
         }
 
-        public override void SetRelativeEndValue(TweenerCore<Color, Color> t)
+        public override void SetRelativeEndValue(TweenerCore<Color> t)
         {
             t.endValue += t.startValue;
         }
 
-        public override void SetChangeValue(TweenerCore<Color, Color> t)
+        public override void SetChangeValue(TweenerCore<Color> t)
         {
             t.changeValue = t.endValue - t.startValue;
         }
 
-        public override void EvaluateAndApply(TweenerCore<Color, Color> t, bool useInversePosition)
+        public override void EvaluateAndApply(TweenerCore<Color> t, bool useInversePosition)
         {
             var pos = DOTweenUtils.CalculateCumulativePosition(t, useInversePosition);
             t.setter(t.startValue + t.changeValue * pos);

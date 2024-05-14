@@ -14,25 +14,23 @@ namespace DG.Tweening.Core
 {
     // Public so it can be used with SetOptions to show the correct overload
     // and also to allow custom plugins to change start/end/changeValue.
-    // T1: type of value to tween
-    // T2: format in which value is stored while tweening
+    // T: type of value to tween
+    // T: format in which value is stored while tweening
     // TPlugOptions: options type
-    public class TweenerCore<T1, T2> : Tweener
+    public class TweenerCore<T> : Tweener
     {
         // SETUP DATA ////////////////////////////////////////////////
 
-        public T2 startValue, endValue, changeValue;
+        public T startValue, endValue, changeValue;
         public object plugOptions;
-        public DOGetter<T1> getter;
-        public DOSetter<T1> setter;
-        internal ABSTweenPlugin<T1, T2> tweenPlugin;
+        public DOGetter<T> getter;
+        public DOSetter<T> setter;
+        internal TweenPlugin<T> tweenPlugin;
 
         #region Constructor
 
         internal TweenerCore()
         {
-            typeofT1 = typeof(T1);
-            typeofT2 = typeof(T2);
             tweenType = TweenType.Tweener;
             Reset();
         }
@@ -55,7 +53,7 @@ namespace DG.Tweening.Core
         // Plugins that don't support From:
         // - Vector3ArrayPlugin
         // - Pro > PathPlugin, SpiralPlugin
-        internal Tweener SetFrom(T2 fromValue, bool setImmediately, bool relative)
+        internal Tweener SetFrom(T fromValue, bool setImmediately, bool relative)
         {
             tweenPlugin.SetFrom(this, fromValue, setImmediately, relative);
             hasManuallySetStartValue = true;
@@ -67,7 +65,7 @@ namespace DG.Tweening.Core
         {
             base.Reset();
 
-            tweenPlugin?.Reset(this);
+            tweenPlugin = null;
             plugOptions = null;
             getter = null;
             setter = null;
@@ -111,7 +109,7 @@ namespace DG.Tweening.Core
                             // (contrary to other forms of From tweens its values will be set at startup)
                             SetFrom(isRelative && !isBlendable);
                             isRelative = false;
-                        } else startValue = tweenPlugin.ConvertToStartValue(this, getter());
+                        } else startValue = getter();
                     } catch (Exception e) {
                         Debugger.LogSafeModeCapturedError($"Tween startup failed (NULL target/property - {e.TargetSite}): the tween will now be killed ► {e.Message}", this);
                         return false; // Target/field doesn't exist: kill tween
@@ -123,7 +121,7 @@ namespace DG.Tweening.Core
                         SetFrom(isRelative && !isBlendable);
                         isRelative = false;
                     }
-                    else startValue = tweenPlugin.ConvertToStartValue(this, getter());
+                    else startValue = getter();
                 }
             }
 

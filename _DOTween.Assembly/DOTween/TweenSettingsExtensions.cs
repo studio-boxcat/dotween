@@ -386,8 +386,8 @@ namespace DG.Tweening
         /// <param name="fromValue">Value to start from</param>
         /// <param name="setImmediately">If TRUE sets the target to from value immediately, otherwise waits for the tween to start</param>
         /// <param name="isRelative">If TRUE the FROM/TO values will be calculated as relative to the current ones</param>
-        public static TweenerCore<T1,T2> From<T1,T2>(
-            this TweenerCore<T1,T2> t, T2 fromValue, bool setImmediately = true, bool isRelative = false
+        public static TweenerCore<T> From<T>(
+            this TweenerCore<T> t, T fromValue, bool setImmediately = true, bool isRelative = false
         )
         {
             if (t is not { active: true } || t.creationLocked || !t.isFromAllowed) return t;
@@ -462,7 +462,7 @@ namespace DG.Tweening
 
         /// <summary>Options for Vector2 tweens</summary>
         /// <param name="axisConstraint">Selecting an axis will tween the vector only on that axis, leaving the others untouched</param>
-        public static Tweener SetOptions(this TweenerCore<DOVector2, DOVector2> t, AxisConstraint axisConstraint)
+        public static Tweener SetOptions(this TweenerCore<DOVector2> t, AxisConstraint axisConstraint)
         {
             if (t is not { active: true }) return t;
 
@@ -472,7 +472,7 @@ namespace DG.Tweening
 
         /// <summary>Options for Vector3 tweens</summary>
         /// <param name="axisConstraint">Selecting an axis will tween the vector only on that axis, leaving the others untouched</param>
-        public static Tweener SetOptions(this TweenerCore<DOVector3, DOVector3> t, AxisConstraint axisConstraint)
+        public static Tweener SetOptions(this TweenerCore<DOVector3> t, AxisConstraint axisConstraint)
         {
             if (t is not { active: true }) return t;
 

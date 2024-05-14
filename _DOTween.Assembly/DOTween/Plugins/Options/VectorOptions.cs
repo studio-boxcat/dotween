@@ -27,7 +27,7 @@ namespace DG.Tweening.Plugins.Options
             return x || y;
         }
 
-        public static void SetAxisConstraint(TweenerCore<Vector2, Vector2> t, AxisConstraint axisConstraint)
+        public static void SetAxisConstraint(TweenerCore<Vector2> t, AxisConstraint axisConstraint)
         {
             var o = t.plugOptions;
             if (o is null)
@@ -40,7 +40,7 @@ namespace DG.Tweening.Plugins.Options
             opts.axisConstraint = axisConstraint;
         }
 
-        public static void SetAxisConstraint(TweenerCore<Vector3, Vector3> t, AxisConstraint axisConstraint)
+        public static void SetAxisConstraint(TweenerCore<Vector3> t, AxisConstraint axisConstraint)
         {
             var o = t.plugOptions;
             if (o is null)

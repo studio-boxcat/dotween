@@ -50,18 +50,14 @@ namespace DG.Tweening.Core
 
         // Returns a new Tweener, from the pool if there's one available,
         // otherwise by instantiating a new one
-        internal static TweenerCore<T1,T2> GetTweener<T1,T2>()
+        internal static TweenerCore<T> GetTweener<T>()
         {
-            TweenerCore<T1,T2> t;
             // Search inside pool
             if (totPooledTweeners > 0) {
-                Type typeofT1 = typeof(T1);
-                Type typeofT2 = typeof(T2);
                 for (int i = _maxPooledTweenerId; i > _minPooledTweenerId - 1; --i) {
                     Tween tween = _pooledTweeners[i];
-                    if (tween != null && tween.typeofT1 == typeofT1 && tween.typeofT2 == typeofT2) {
+                    if (tween is TweenerCore<T> t) {
                         // Pooled Tweener exists: spawn it
-                        t = (TweenerCore<T1, T2>)tween;
                         AddActiveTween(t);
                         _pooledTweeners[i] = null;
                         if (_maxPooledTweenerId != _minPooledTweenerId) {
@@ -92,10 +88,12 @@ namespace DG.Tweening.Core
                 }
             }
             // Not found: create new TweenerController
-            t = new TweenerCore<T1,T2>();
-            totTweeners++;
-            AddActiveTween(t);
-            return t;
+            {
+                var t = new TweenerCore<T>();
+                totTweeners++;
+                AddActiveTween(t);
+                return t;
+            }
         }
 
         // Returns a new Sequence, from the pool if there's one available,

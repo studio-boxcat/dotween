@@ -6,7 +6,7 @@ namespace DG.Tweening
 {
     static class SpecialTweenUtils
     {
-        internal static void SetupPunch(TweenerCore<Vector3, Vector3> t)
+        internal static void SetupPunch(TweenerCore<Vector3> t)
         {
             t.isRelative = false;
             t.easeType = Ease.OutQuad;
@@ -14,7 +14,7 @@ namespace DG.Tweening
             t.NoFrom();
         }
 
-        internal static void SetupShake(TweenerCore<Vector3, Vector3> t)
+        internal static void SetupShake(TweenerCore<Vector3> t)
         {
             t.isRelative = false;
             t.easeType = Ease.Linear;

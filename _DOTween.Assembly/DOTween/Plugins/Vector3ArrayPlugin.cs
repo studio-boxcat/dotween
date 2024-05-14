@@ -17,21 +17,21 @@ namespace DG.Tweening.Plugins
     /// <summary>
     /// This plugin generates some GC allocations at startup
     /// </summary>
-    public class Vector3ArrayPlugin : ABSTweenPlugin<Vector3>
+    public class Vector3ArrayPlugin : TweenPlugin<Vector3>
     {
         public static readonly Vector3ArrayPlugin Instance = new();
 
-        public override void SetFrom(TweenerCore<Vector3, Vector3> t, bool isRelative)
+        public override void SetFrom(TweenerCore<Vector3> t, bool isRelative)
             => throw new NotSupportedException("Vector3ArrayPlugin does not support the SetFrom method");
-        public override void SetFrom(TweenerCore<Vector3, Vector3> t, Vector3 fromValue, bool setImmediately, bool isRelative)
+        public override void SetFrom(TweenerCore<Vector3> t, Vector3 fromValue, bool setImmediately, bool isRelative)
             => throw new NotSupportedException("Vector3ArrayPlugin does not support the SetFrom method");
-        public override void SetRelativeEndValue(TweenerCore<Vector3, Vector3> t)
+        public override void SetRelativeEndValue(TweenerCore<Vector3> t)
             => throw new NotSupportedException("Vector3ArrayPlugin does not support the relative endValue");
 
         // For Punch & Shake, the endValue must be same as startValue.
-        public override void SetChangeValue(TweenerCore<Vector3, Vector3> t) => t.changeValue = default;
+        public override void SetChangeValue(TweenerCore<Vector3> t) => t.changeValue = default;
 
-        public override void EvaluateAndApply(TweenerCore<Vector3, Vector3> t, bool useInversePosition)
+        public override void EvaluateAndApply(TweenerCore<Vector3> t, bool useInversePosition)
         {
             var elapsed = useInversePosition ? t.duration - t.position : t.position;
             var opts = (Vector3ArrayOptions) t.plugOptions;

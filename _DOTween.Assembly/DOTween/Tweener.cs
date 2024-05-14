@@ -5,11 +5,8 @@
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
 
-using System;
 using DG.Tweening.Core;
-using DG.Tweening.Core.Enums;
 using DG.Tweening.Plugins.Core;
-using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace DG.Tweening
@@ -38,8 +35,8 @@ namespace DG.Tweening
 
         // CALLED BY DOTween when spawning/creating a new Tweener.
         // Returns TRUE if the setup is successful
-        internal static bool Setup<T1, T2>(
-            TweenerCore<T1, T2> t, DOGetter<T1> getter, DOSetter<T1> setter, T2 endValue, float duration, ABSTweenPlugin<T1, T2> plugin
+        internal static bool Setup<T>(
+            TweenerCore<T> t, DOGetter<T> getter, DOSetter<T> setter, T endValue, float duration, TweenPlugin<T> plugin
         )
         {
             Assert.IsNotNull(plugin, "Given plugin is null");
@@ -63,7 +60,7 @@ namespace DG.Tweening
         // CALLED BY TweenerCore
         // Returns the elapsed time minus delay in case of success,
         // -1 if there are missing references and the tween needs to be killed
-        internal static float DoUpdateDelay<T1, T2>(TweenerCore<T1, T2> t, float elapsed)
+        internal static float DoUpdateDelay<T>(TweenerCore<T> t, float elapsed)
         {
             float tweenDelay = t.delay;
             if (elapsed > tweenDelay) {
