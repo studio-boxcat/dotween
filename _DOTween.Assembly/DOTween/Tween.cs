@@ -70,7 +70,6 @@ namespace DG.Tweening
         internal bool isSequenced; // Set by Sequence when adding a Tween to it
         internal Sequence sequenceParent;  // Set by Sequence when adding a Tween to it
         internal int activeId = -1; // Index inside its active list (touched only by TweenManager)
-        internal SpecialStartupMode specialStartupMode;
 
         // PLAY DATA /////////////////////////////////////////////////
 
@@ -114,7 +113,6 @@ namespace DG.Tweening
             customEase = null;
             isSequenced = false;
             sequenceParent = null;
-            specialStartupMode = SpecialStartupMode.None;
             creationLocked = startupDone = playedOnce = false;
             position = fullDuration = completedLoops = 0;
             isPlaying = isComplete = false;

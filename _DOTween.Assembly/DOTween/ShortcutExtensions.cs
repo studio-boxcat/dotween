@@ -33,43 +33,6 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Shakes a Camera's localPosition along its relative X Y axes with the given values.
-        /// Also stores the camera as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="duration">The duration of the tween</param>
-        /// <param name="strength">The shake strength</param>
-        /// <param name="vibrato">Indicates how much will the shake vibrate</param>
-        /// <param name="randomness">Indicates how much the shake will be random (0 to 180 - values higher than 90 kind of suck, so beware).
-        /// Setting it to 0 will shake along a single direction.</param>
-        /// <param name="fadeOut">If TRUE the shake will automatically fadeOut smoothly within the tween's duration, otherwise it will not</param>
-        /// <param name="randomnessMode">Randomness mode</param>
-        public static Tweener DOShakePosition(this Camera target, float duration, float strength = 3, int vibrato = 10, float randomness = 90, bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full)
-        {
-            if (duration <= 0) {
-                Debug.LogWarning("DOShakePosition: duration can't be 0, returning NULL without creating a tween");
-                return null;
-            }
-            return DOTween.Shake(() => target.transform.localPosition, x => target.transform.localPosition = x, duration, strength, vibrato, randomness, true, fadeOut, randomnessMode)
-                .SetTarget(target).SetSpecialStartupMode(SpecialStartupMode.SetCameraShakePosition);
-        }
-        /// <summary>Shakes a Camera's localPosition along its relative X Y axes with the given values.
-        /// Also stores the camera as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="duration">The duration of the tween</param>
-        /// <param name="strength">The shake strength on each axis</param>
-        /// <param name="vibrato">Indicates how much will the shake vibrate</param>
-        /// <param name="randomness">Indicates how much the shake will be random (0 to 180 - values higher than 90 kind of suck, so beware).
-        /// Setting it to 0 will shake along a single direction.</param>
-        /// <param name="fadeOut">If TRUE the shake will automatically fadeOut smoothly within the tween's duration, otherwise it will not</param>
-        /// <param name="randomnessMode">Randomness mode</param>
-        public static Tweener DOShakePosition(this Camera target, float duration, Vector3 strength, int vibrato = 10, float randomness = 90, bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full)
-        {
-            if (duration <= 0) {
-                Debug.LogWarning("DOShakePosition: duration can't be 0, returning NULL without creating a tween");
-                return null;
-            }
-            return DOTween.Shake(() => target.transform.localPosition, x => target.transform.localPosition = x, duration, strength, vibrato, randomness, fadeOut, randomnessMode)
-                .SetTarget(target).SetSpecialStartupMode(SpecialStartupMode.SetCameraShakePosition);
-        }
-
         #endregion
 
         #region Material Shortcuts
@@ -403,7 +366,7 @@ namespace DG.Tweening
                 return null;
             }
             return DOTween.Shake(() => target.localPosition, x => target.localPosition = x, duration, strength, vibrato, randomness, false, fadeOut, randomnessMode)
-                .SetTarget(target).SetSpecialStartupMode(SpecialStartupMode.SetShake);
+                .SetTarget(target);
         }
         /// <summary>Shakes a Transform's localPosition with the given values.</summary>
         /// <param name="duration">The duration of the tween</param>
@@ -420,7 +383,7 @@ namespace DG.Tweening
                 return null;
             }
             return DOTween.Shake(() => target.localPosition, x => target.localPosition = x, duration, strength, vibrato, randomness, fadeOut, randomnessMode)
-                .SetTarget(target).SetSpecialStartupMode(SpecialStartupMode.SetShake);
+                .SetTarget(target);
         }
         /// <summary>Shakes a Transform's localRotation.</summary>
         /// <param name="duration">The duration of the tween</param>
@@ -437,7 +400,7 @@ namespace DG.Tweening
                 return null;
             }
             return DOTween.Shake(() => target.localEulerAngles, x => target.localRotation = Quaternion.Euler(x), duration, strength, vibrato, randomness, false, fadeOut, randomnessMode)
-                .SetTarget(target).SetSpecialStartupMode(SpecialStartupMode.SetShake);
+                .SetTarget(target);
         }
         /// <summary>Shakes a Transform's localRotation.</summary>
         /// <param name="duration">The duration of the tween</param>
@@ -454,7 +417,7 @@ namespace DG.Tweening
                 return null;
             }
             return DOTween.Shake(() => target.localEulerAngles, x => target.localRotation = Quaternion.Euler(x), duration, strength, vibrato, randomness, fadeOut, randomnessMode)
-                .SetTarget(target).SetSpecialStartupMode(SpecialStartupMode.SetShake);
+                .SetTarget(target);
         }
         /// <summary>Shakes a Transform's localScale.</summary>
         /// <param name="duration">The duration of the tween</param>
@@ -471,7 +434,7 @@ namespace DG.Tweening
                 return null;
             }
             return DOTween.Shake(() => target.localScale, x => target.localScale = x, duration, strength, vibrato, randomness, false, fadeOut, randomnessMode)
-                .SetTarget(target).SetSpecialStartupMode(SpecialStartupMode.SetShake);
+                .SetTarget(target);
         }
         /// <summary>Shakes a Transform's localScale.</summary>
         /// <param name="duration">The duration of the tween</param>
@@ -488,7 +451,7 @@ namespace DG.Tweening
                 return null;
             }
             return DOTween.Shake(() => target.localScale, x => target.localScale = x, duration, strength, vibrato, randomness, fadeOut, randomnessMode)
-                .SetTarget(target).SetSpecialStartupMode(SpecialStartupMode.SetShake);
+                .SetTarget(target);
         }
 
         #region Special

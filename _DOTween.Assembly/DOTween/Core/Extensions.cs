@@ -4,8 +4,6 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
-using DG.Tweening.Core.Enums;
-
 namespace DG.Tweening.Core
 {
     /// <summary>
@@ -13,15 +11,6 @@ namespace DG.Tweening.Core
     /// </summary>
     public static class Extensions
     {
-        /// <summary>
-        /// INTERNAL: used by DO shortcuts and Modules to set special startup mode
-        /// </summary>
-        public static T SetSpecialStartupMode<T>(this T t, SpecialStartupMode mode) where T : Tween
-        {
-            t.specialStartupMode = mode;
-            return t;
-        }
-
         /// <summary>
         /// INTERNAL: used by DO shortcuts and Modules to set the tween as blendable
         /// </summary>

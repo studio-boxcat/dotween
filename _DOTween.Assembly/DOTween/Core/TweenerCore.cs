@@ -7,6 +7,7 @@
 using System;
 using DG.Tweening.Core.Enums;
 using DG.Tweening.Plugins.Core;
+using UnityEngine;
 
 #pragma warning disable 1591
 namespace DG.Tweening.Core
@@ -99,7 +100,44 @@ namespace DG.Tweening.Core
         // FALSE if there are missing references and the tween needs to be killed
         internal override bool Startup()
         {
-            return DoStartup(this);
+            startupDone = true;
+
+            if (!hasManuallySetStartValue) {
+                // Take start value from current target value
+                if (DOTween.useSafeMode) {
+                    try {
+                        if (isFrom) {
+                            // From tween without forced From value and where setImmediately was FALSE
+                            // (contrary to other forms of From tweens its values will be set at startup)
+                            SetFrom(isRelative && !isBlendable);
+                            isRelative = false;
+                        } else startValue = tweenPlugin.ConvertToStartValue(this, getter());
+                    } catch (Exception e) {
+                        Debugger.LogSafeModeCapturedError($"Tween startup failed (NULL target/property - {e.TargetSite}): the tween will now be killed ► {e.Message}", this);
+                        return false; // Target/field doesn't exist: kill tween
+                    }
+                } else {
+                    if (isFrom) {
+                        // From tween without forced From value and where setImmediately was FALSE
+                        // (contrary to other forms of From tweens its values will be set at startup)
+                        SetFrom(isRelative && !isBlendable);
+                        isRelative = false;
+                    }
+                    else startValue = tweenPlugin.ConvertToStartValue(this, getter());
+                }
+            }
+
+            if (isRelative) tweenPlugin.SetRelativeEndValue(this);
+
+            tweenPlugin.SetChangeValue(this);
+
+            // Duration based startup operations
+            fullDuration = loops > -1 ? duration * loops : Mathf.Infinity;
+
+            // Applied here so that the eventual duration derived from a speedBased tween has been set
+            if (duration <= 0) easeType = Ease.INTERNAL_Zero;
+
+            return true;
         }
 
         public override void ApplyOriginal()

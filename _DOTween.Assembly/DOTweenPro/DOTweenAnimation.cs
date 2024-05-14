@@ -20,17 +20,29 @@ namespace DG.Tweening
     {
         public enum AnimationType : byte
         {
-            None,
-            Unused_8, LocalMove,
-            Unused_9, LocalRotateZ,
-            Scale,
-            Color, Fade,
-            Unused_0,
-            PunchPosition, PunchRotation, PunchScale,
-            ShakePosition, ShakeRotation, ShakeScale,
-            Unused_1, Unused_2, Unused_3, Unused_4, Unused_5, Unused_6,
-            Unused_7,
-            UIAnchors,
+            None = 0,
+            // Unused_8 = 1,
+            LocalMove = 2,
+            // Unused_9 = 3,
+            LocalRotateZ = 4,
+            Scale = 5,
+            Color = 6,
+            Fade = 7,
+            // Unused_0 = 8,
+            PunchPosition = 9,
+            PunchRotation = 10,
+            PunchScale = 11,
+            ShakePosition = 12,
+            ShakeRotation = 13,
+            ShakeScale = 14,
+            // Unused_1 = 15,
+            // Unused_2 = 16,
+            // Unused_3 = 17,
+            // Unused_4 = 18,
+            // Unused_5 = 19,
+            // Unused_6 = 20,
+            // Unused_7 = 21,
+            UIAnchors = 22,
         }
 
         [NonSerialized]
@@ -202,22 +214,8 @@ namespace DG.Tweening
 #if UNITY_EDITOR
         void ISelfValidator.Validate(SelfValidationResult result)
         {
-            if (animationType
-                is AnimationType.None
-                or AnimationType.Unused_0
-                or AnimationType.Unused_1
-                or AnimationType.Unused_2
-                or AnimationType.Unused_3
-                or AnimationType.Unused_4
-                or AnimationType.Unused_5
-                or AnimationType.Unused_6
-                or AnimationType.Unused_7
-                or AnimationType.Unused_8
-                or AnimationType.Unused_9
-               )
-            {
+            if (animationType is AnimationType.None)
                 result.AddError("AnimationType must be set to a valid value");
-            }
 
             if (animationType
                 is AnimationType.LocalMove

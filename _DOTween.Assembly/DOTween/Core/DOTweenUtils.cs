@@ -1,6 +1,5 @@
 ﻿using DG.Tweening.Core.Easing;
 using JetBrains.Annotations;
-using UnityEngine;
 
 namespace DG.Tweening.Core
 {
@@ -9,15 +8,6 @@ namespace DG.Tweening.Core
     /// </summary>
     static class DOTweenUtils
     {
-        /// <summary>
-        /// Returns a Vector3 with z = 0
-        /// </summary>
-        internal static Vector3 Vector3FromAngle(float degrees, float magnitude)
-        {
-            var radians = degrees * Mathf.Deg2Rad;
-            return new Vector3(magnitude * Mathf.Cos(radians), magnitude * Mathf.Sin(radians), 0);
-        }
-
         [MustUseReturnValue]
         public static float CalculateCumulativePosition(Tween t, bool useInversePosition)
         {

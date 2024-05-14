@@ -238,7 +238,7 @@ namespace DG.Tweening
         public static Tweener DOShakeAnchorPos(this RectTransform target, float duration, float strength = 100, int vibrato = 10, float randomness = 90, bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full)
         {
             return DOTween.Shake(() => target.anchoredPosition, x => target.anchoredPosition = x, duration, strength, vibrato, randomness, true, fadeOut, randomnessMode)
-                .SetTarget(target).SetSpecialStartupMode(SpecialStartupMode.SetShake);
+                .SetTarget(target);
         }
         /// <summary>Shakes a RectTransform's anchoredPosition with the given values.
         /// Also stores the RectTransform as the tween's target so it can be used for filtered operations</summary>
@@ -252,7 +252,7 @@ namespace DG.Tweening
         public static Tweener DOShakeAnchorPos(this RectTransform target, float duration, Vector2 strength, int vibrato = 10, float randomness = 90, bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full)
         {
             return DOTween.Shake(() => target.anchoredPosition, x => target.anchoredPosition = x, duration, strength, vibrato, randomness, fadeOut, randomnessMode)
-                .SetTarget(target).SetSpecialStartupMode(SpecialStartupMode.SetShake);
+                .SetTarget(target);
         }
 
         #region Special

@@ -4,16 +4,67 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
+using UnityEngine;
+using UnityEngine.Assertions;
+
 #pragma warning disable 1591
 namespace DG.Tweening.Plugins.Options
 {
     public class Vector3ArrayOptions
     {
-        public readonly float[] durations; // Duration of each segment
+        readonly float[] startTimes;
+        readonly Vector3[] startValues;
 
-        public Vector3ArrayOptions(float[] durations)
+        public Vector3ArrayOptions(float[] startTimes, Vector3[] startValues)
         {
-            this.durations = durations;
+            Assert.IsTrue(startTimes[0] > 0, "Last time value must be less than 1");
+            Assert.IsFalse(startTimes[^1] is 0 or 1, "Last time value must be less than 1");
+            Assert.IsTrue(startValues[0] != Vector3.zero, "Last value must be different from Vector3.zero");
+            Assert.IsTrue(startValues[^1] != Vector3.zero, "Last value must be different from Vector3.zero");
+
+            this.startTimes = startTimes;
+            this.startValues = startValues;
+        }
+
+        public void Resolve(float t, out float segmentTime, out float segmentDuration, out Vector3 segmentStartValue, out Vector3 segmentChangeValue)
+        {
+            if (t >= 1)
+            {
+                segmentTime = 0;
+                segmentDuration = 0;
+                segmentStartValue = default;
+                segmentChangeValue = default;
+                return;
+            }
+
+            if (t < startTimes[0])
+            {
+                segmentTime = t;
+                segmentDuration = startTimes[0];
+                segmentStartValue = default;
+                segmentChangeValue = startValues[0];
+                return;
+            }
+
+            for (var i = 0; i < startTimes.Length - 1; i++)
+            {
+                var nextTime = startTimes[i + 1];
+                if (t < nextTime) continue;
+
+                var curStartTime = startTimes[i];
+                segmentTime = t - curStartTime;
+                segmentDuration = nextTime - curStartTime;
+
+                segmentStartValue = startValues[i];
+                var nextValue = startValues[i + 1];
+                segmentChangeValue = nextValue - segmentStartValue;
+                return;
+            }
+
+            segmentTime = t - startTimes[^1];
+            segmentDuration = 1 - segmentTime;
+            segmentStartValue = startValues[^1];
+            segmentChangeValue = -segmentStartValue;
         }
     }
 }

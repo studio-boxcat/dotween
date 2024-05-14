@@ -200,6 +200,13 @@ namespace DG.Tweening
 
         #region Special TOs (No FROMs)
 
+        static TweenerCore<Vector3, Vector3> ToArray(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration, Vector3ArrayOptions opts)
+        {
+            var t = To(getter, setter, default, duration, Vector3ArrayPlugin.Instance);
+            t.plugOptions = opts;
+            return t;
+        }
+
         /// <summary>Punches a Vector3 towards the given direction and then back to the starting one
         /// as if it was connected to the starting position via an elastic.
         /// <para>This tween type generates some GC allocations at startup</para></summary>
@@ -213,12 +220,12 @@ namespace DG.Tweening
         /// <param name="elasticity">Represents how much (0 to 1) the vector will go beyond the starting position when bouncing backwards.
         /// 1 creates a full oscillation between the direction and the opposite decaying direction,
         /// while 0 oscillates only between the starting position and the decaying direction</param>
-        public static TweenerCore<Vector3, Vector3[]> Punch(DOGetter<Vector3> getter, DOSetter<Vector3> setter, Vector3 direction, float duration, int vibrato = 10, float elasticity = 1)
+        public static TweenerCore<Vector3, Vector3> Punch(DOGetter<Vector3> getter, DOSetter<Vector3> setter, Vector3 direction, float duration, int vibrato = 10, float elasticity = 1)
         {
-            var (tDurations, tos) = Vector3ArrayUtils.CalculatePunch(direction, duration, vibrato, elasticity);
-            return ToArray(getter, setter, tos, tDurations)
-                .NoFrom()
-                .SetSpecialStartupMode(SpecialStartupMode.SetPunch);
+            var opts = SpecialTweenUtils.CalculatePunch(direction, duration, vibrato, elasticity);
+            var t = ToArray(getter, setter, duration, opts);
+            SpecialTweenUtils.SetupPunch(t);
+            return t;
         }
 
         /// <summary>Shakes a Vector3 with the given values.</summary>
@@ -234,7 +241,7 @@ namespace DG.Tweening
         /// <param name="ignoreZAxis">If TRUE only shakes on the X Y axis (looks better with things like cameras).</param>
         /// <param name="fadeOut">If TRUE the shake will automatically fadeOut smoothly within the tween's duration, otherwise it will not</param>
         /// <param name="randomnessMode">Randomness mode</param>
-        public static TweenerCore<Vector3, Vector3[]> Shake(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration,
+        public static TweenerCore<Vector3, Vector3> Shake(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration,
             float strength = 3, int vibrato = 10, float randomness = 90, bool ignoreZAxis = true,
             bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full
         )
@@ -253,53 +260,21 @@ namespace DG.Tweening
         /// Setting it to 0 will shake along a single direction and behave like a random punch.</param>
         /// <param name="fadeOut">If TRUE the shake will automatically fadeOut smoothly within the tween's duration, otherwise it will not</param>
         /// <param name="randomnessMode">Randomness mode</param>
-        public static TweenerCore<Vector3, Vector3[]> Shake(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration,
+        public static TweenerCore<Vector3, Vector3> Shake(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration,
             Vector3 strength, int vibrato = 10, float randomness = 90,
             bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full
         )
         {
             return Shake(getter, setter, duration, strength, vibrato, randomness, false, true, fadeOut, randomnessMode);
         }
-        static TweenerCore<Vector3, Vector3[]> Shake(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration,
+        static TweenerCore<Vector3, Vector3> Shake(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration,
             Vector3 strength, int vibrato, float randomness, bool ignoreZAxis, bool vectorBased,
             bool fadeOut, ShakeRandomnessMode randomnessMode
         )
         {
-            var (tDurations, tos) = Vector3ArrayUtils.CalculateShake(
-                duration, strength, vibrato, randomness, ignoreZAxis, vectorBased, fadeOut, randomnessMode);
-            return ToArray(getter, setter, tos, tDurations)
-                .NoFrom().SetSpecialStartupMode(SpecialStartupMode.SetShake);
-        }
-
-        /// <summary>Tweens a property or field to the given values using default plugins.
-        /// Ease is applied between each segment and not as a whole.
-        /// <para>This tween type generates some GC allocations at startup</para></summary>
-        /// <param name="getter">A getter for the field or property to tween.
-        /// <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-        /// <param name="setter">A setter for the field or property to tween
-        /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-        /// <param name="endValues">The end values to reach for each segment. This array must have the same length as <code>durations</code></param>
-        /// <param name="durations">The duration of each segment. This array must have the same length as <code>endValues</code></param>
-        static TweenerCore<Vector3, Vector3[]> ToArray(DOGetter<Vector3> getter, DOSetter<Vector3> setter, Vector3[] endValues, float[] durations)
-        {
-            int len = durations.Length;
-            if (len != endValues.Length) {
-                Debugger.LogError("To Vector3 array tween: endValues and durations arrays must have the same length");
-                return null;
-            }
-
-            // Clone the arrays
-            Vector3[] endValuesClone = new Vector3[len];
-            float[] durationsClone = new float[len];
-            for (int i = 0; i < len; i++) {
-                endValuesClone[i] = endValues[i];
-                durationsClone[i] = durations[i];
-            }
-
-            float totDuration = 0;
-            for (int i = 0; i < len; ++i) totDuration += durationsClone[i];
-            var t = To(getter, setter, endValuesClone, totDuration, Vector3ArrayPlugin.Instance).NoFrom();
-            t.plugOptions = new Vector3ArrayOptions(durationsClone);
+            var opts = SpecialTweenUtils.CalculateShake(duration, strength, vibrato, randomness, ignoreZAxis, vectorBased, fadeOut, randomnessMode);
+            var t = ToArray(getter, setter, duration, opts);
+            SpecialTweenUtils.SetupShake(t);
             return t;
         }
 

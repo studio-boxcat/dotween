@@ -626,7 +626,6 @@ namespace DG.Tweening.Core
 
         internal static bool Restart(Tween t, bool includeDelay = true, float changeDelayTo = -1)
         {
-            bool wasPaused = !t.isPlaying;
             t.isBackwards = false;
             if (changeDelayTo >= 0 && t.tweenType == TweenType.Tweener) t.delay = changeDelayTo;
             Rewind(t, includeDelay);
