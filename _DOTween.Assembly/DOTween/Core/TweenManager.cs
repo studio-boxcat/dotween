@@ -708,7 +708,6 @@ namespace DG.Tweening.Core
         {
             int result = 0;
             // Determine ID to use
-            string stringId = null;
             bool useIntId = false;
             int intId = 0;
             if (id is int) {
