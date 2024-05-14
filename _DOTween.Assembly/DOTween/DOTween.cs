@@ -30,15 +30,10 @@ namespace DG.Tweening
         /// <para>Default: NestedTweenFailureBehaviour.TryToPreserveSequence</para></summary>
         public static NestedTweenFailureBehaviour nestedTweenFailureBehaviour = NestedTweenFailureBehaviour.TryToPreserveSequence;
 
-        /// <summary>Default ease applied to all new Tweeners (not to Sequences which always have Ease.Linear as default).
-        /// <para>Default: Ease.InOutQuad</para></summary>
-        public static Ease defaultEaseType = Ease.OutQuad;
-        /// <summary>Default overshoot/amplitude used for eases
-        /// <para>Default: 1.70158f</para></summary>
-        public static float defaultEaseOvershootOrAmplitude = 1.70158f;
-        /// <summary>Default period used for eases
-        /// <para>Default: 0</para></summary>
-        public static float defaultEasePeriod;
+        /// <summary>Default ease applied to all new Tweeners (not to Sequences which always have Ease.Linear as default).</summary>
+        public const Ease defaultEaseType = Ease.OutQuad;
+        /// <summary>Default overshoot/amplitude used for eases.</summary>
+        public const float defaultEaseOvershootOrAmplitude = 1.70158f;
 
         internal static int maxActiveTweenersReached, maxActiveSequencesReached; // Controlled by DOTweenInspector if showUnityEditorReport is active
         internal static bool initialized; // Can be set to false by DOTweenComponent OnDestroy
@@ -59,9 +54,6 @@ namespace DG.Tweening
             // Assign settings
             var settings = DOTweenSettings.Instance;
             nestedTweenFailureBehaviour = settings.safeModeOptions.nestedTweenFailureBehaviour;
-            defaultEaseType = settings.defaultEaseType;
-            defaultEaseOvershootOrAmplitude = settings.defaultEaseOvershootOrAmplitude;
-            defaultEasePeriod = settings.defaultEasePeriod;
         }
 
         /// <summary>
@@ -77,9 +69,6 @@ namespace DG.Tweening
             TweenManager.PurgeAll();
 
             nestedTweenFailureBehaviour = NestedTweenFailureBehaviour.TryToPreserveSequence;
-            defaultEaseType = Ease.OutQuad;
-            defaultEaseOvershootOrAmplitude = 1.70158f;
-            defaultEasePeriod = 0;
             maxActiveTweenersReached = maxActiveSequencesReached = 0;
         }
 

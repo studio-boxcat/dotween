@@ -64,7 +64,6 @@ namespace DG.Tweening
             inSequence.lastTweenInsertTime = atPosition;
 
             t.isSequenced = t.creationLocked = true;
-            t.sequenceParent = inSequence;
             if (t.loops == -1) {
                 t.loops = int.MaxValue;
                 Debugger.LogWarning("Infinite loops aren't allowed inside a Sequence (only on the Sequence itself) and will be changed to int.MaxValue", t);
@@ -174,7 +173,7 @@ namespace DG.Tweening
             s.loopType = LoopType.Restart;
             s.easeType = Ease.Linear;
             s.easeOvershootOrAmplitude = DOTween.defaultEaseOvershootOrAmplitude;
-            s.easePeriod = DOTween.defaultEasePeriod;
+            s.easePeriod = 0;
         }
 
         // Applies the tween set by DoGoto.

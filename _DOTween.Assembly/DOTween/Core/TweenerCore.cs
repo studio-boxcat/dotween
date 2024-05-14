@@ -47,7 +47,7 @@ namespace DG.Tweening.Core
             autoKill = true;
             easeType = DOTween.defaultEaseType;
             easeOvershootOrAmplitude = DOTween.defaultEaseOvershootOrAmplitude;
-            easePeriod = DOTween.defaultEasePeriod;
+            easePeriod = 0;
             loopType = LoopType.Restart;
             isPlaying = true;
         }

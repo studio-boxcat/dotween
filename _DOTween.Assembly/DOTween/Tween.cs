@@ -65,7 +65,6 @@ namespace DG.Tweening
         /// <summary>FALSE when tween is (or should be) despawned - set only by TweenManager</summary>
         public bool active { get; internal set; } // Required by Modules
         internal bool isSequenced; // Set by Sequence when adding a Tween to it
-        internal Sequence sequenceParent;  // Set by Sequence when adding a Tween to it
         internal int activeId = -1; // Index inside its active list (touched only by TweenManager)
 
         // PLAY DATA /////////////////////////////////////////////////
@@ -109,7 +108,6 @@ namespace DG.Tweening
             isRelative = false;
             customEase = null;
             isSequenced = false;
-            sequenceParent = null;
             creationLocked = startupDone = playedOnce = false;
             position = fullDuration = completedLoops = 0;
             isPlaying = isComplete = false;
@@ -121,7 +119,7 @@ namespace DG.Tweening
         // Returns the eventual time in excess compared to the tween's delay time.
         // Previously unused by Sequences but now implemented.
         // NOT TRUE ANYMORE: Shared also by Sequences even if they don't use it, in order to make it compatible with Tween.
-        internal virtual float UpdateDelay(float elapsed) { return 0; }
+        internal abstract float UpdateDelay(float elapsed);
 
         // Called the moment the tween starts.
         // For tweeners, that means AFTER any delay has elapsed
