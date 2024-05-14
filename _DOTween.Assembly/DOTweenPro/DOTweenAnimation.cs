@@ -233,6 +233,32 @@ namespace DG.Tweening
             }
 
             if (animationType
+                is AnimationType.PunchPosition
+                or AnimationType.PunchRotation
+                or AnimationType.PunchScale)
+            {
+                if (easeType is not Ease.OutQuad)
+                    result.AddError("Punch animations must use OutQuad ease type");
+                if (isRelative)
+                    result.AddError("Punch animations cannot be relative");
+                if (isFrom)
+                    result.AddError("Punch animations cannot be from");
+            }
+
+            if (animationType
+                is AnimationType.ShakePosition
+                or AnimationType.ShakeRotation
+                or AnimationType.ShakeScale)
+            {
+                if (easeType is not Ease.Linear)
+                    result.AddError("Shake animations must use Linear ease type");
+                if (isRelative)
+                    result.AddError("Shake animations cannot be relative");
+                if (isFrom)
+                    result.AddError("Shake animations cannot be from");
+            }
+
+            if (animationType
                 is AnimationType.Fade
                 or AnimationType.Color
                 or AnimationType.PunchPosition

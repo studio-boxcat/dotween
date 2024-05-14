@@ -10,6 +10,7 @@ using DG.Tweening.Core.Easing;
 using DG.Tweening.Plugins.Core;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 #pragma warning disable 1591
 namespace DG.Tweening.Plugins
@@ -33,6 +34,10 @@ namespace DG.Tweening.Plugins
 
         public override void EvaluateAndApply(TweenerCore<Vector3> t, bool useInversePosition)
         {
+            Assert.IsFalse(t.isRelative, "Vector3ArrayPlugin does not support relative values");
+            Assert.IsTrue(t.easeType is Ease.Linear or Ease.OutQuad, "Vector3ArrayPlugin only supports Linear and OutQuad ease types");
+            Assert.IsFalse(t.isFrom, "Vector3ArrayPlugin does not support From values");
+
             var duration = t.duration;
             var elapsed = useInversePosition ? duration - t.position : t.position;
             var opts = (Vector3ArrayOptions) t.plugOptions;

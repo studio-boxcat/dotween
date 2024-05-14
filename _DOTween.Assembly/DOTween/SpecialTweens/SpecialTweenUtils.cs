@@ -70,7 +70,7 @@ namespace DG.Tweening
             }
             else
             {
-                var segmentDuration = 1 / segmentCount;
+                var segmentDuration = 1f / segmentCount;
                 for (var i = 0; i < segmentCount - 1; ++i)
                     startTimes[i] = segmentDuration * (i + 1);
             }
