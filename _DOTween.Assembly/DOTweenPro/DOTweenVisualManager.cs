@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DG.Tweening.Core;
 using JetBrains.Annotations;
 using Sirenix.OdinInspector;
 using UnityEngine;

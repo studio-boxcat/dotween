@@ -16,6 +16,8 @@ namespace DG.Tweening
         [Conditional("DEBUG")]
         public static void E(string message, Object context = null) => Debug.LogError(message, context);
         [Conditional("DEBUG")]
+        public static void E(string message, Tween t) => Debug.LogError(message, t.target as Object);
+        [Conditional("DEBUG")]
         public static void E(Exception e, Object context = null) => Debug.LogException(e, context);
     }
 }

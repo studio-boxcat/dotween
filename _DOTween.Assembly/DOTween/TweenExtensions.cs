@@ -127,7 +127,7 @@ namespace DG.Tweening
         {
             if (!DOTween.initialized)
             {
-                L.E("DOTween is not initialized.");
+                L.W("DOTween is not initialized.", t);
                 return;
             }
 
