@@ -56,7 +56,7 @@ namespace DG.Tweening
             if (initialized || !DOTweenUnityBridge.IsPlaying())
                 return;
 
-            L.I("[DOTween] Init: " + Time.frameCount);
+            L.I("[DOTween] Init");
 
             initialized = true;
 
@@ -76,7 +76,7 @@ namespace DG.Tweening
         /// (so that next time you use it it will need to be re-initialized)</param>
         public static void Clear()
         {
-            L.I("[DOTween] Clear: " + Time.frameCount);
+            L.I("[DOTween] Clear");
 
             initialized = false;
 
