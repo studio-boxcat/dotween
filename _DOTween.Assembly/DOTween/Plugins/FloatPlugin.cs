@@ -38,9 +38,9 @@ namespace DG.Tweening.Plugins
             t.changeValue = t.endValue - t.startValue;
         }
 
-        public override void EvaluateAndApply(TweenerCore<float> t, bool useInversePosition)
+        public override void EvaluateAndApply(TweenerCore<float> t, float elapsed)
         {
-            var pos = DOTweenUtils.CalculateCumulativePosition(t, useInversePosition);
+            var pos = DOTweenUtils.Evaluate(t, elapsed);
             t.setter(t.startValue + t.changeValue * pos);
         }
     }

@@ -1,7 +1,6 @@
 ﻿using DG.Tweening.Core;
 using DG.Tweening.Plugins.Core;
 using DG.Tweening.Plugins.Options;
-using JetBrains.Annotations;
 using UnityEngine;
 
 #pragma warning disable 1591
@@ -75,9 +74,9 @@ namespace DG.Tweening.Plugins
             }
         }
 
-        public override void EvaluateAndApply(TweenerCore<Vector3> t, bool useInversePosition)
+        public override void EvaluateAndApply(TweenerCore<Vector3> t, float elapsed)
         {
-            var pos = DOTweenUtils.CalculateCumulativePosition(t, useInversePosition);
+            var pos = DOTweenUtils.Evaluate(t, elapsed);
             if (VectorOptions.GetAxisConstraints(t.plugOptions, out var x, out var y))
             {
                 var value = t.getter();

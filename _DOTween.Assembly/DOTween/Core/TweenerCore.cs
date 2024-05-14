@@ -146,23 +146,24 @@ namespace DG.Tweening.Core
 
         public override void ApplyOriginal()
         {
-            tweenPlugin.ApplyOriginal(this);
+            setter(isFrom ? endValue : startValue);
         }
 
         // Applies the tween set by DoGoto.
         // Returns TRUE if the tween needs to be killed
         internal override bool ApplyTween(float prevPosition, int prevCompletedLoops, int newCompletedSteps, bool useInversePosition, UpdateMode updateMode)
         {
+            var elapsed = useInversePosition ? duration - position : position;
             if (DOTween.useSafeMode) {
                 try {
-                    tweenPlugin.EvaluateAndApply(this, useInversePosition);
+                    tweenPlugin.EvaluateAndApply(this, elapsed);
                 } catch (Exception e) {
                     // Target/field doesn't exist anymore: kill tween
                     Debugger.LogSafeModeCapturedError(e, this);
                     return true;
                 }
             } else {
-                tweenPlugin.EvaluateAndApply(this, useInversePosition);
+                tweenPlugin.EvaluateAndApply(this, elapsed);
             }
             return false;
         }

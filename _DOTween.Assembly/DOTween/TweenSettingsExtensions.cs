@@ -11,6 +11,7 @@ using DG.Tweening.Core;
 using DG.Tweening.Core.Easing;
 using DG.Tweening.Plugins;
 using DG.Tweening.Plugins.Options;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Debugger = DG.Tweening.Core.Debugger;
@@ -149,9 +150,13 @@ namespace DG.Tweening
         }
         /// <summary>Sets the ease of the tween using an AnimationCurve.
         /// <para>If applied to Sequences eases the whole sequence animation</para></summary>
-        public static T SetEase<T>(this T t, AnimationCurve animCurve) where T : Tween
+        public static T SetEase<T>([NotNull] this T t, AnimationCurve animCurve) where T : Tween
         {
-            if (t is not { active: true }) return t;
+            if (!t.active)
+            {
+                Debugger.LogInvalidTween(t);
+                return t;
+            }
 
             t.easeType = Ease.INTERNAL_Custom;
             t.customEase = new EaseCurve(animCurve).Evaluate;
@@ -160,9 +165,13 @@ namespace DG.Tweening
         }
         /// <summary>Sets the ease of the tween using a custom ease function (which must return a value between 0 and 1).
         /// <para>If applied to Sequences eases the whole sequence animation</para></summary>
-        public static T SetEase<T>(this T t, EaseFunction customEase) where T : Tween
+        public static T SetEase<T>([NotNull] this T t, EaseFunction customEase) where T : Tween
         {
-            if (t is not { active: true }) return t;
+            if (!t.active)
+            {
+                Debugger.LogInvalidTween(t);
+                return t;
+            }
 
             t.easeType = Ease.INTERNAL_Custom;
             t.customEase = customEase;

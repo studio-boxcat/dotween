@@ -9,29 +9,9 @@ namespace DG.Tweening.Core
     static class DOTweenUtils
     {
         [MustUseReturnValue]
-        public static float CalculateCumulativePosition(Tween t, bool useInversePosition)
+        public static float Evaluate(Tween t, float elapsed)
         {
-            var elapsed = useInversePosition ? t.duration - t.position : t.position;
-            var pos = EaseManager.Evaluate(t.easeType, t.customEase, elapsed, t.duration, t.easeOvershootOrAmplitude, t.easePeriod);
-            var loopCount = CountIncremental(t);
-            return pos + loopCount;
-
-            static int CountIncremental(Tween t)
-            {
-                var loopCount = 0;
-
-                if (t.loopType == LoopType.Incremental)
-                    loopCount += t.isComplete ? t.completedLoops - 1 : t.completedLoops;
-
-                if (t.isSequenced && t.sequenceParent.loopType == LoopType.Incremental)
-                {
-                    var seq = t.sequenceParent;
-                    loopCount += (t.loopType == LoopType.Incremental ? t.loops : 1)
-                                 * (seq.isComplete ? seq.completedLoops - 1 : seq.completedLoops);
-                }
-
-                return loopCount;
-            }
+            return EaseManager.Evaluate(t.easeType, t.customEase, elapsed, t.duration, t.easeOvershootOrAmplitude, t.easePeriod);
         }
     }
 }

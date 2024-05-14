@@ -16,7 +16,6 @@ namespace DG.Tweening.Plugins.Core
         public abstract void SetFrom(TweenerCore<T> t, T fromValue, bool setImmediately, bool isRelative);
         public abstract void SetRelativeEndValue(TweenerCore<T> t);
         public abstract void SetChangeValue(TweenerCore<T> t);
-        public virtual void ApplyOriginal(TweenerCore<T> t) => t.setter(t.isFrom ? t.endValue : t.startValue);
-        public abstract void EvaluateAndApply(TweenerCore<T> t, bool useInversePosition);
+        public abstract void EvaluateAndApply(TweenerCore<T> t, float elapsed);
     }
 }

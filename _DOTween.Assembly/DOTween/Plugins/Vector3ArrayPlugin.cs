@@ -32,7 +32,7 @@ namespace DG.Tweening.Plugins
         // For Punch & Shake, the endValue must be same as startValue.
         public override void SetChangeValue(TweenerCore<Vector3> t) => t.changeValue = default;
 
-        public override void EvaluateAndApply(TweenerCore<Vector3> t, bool useInversePosition)
+        public override void EvaluateAndApply(TweenerCore<Vector3> t, float elapsed)
         {
             Assert.IsFalse(t.isRelative, "Vector3ArrayPlugin does not support relative values");
             Assert.IsFalse(t.isFrom, "Vector3ArrayPlugin does not support From values");
@@ -43,7 +43,6 @@ namespace DG.Tweening.Plugins
 #endif
 
             var duration = t.duration;
-            var elapsed = useInversePosition ? duration - t.position : t.position;
             var opts = (Vector3ArrayOptions) t.plugOptions;
             opts.Resolve(elapsed / duration, out var segmentTime, out var segmentDuration, out var segmentStartValue, out var segmentChangeValue);
 
