@@ -13,100 +13,86 @@ using UnityEngine;
 #pragma warning disable 1591
 namespace DG.Tweening.Plugins
 {
-    public class Vector2Plugin : ABSTweenPlugin<Vector2, VectorOptions>
+    public class Vector2Plugin : ABSTweenPlugin<Vector2>
     {
         public static readonly Vector2Plugin Instance = new();
 
-        public override void SetFrom(TweenerCore<Vector2, Vector2, VectorOptions> t, bool isRelative)
+        public override void SetFrom(TweenerCore<Vector2, Vector2> t, bool isRelative)
         {
-            Vector2 prevEndVal = t.endValue;
+            var prevEndVal = t.endValue;
             t.endValue = t.getter();
             t.startValue = isRelative ? t.endValue + prevEndVal : prevEndVal;
-            Vector2 to = t.endValue;
-            switch (t.plugOptions.axisConstraint) {
-            case AxisConstraint.X:
-                to.x = t.startValue.x;
-                break;
-            case AxisConstraint.Y:
-                to.y = t.startValue.y;
-                break;
-            default:
+            var to = t.endValue;
+            if (VectorOptions.GetAxisConstraints(t.plugOptions, out var x, out var y))
+            {
+                if (x) to.x = t.startValue.x;
+                if (y) to.y = t.startValue.y;
+            }
+            else
+            {
                 to = t.startValue;
-                break;
             }
             t.setter(to);
         }
 
-        public override void SetFrom(TweenerCore<Vector2, Vector2, VectorOptions> t, Vector2 fromValue, bool setImmediately, bool isRelative)
+        public override void SetFrom(TweenerCore<Vector2, Vector2> t, Vector2 fromValue, bool setImmediately, bool isRelative)
         {
-            if (isRelative) {
-                Vector2 currVal = t.getter();
+            if (isRelative)
+            {
+                var currVal = t.getter();
                 t.endValue += currVal;
                 fromValue += currVal;
             }
+
             t.startValue = fromValue;
-            if (setImmediately) {
+            if (setImmediately)
+            {
                 Vector2 to;
-                switch (t.plugOptions.axisConstraint) {
-                case AxisConstraint.X:
+                if (VectorOptions.GetAxisConstraints(t.plugOptions, out var x, out var y))
+                {
                     to = t.getter();
-                    to.x = fromValue.x;
-                    break;
-                case AxisConstraint.Y:
-                    to = t.getter();
-                    to.y = fromValue.y;
-                    break;
-                default:
+                    if (x) to.x = fromValue.x;
+                    if (y) to.y = fromValue.y;
+                }
+                else
+                {
                     to = fromValue;
-                    break;
                 }
                 t.setter(to);
             }
         }
 
-        public override void SetRelativeEndValue(TweenerCore<Vector2, Vector2, VectorOptions> t)
+        public override void SetRelativeEndValue(TweenerCore<Vector2, Vector2> t)
         {
             t.endValue += t.startValue;
         }
 
-        public override void SetChangeValue(TweenerCore<Vector2, Vector2, VectorOptions> t)
+        public override void SetChangeValue(TweenerCore<Vector2, Vector2> t)
         {
-            switch (t.plugOptions.axisConstraint) {
-            case AxisConstraint.X:
-                t.changeValue = new Vector2(t.endValue.x - t.startValue.x, 0);
-                break;
-            case AxisConstraint.Y:
-                t.changeValue = new Vector2(0, t.endValue.y - t.startValue.y);
-                break;
-            default:
+            if (VectorOptions.GetAxisConstraints(t.plugOptions, out var x, out var y))
+            {
+                t.changeValue.x = x ? t.endValue.x - t.startValue.x : 0;
+                t.changeValue.y = y ? t.endValue.y - t.startValue.y : 0;
+            }
+            else
+            {
                 t.changeValue = t.endValue - t.startValue;
-                break;
             }
         }
 
-        public override void EvaluateAndApply(
-            VectorOptions options, Tween t, DOGetter<Vector2> getter, DOSetter<Vector2> setter,
-            float elapsed, Vector2 startValue, Vector2 changeValue, float duration
-        )
+        public override void EvaluateAndApply(TweenerCore<Vector2, Vector2> t, bool useInversePosition)
         {
-            var pos = DOTweenUtils.CalculatePosition(t, elapsed, duration);
-
-            switch (options.axisConstraint) {
-            case AxisConstraint.X:
-                var resX = getter();
-                resX.x = startValue.x + changeValue.x * pos;
-                setter(resX);
-                break;
-            case AxisConstraint.Y:
-                var resY = getter();
-                resY.y = startValue.y + changeValue.y * pos;
-                setter(resY);
-                break;
-            default:
-                startValue.x += changeValue.x * pos;
-                startValue.y += changeValue.y * pos;
-                setter(startValue);
-                break;
+            var pos = DOTweenUtils.CalculateCumulativePosition(t, useInversePosition);
+            if (VectorOptions.GetAxisConstraints(t.plugOptions, out var x, out var y))
+            {
+                var value = t.getter();
+                if (x) value.x = t.startValue.x + t.changeValue.x * pos;
+                if (y) value.y = t.startValue.y + t.changeValue.y * pos;
+                t.setter(value);
+            }
+            else
+            {
+                t.setter(t.startValue + t.changeValue * pos);
             }
         }
     }

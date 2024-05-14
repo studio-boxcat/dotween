@@ -19,11 +19,12 @@ namespace DG.Tweening.Core
         }
 
         [MustUseReturnValue]
-        public static float CalculatePosition(Tween t, float elapsed, float duration)
+        public static float CalculateCumulativePosition(Tween t, bool useInversePosition)
         {
-            var eval = EaseManager.Evaluate(t.easeType, t.customEase, elapsed, duration, t.easeOvershootOrAmplitude, t.easePeriod);
+            var elapsed = useInversePosition ? t.duration - t.position : t.position;
+            var pos = EaseManager.Evaluate(t.easeType, t.customEase, elapsed, t.duration, t.easeOvershootOrAmplitude, t.easePeriod);
             var loopCount = CountIncremental(t);
-            return eval + loopCount;
+            return pos + loopCount;
 
             static int CountIncremental(Tween t)
             {

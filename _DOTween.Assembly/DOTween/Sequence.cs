@@ -213,7 +213,7 @@ namespace DG.Tweening
             // Determine if prevPos was inverse.
             // Used to calculate correct "from" value when applying internal cycle
             // and also in case of multiple loops within a single update
-            bool prevPosIsInverse = (s.loops == -1 || s.loops > 1) && s.loopType == LoopType.Yoyo
+            bool prevPosIsInverse = s.hasLoops && s.loopType == LoopType.Yoyo
                 && (prevPos < s.duration ? prevCompletedLoops % 2 != 0 : prevCompletedLoops % 2 == 0);
             if (s.isBackwards) prevPosIsInverse = !prevPosIsInverse;
             // Update multiple loop cycles within the same update

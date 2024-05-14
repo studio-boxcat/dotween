@@ -5,7 +5,6 @@
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
 using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
 using UnityEngine;
 
 namespace DG.Tweening.Plugins.Core
@@ -14,7 +13,7 @@ namespace DG.Tweening.Plugins.Core
     internal static class SpecialPluginsUtils
     {
         // Returns TRUE if it's successful, FALSE otherwise
-        internal static bool SetPunch(TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> t)
+        internal static bool SetPunch(TweenerCore<Vector3, Vector3[]> t)
         {
             Vector3 startupVal;
             try {
@@ -32,7 +31,7 @@ namespace DG.Tweening.Plugins.Core
         }
 
         // Returns TRUE if it's successful, FALSE otherwise
-        internal static bool SetShake(TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> t)
+        internal static bool SetShake(TweenerCore<Vector3, Vector3[]> t)
         {
             if (!SetPunch(t)) return false;
             t.easeType = Ease.Linear;
@@ -41,7 +40,7 @@ namespace DG.Tweening.Plugins.Core
 
         // Returns TRUE if it's successful, FALSE otherwise
         // Behaves like a regular shake, but also changes the endValues so that they reflect the local axis rotation of the camera
-        internal static bool SetCameraShakePosition(TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> t)
+        internal static bool SetCameraShakePosition(TweenerCore<Vector3, Vector3[]> t)
         {
             if (!SetShake(t)) return false;
 

@@ -65,7 +65,6 @@ namespace DG.Tweening
 
         internal Type typeofT1; // Only used by Tweeners
         internal Type typeofT2; // Only used by Tweeners
-        internal Type typeofTPlugOptions; // Only used by Tweeners
         /// <summary>FALSE when tween is (or should be) despawned - set only by TweenManager</summary>
         public bool active { get; internal set; } // Required by Modules
         internal bool isSequenced; // Set by Sequence when adding a Tween to it
@@ -208,10 +207,10 @@ namespace DG.Tweening
             if (t.ApplyTween(prevPosition, prevCompletedLoops, newCompletedSteps, useInversePosition, updateMode)) return true;
 
             // Additional callbacks
-            if (t.onUpdate != null && updateMode != UpdateMode.IgnoreOnUpdate) {
+            if (t.onUpdate != null) {
                 OnTweenCallback(t.onUpdate, t);
             }
-            if (t.isComplete && !wasComplete && updateMode != UpdateMode.IgnoreOnComplete && t.onComplete != null) {
+            if (t.isComplete && !wasComplete && t.onComplete != null) {
                 OnTweenCallback(t.onComplete, t);
             }
 

@@ -1,16 +1,15 @@
 ﻿using DG.Tweening.Core;
 using DG.Tweening.Plugins.Core;
-using DG.Tweening.Plugins.Options;
 using UnityEngine;
 
 #pragma warning disable 1591
 namespace DG.Tweening.Plugins
 {
-    public class IntPlugin : ABSTweenPlugin<int, NoOptions>
+    public class IntPlugin : ABSTweenPlugin<int>
     {
         public static readonly IntPlugin Instance = new();
 
-        public override void SetFrom(TweenerCore<int, int, NoOptions> t, bool isRelative)
+        public override void SetFrom(TweenerCore<int, int> t, bool isRelative)
         {
             var prevEndVal = t.endValue;
             t.endValue = t.getter();
@@ -18,7 +17,7 @@ namespace DG.Tweening.Plugins
             t.setter(t.startValue);
         }
 
-        public override void SetFrom(TweenerCore<int, int, NoOptions> t, int fromValue, bool setImmediately, bool isRelative)
+        public override void SetFrom(TweenerCore<int, int> t, int fromValue, bool setImmediately, bool isRelative)
         {
             if (isRelative)
             {
@@ -30,22 +29,20 @@ namespace DG.Tweening.Plugins
             if (setImmediately) t.setter(fromValue);
         }
 
-        public override void SetRelativeEndValue(TweenerCore<int, int, NoOptions> t)
+        public override void SetRelativeEndValue(TweenerCore<int, int> t)
         {
             t.endValue += t.startValue;
         }
 
-        public override void SetChangeValue(TweenerCore<int, int, NoOptions> t)
+        public override void SetChangeValue(TweenerCore<int, int> t)
         {
             t.changeValue = t.endValue - t.startValue;
         }
 
-        public override void EvaluateAndApply(NoOptions options, Tween t, DOGetter<int> getter, DOSetter<int> setter,
-            float elapsed, int startValue, int changeValue, float duration
-        )
+        public override void EvaluateAndApply(TweenerCore<int, int> t, bool useInversePosition)
         {
-            var pos = DOTweenUtils.CalculatePosition(t, elapsed, duration);
-            setter(Mathf.RoundToInt(startValue + changeValue * pos));
+            var pos = DOTweenUtils.CalculateCumulativePosition(t, useInversePosition);
+            t.setter(Mathf.RoundToInt(t.startValue + t.changeValue * pos));
         }
     }
 }

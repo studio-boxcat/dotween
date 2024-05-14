@@ -122,13 +122,12 @@ namespace DG.Tweening
 
         #region Tween TO
 
-        public static TweenerCore<T1, T2, TPlugOptions> To<T1, T2, TPlugOptions>(
-            DOGetter<T1> getter, DOSetter<T1> setter, T2 endValue, float duration, ABSTweenPlugin<T1, T2, TPlugOptions> plugin
+        public static TweenerCore<T1, T2> To<T1, T2>(
+            DOGetter<T1> getter, DOSetter<T1> setter, T2 endValue, float duration, ABSTweenPlugin<T1, T2> plugin
         )
-            where TPlugOptions : struct
         {
             InitCheck();
-            var tweener = TweenManager.GetTweener<T1, T2, TPlugOptions>();
+            var tweener = TweenManager.GetTweener<T1, T2>();
             var setupSuccessful = Tweener.Setup(tweener, getter, setter, endValue, duration, plugin);
             if (!setupSuccessful) {
                 TweenManager.Despawn(tweener);
@@ -143,7 +142,7 @@ namespace DG.Tweening
         /// <param name="setter">A setter for the field or property to tween
         /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
         /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        public static TweenerCore<float, float, NoOptions> To(DOGetter<float> getter, DOSetter<float> setter, float endValue, float duration)
+        public static TweenerCore<float, float> To(DOGetter<float> getter, DOSetter<float> setter, float endValue, float duration)
         { return To(getter, setter, endValue, duration, FloatPlugin.Instance); }
         /// <summary>Tweens a property or field to the given value using default plugins</summary>
         /// <param name="getter">A getter for the field or property to tween.
@@ -151,7 +150,7 @@ namespace DG.Tweening
         /// <param name="setter">A setter for the field or property to tween
         /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
         /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        public static TweenerCore<int, int, NoOptions> To(DOGetter<int> getter, DOSetter<int> setter, int endValue,float duration)
+        public static TweenerCore<int, int> To(DOGetter<int> getter, DOSetter<int> setter, int endValue,float duration)
         { return To(getter, setter, endValue, duration, IntPlugin.Instance); }
         /// <summary>Tweens a property or field to the given value using default plugins</summary>
         /// <param name="getter">A getter for the field or property to tween.
@@ -159,7 +158,7 @@ namespace DG.Tweening
         /// <param name="setter">A setter for the field or property to tween
         /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
         /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        public static TweenerCore<Vector2, Vector2, VectorOptions> To(DOGetter<Vector2> getter, DOSetter<Vector2> setter, Vector2 endValue, float duration)
+        public static TweenerCore<Vector2, Vector2> To(DOGetter<Vector2> getter, DOSetter<Vector2> setter, Vector2 endValue, float duration)
         { return To(getter, setter, endValue, duration, Vector2Plugin.Instance); }
         /// <summary>Tweens a property or field to the given value using default plugins</summary>
         /// <param name="getter">A getter for the field or property to tween.
@@ -167,7 +166,7 @@ namespace DG.Tweening
         /// <param name="setter">A setter for the field or property to tween
         /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
         /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        public static TweenerCore<Vector3, Vector3, VectorOptions> To(DOGetter<Vector3> getter, DOSetter<Vector3> setter, Vector3 endValue, float duration)
+        public static TweenerCore<Vector3, Vector3> To(DOGetter<Vector3> getter, DOSetter<Vector3> setter, Vector3 endValue, float duration)
         { return To(getter, setter, endValue, duration, Vector3Plugin.Instance); }
         /// <summary>Tweens a property or field to the given value using default plugins</summary>
         /// <param name="getter">A getter for the field or property to tween.
@@ -175,7 +174,7 @@ namespace DG.Tweening
         /// <param name="setter">A setter for the field or property to tween
         /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
         /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        public static TweenerCore<Color, Color, NoOptions> To(DOGetter<Color> getter, DOSetter<Color> setter, Color endValue, float duration)
+        public static TweenerCore<Color, Color> To(DOGetter<Color> getter, DOSetter<Color> setter, Color endValue, float duration)
         { return To(getter, setter, endValue, duration, ColorPlugin.Instance); }
 
         /// <summary>Tweens only the alpha of a Color to the given value using default plugins</summary>
@@ -184,7 +183,7 @@ namespace DG.Tweening
         /// <param name="setter">A setter for the field or property to tween
         /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
         /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        public static TweenerCore<float, float, NoOptions> ToAlpha(DOGetter<Color> getter, DOSetter<Color> setter, float endValue, float duration)
+        public static TweenerCore<float, float> ToAlpha(DOGetter<Color> getter, DOSetter<Color> setter, float endValue, float duration)
         {
             return To(
                 () => getter().a,
@@ -214,7 +213,7 @@ namespace DG.Tweening
         /// <param name="elasticity">Represents how much (0 to 1) the vector will go beyond the starting position when bouncing backwards.
         /// 1 creates a full oscillation between the direction and the opposite decaying direction,
         /// while 0 oscillates only between the starting position and the decaying direction</param>
-        public static TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> Punch(DOGetter<Vector3> getter, DOSetter<Vector3> setter, Vector3 direction, float duration, int vibrato = 10, float elasticity = 1)
+        public static TweenerCore<Vector3, Vector3[]> Punch(DOGetter<Vector3> getter, DOSetter<Vector3> setter, Vector3 direction, float duration, int vibrato = 10, float elasticity = 1)
         {
             if (elasticity > 1) elasticity = 1;
             else if (elasticity < 0) elasticity = 0;
@@ -261,7 +260,7 @@ namespace DG.Tweening
         /// <param name="ignoreZAxis">If TRUE only shakes on the X Y axis (looks better with things like cameras).</param>
         /// <param name="fadeOut">If TRUE the shake will automatically fadeOut smoothly within the tween's duration, otherwise it will not</param>
         /// <param name="randomnessMode">Randomness mode</param>
-        public static TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> Shake(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration,
+        public static TweenerCore<Vector3, Vector3[]> Shake(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration,
             float strength = 3, int vibrato = 10, float randomness = 90, bool ignoreZAxis = true,
             bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full
         )
@@ -280,14 +279,14 @@ namespace DG.Tweening
         /// Setting it to 0 will shake along a single direction and behave like a random punch.</param>
         /// <param name="fadeOut">If TRUE the shake will automatically fadeOut smoothly within the tween's duration, otherwise it will not</param>
         /// <param name="randomnessMode">Randomness mode</param>
-        public static TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> Shake(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration,
+        public static TweenerCore<Vector3, Vector3[]> Shake(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration,
             Vector3 strength, int vibrato = 10, float randomness = 90,
             bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full
         )
         {
             return Shake(getter, setter, duration, strength, vibrato, randomness, false, true, fadeOut, randomnessMode);
         }
-        static TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> Shake(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration,
+        static TweenerCore<Vector3, Vector3[]> Shake(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration,
             Vector3 strength, int vibrato, float randomness, bool ignoreZAxis, bool vectorBased,
             bool fadeOut, ShakeRandomnessMode randomnessMode
         )
@@ -359,7 +358,7 @@ namespace DG.Tweening
         /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
         /// <param name="endValues">The end values to reach for each segment. This array must have the same length as <code>durations</code></param>
         /// <param name="durations">The duration of each segment. This array must have the same length as <code>endValues</code></param>
-        static TweenerCore<Vector3, Vector3[], Vector3ArrayOptions> ToArray(DOGetter<Vector3> getter, DOSetter<Vector3> setter, Vector3[] endValues, float[] durations)
+        static TweenerCore<Vector3, Vector3[]> ToArray(DOGetter<Vector3> getter, DOSetter<Vector3> setter, Vector3[] endValues, float[] durations)
         {
             int len = durations.Length;
             if (len != endValues.Length) {
@@ -378,7 +377,7 @@ namespace DG.Tweening
             float totDuration = 0;
             for (int i = 0; i < len; ++i) totDuration += durationsClone[i];
             var t = To(getter, setter, endValuesClone, totDuration, Vector3ArrayPlugin.Instance).NoFrom();
-            t.plugOptions.durations = durationsClone;
+            t.plugOptions = new Vector3ArrayOptions(durationsClone);
             return t;
         }
 

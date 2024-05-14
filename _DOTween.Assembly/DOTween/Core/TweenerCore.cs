@@ -16,15 +16,15 @@ namespace DG.Tweening.Core
     // T1: type of value to tween
     // T2: format in which value is stored while tweening
     // TPlugOptions: options type
-    public class TweenerCore<T1,T2,TPlugOptions> : Tweener where TPlugOptions : struct
+    public class TweenerCore<T1, T2> : Tweener
     {
         // SETUP DATA ////////////////////////////////////////////////
 
         public T2 startValue, endValue, changeValue;
-        public TPlugOptions plugOptions;
+        public object plugOptions;
         public DOGetter<T1> getter;
         public DOSetter<T1> setter;
-        internal ABSTweenPlugin<T1, T2, TPlugOptions> tweenPlugin;
+        internal ABSTweenPlugin<T1, T2> tweenPlugin;
 
         #region Constructor
 
@@ -32,7 +32,6 @@ namespace DG.Tweening.Core
         {
             typeofT1 = typeof(T1);
             typeofT2 = typeof(T2);
-            typeofTPlugOptions = typeof(TPlugOptions);
             tweenType = TweenType.Tweener;
             Reset();
         }
@@ -68,7 +67,7 @@ namespace DG.Tweening.Core
             base.Reset();
 
             tweenPlugin?.Reset(this);
-            plugOptions = default; // Alternate fix that uses IPlugOptions Reset
+            plugOptions = null;
             getter = null;
             setter = null;
             hasManuallySetStartValue = false;
@@ -112,17 +111,16 @@ namespace DG.Tweening.Core
         // Returns TRUE if the tween needs to be killed
         internal override bool ApplyTween(float prevPosition, int prevCompletedLoops, int newCompletedSteps, bool useInversePosition, UpdateMode updateMode)
         {
-            var elapsed = useInversePosition ? duration - position : position;
             if (DOTween.useSafeMode) {
                 try {
-                    tweenPlugin.EvaluateAndApply(plugOptions, this, getter, setter, elapsed, startValue, changeValue, duration);
+                    tweenPlugin.EvaluateAndApply(this, useInversePosition);
                 } catch (Exception e) {
                     // Target/field doesn't exist anymore: kill tween
                     Debugger.LogSafeModeCapturedError($"Target or field is missing/null ({e.TargetSite}) ► {e.Message}\n\n{e.StackTrace}\n\n", this);
                     return true;
                 }
             } else {
-                tweenPlugin.EvaluateAndApply(plugOptions, this, getter, setter, elapsed, startValue, changeValue, duration);
+                tweenPlugin.EvaluateAndApply(this, useInversePosition);
             }
             return false;
         }

@@ -7,15 +7,13 @@
 #pragma warning disable 1591
 namespace DG.Tweening.Plugins.Options
 {
-    public struct Vector3ArrayOptions
+    public class Vector3ArrayOptions
     {
-        public AxisConstraint axisConstraint;
-        internal float[] durations; // Duration of each segment
+        public readonly float[] durations; // Duration of each segment
 
-        public void Reset()
+        public Vector3ArrayOptions(float[] durations)
         {
-            axisConstraint = AxisConstraint.None;
-            durations = null;
+            this.durations = durations;
         }
     }
 }

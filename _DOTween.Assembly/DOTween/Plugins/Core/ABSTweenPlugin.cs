@@ -10,21 +10,21 @@ using DG.Tweening.Core;
 namespace DG.Tweening.Plugins.Core
 {
     // Public so it can be extended by custom plugins
-    public abstract class ABSTweenPlugin<T1,T2,TPlugOptions> : ITweenPlugin where TPlugOptions : struct
+    public abstract class ABSTweenPlugin<T1,T2> : ITweenPlugin
     {
-        public virtual void Reset(TweenerCore<T1, T2, TPlugOptions> t) { } // Resets specific TweenerCore stuff, not the plugin itself
-        public abstract void SetFrom(TweenerCore<T1, T2, TPlugOptions> t, bool isRelative);
-        public abstract void SetFrom(TweenerCore<T1, T2, TPlugOptions> t, T2 fromValue, bool setImmediately, bool isRelative);
-        public abstract T2 ConvertToStartValue(TweenerCore<T1, T2, TPlugOptions> t, T1 value);
-        public abstract void SetRelativeEndValue(TweenerCore<T1, T2, TPlugOptions> t);
-        public abstract void SetChangeValue(TweenerCore<T1, T2, TPlugOptions> t);
-        public abstract void ApplyOriginal(TweenerCore<T1, T2, TPlugOptions> t);
-        public abstract void EvaluateAndApply(TPlugOptions options, Tween t, DOGetter<T1> getter, DOSetter<T1> setter, float elapsed, T2 startValue, T2 changeValue, float duration);
+        public virtual void Reset(TweenerCore<T1, T2> t) { } // Resets specific TweenerCore stuff, not the plugin itself
+        public abstract void SetFrom(TweenerCore<T1, T2> t, bool isRelative);
+        public abstract void SetFrom(TweenerCore<T1, T2> t, T2 fromValue, bool setImmediately, bool isRelative);
+        public abstract T2 ConvertToStartValue(TweenerCore<T1, T2> t, T1 value);
+        public abstract void SetRelativeEndValue(TweenerCore<T1, T2> t);
+        public abstract void SetChangeValue(TweenerCore<T1, T2> t);
+        public abstract void ApplyOriginal(TweenerCore<T1, T2> t);
+        public abstract void EvaluateAndApply(TweenerCore<T1, T2> t, bool useInversePosition);
     }
 
-    public abstract class ABSTweenPlugin<T1, TPlugOptions> : ABSTweenPlugin<T1, T1, TPlugOptions> where TPlugOptions : struct
+    public abstract class ABSTweenPlugin<T1> : ABSTweenPlugin<T1, T1>
     {
-        public override T1 ConvertToStartValue(TweenerCore<T1, T1, TPlugOptions> t, T1 value) => value;
-        public override void ApplyOriginal(TweenerCore<T1, T1, TPlugOptions> t) => t.setter(t.isFrom ? t.endValue : t.startValue);
+        public override T1 ConvertToStartValue(TweenerCore<T1, T1> t, T1 value) => value;
+        public override void ApplyOriginal(TweenerCore<T1, T1> t) => t.setter(t.isFrom ? t.endValue : t.startValue);
     }
 }

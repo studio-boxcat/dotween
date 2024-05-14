@@ -15,7 +15,6 @@ namespace DG.Tweening
     [Flags]
     public enum AxisConstraint : byte
     {
-        None = 0,
         X = 2,
         Y = 4,
     }

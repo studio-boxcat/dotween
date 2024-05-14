@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using DG.Tweening.Core.Enums;
-using DG.Tweening.Plugins.Options;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -51,20 +50,18 @@ namespace DG.Tweening.Core
 
         // Returns a new Tweener, from the pool if there's one available,
         // otherwise by instantiating a new one
-        internal static TweenerCore<T1,T2,TPlugOptions> GetTweener<T1,T2,TPlugOptions>()
-            where TPlugOptions : struct
+        internal static TweenerCore<T1,T2> GetTweener<T1,T2>()
         {
-            TweenerCore<T1,T2,TPlugOptions> t;
+            TweenerCore<T1,T2> t;
             // Search inside pool
             if (totPooledTweeners > 0) {
                 Type typeofT1 = typeof(T1);
                 Type typeofT2 = typeof(T2);
-                Type typeofTPlugOptions = typeof(TPlugOptions);
                 for (int i = _maxPooledTweenerId; i > _minPooledTweenerId - 1; --i) {
                     Tween tween = _pooledTweeners[i];
-                    if (tween != null && tween.typeofT1 == typeofT1 && tween.typeofT2 == typeofT2 && tween.typeofTPlugOptions == typeofTPlugOptions) {
+                    if (tween != null && tween.typeofT1 == typeofT1 && tween.typeofT2 == typeofT2) {
                         // Pooled Tweener exists: spawn it
-                        t = (TweenerCore<T1, T2, TPlugOptions>)tween;
+                        t = (TweenerCore<T1, T2>)tween;
                         AddActiveTween(t);
                         _pooledTweeners[i] = null;
                         if (_maxPooledTweenerId != _minPooledTweenerId) {
@@ -95,7 +92,7 @@ namespace DG.Tweening.Core
                 }
             }
             // Not found: create new TweenerController
-            t = new TweenerCore<T1,T2,TPlugOptions>();
+            t = new TweenerCore<T1,T2>();
             totTweeners++;
             AddActiveTween(t);
             return t;

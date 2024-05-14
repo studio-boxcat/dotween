@@ -9,7 +9,6 @@ using System;
 using DG.Tweening.Core;
 using DG.Tweening.Core.Enums;
 using DG.Tweening.Plugins.Core;
-using DG.Tweening.Plugins.Options;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -39,10 +38,9 @@ namespace DG.Tweening
 
         // CALLED BY DOTween when spawning/creating a new Tweener.
         // Returns TRUE if the setup is successful
-        internal static bool Setup<T1, T2, TPlugOptions>(
-            TweenerCore<T1, T2, TPlugOptions> t, DOGetter<T1> getter, DOSetter<T1> setter, T2 endValue, float duration, ABSTweenPlugin<T1, T2, TPlugOptions> plugin
+        internal static bool Setup<T1, T2>(
+            TweenerCore<T1, T2> t, DOGetter<T1> getter, DOSetter<T1> setter, T2 endValue, float duration, ABSTweenPlugin<T1, T2> plugin
         )
-            where TPlugOptions : struct
         {
             Assert.IsNotNull(plugin, "Given plugin is null");
 
@@ -65,7 +63,7 @@ namespace DG.Tweening
         // CALLED BY TweenerCore
         // Returns the elapsed time minus delay in case of success,
         // -1 if there are missing references and the tween needs to be killed
-        internal static float DoUpdateDelay<T1, T2, TPlugOptions>(TweenerCore<T1, T2, TPlugOptions> t, float elapsed) where TPlugOptions : struct
+        internal static float DoUpdateDelay<T1, T2>(TweenerCore<T1, T2> t, float elapsed)
         {
             float tweenDelay = t.delay;
             if (elapsed > tweenDelay) {
@@ -82,7 +80,7 @@ namespace DG.Tweening
         // (unless it's a FROM tween, in which case it will be called BEFORE any eventual delay).
         // Returns TRUE in case of success,
         // FALSE if there are missing references and the tween needs to be killed
-        internal static bool DoStartup<T1, T2, TPlugOptions>(TweenerCore<T1, T2, TPlugOptions> t) where TPlugOptions : struct
+        internal static bool DoStartup<T1, T2>(TweenerCore<T1, T2> t)
         {
             t.startupDone = true;
 
@@ -132,18 +130,18 @@ namespace DG.Tweening
         // Commands shared by DOStartup/ChangeStart/End/Values if the tween has already started up
         // and thus some settings needs to be reapplied.
         // Returns TRUE in case of SUCCESS, FALSE if there were managed errors
-        static bool DOStartupSpecials<T1, T2, TPlugOptions>(TweenerCore<T1, T2, TPlugOptions> t) where TPlugOptions : struct
+        static bool DOStartupSpecials<T1, T2>(TweenerCore<T1, T2> t)
         {
             try {
                 switch (t.specialStartupMode) {
                 case SpecialStartupMode.SetPunch:
-                    if (!SpecialPluginsUtils.SetPunch(t as TweenerCore<Vector3, Vector3[], Vector3ArrayOptions>)) return false;
+                    if (!SpecialPluginsUtils.SetPunch(t as TweenerCore<Vector3, Vector3[]>)) return false;
                     break;
                 case SpecialStartupMode.SetShake:
-                    if (!SpecialPluginsUtils.SetShake(t as TweenerCore<Vector3, Vector3[], Vector3ArrayOptions>)) return false;
+                    if (!SpecialPluginsUtils.SetShake(t as TweenerCore<Vector3, Vector3[]>)) return false;
                     break;
                 case SpecialStartupMode.SetCameraShakePosition:
-                    if (!SpecialPluginsUtils.SetCameraShakePosition(t as TweenerCore<Vector3, Vector3[], Vector3ArrayOptions>)) return false;
+                    if (!SpecialPluginsUtils.SetCameraShakePosition(t as TweenerCore<Vector3, Vector3[]>)) return false;
                     break;
                 }
                 return true;
@@ -152,7 +150,7 @@ namespace DG.Tweening
                 return false;
             }
         }
-        static void DOStartupDurationBased<T1, T2, TPlugOptions>(TweenerCore<T1, T2, TPlugOptions> t) where TPlugOptions : struct
+        static void DOStartupDurationBased<T1, T2>(TweenerCore<T1, T2> t)
         {
             t.fullDuration = t.loops > -1 ? t.duration * t.loops : Mathf.Infinity;
         }

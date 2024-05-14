@@ -10,9 +10,5 @@ namespace DG.Tweening.Core.Enums
     {
         Update,
         Goto, // Treats update as a full goto, thus not calling eventual onStepComplete callbacks
-        IgnoreOnUpdate, // Ignores OnUpdate callback (used when applying some ChangeValue during an OnUpdate call)
-        // Set by tween.Complete extension, if OnComplete is fired manually during an updateLoop,
-        // so it  will not be fired twice (since it will already be fired by the Update loop)
-        IgnoreOnComplete
     }
 }
