@@ -148,7 +148,7 @@ namespace DG.Tweening
         /// <param name="setter">A setter for the field or property to tween
         /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
         /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        public static TweenerCore<int> To(DOGetter<int> getter, DOSetter<int> setter, int endValue,float duration)
+        public static TweenerCore<int> To(DOGetter<int> getter, DOSetter<int> setter, int endValue, float duration)
         { return To(getter, setter, endValue, duration, IntPlugin.Instance); }
         /// <summary>Tweens a property or field to the given value using default plugins</summary>
         /// <param name="getter">A getter for the field or property to tween.
@@ -198,7 +198,7 @@ namespace DG.Tweening
 
         #region Special TOs (No FROMs)
 
-        static TweenerCore<Vector3> ToArray(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration, Vector3ArrayOptions opts)
+        static TweenerCore<Vector3> To(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration, Vector3ArrayOptions opts)
         {
             var t = To(getter, setter, default, duration, Vector3ArrayPlugin.Instance);
             t.plugOptions = opts;
@@ -223,7 +223,7 @@ namespace DG.Tweening
             var segmentCount = (int) (vibrato * duration);
             if (segmentCount < 2) segmentCount = 2;
             var opts = SpecialTweenUtils.CalculatePunch(direction, segmentCount, elasticity);
-            var t = ToArray(getter, setter, duration, opts);
+            var t = To(getter, setter, duration, opts);
             SpecialTweenUtils.SetupPunch(t);
             return t;
         }
@@ -275,7 +275,7 @@ namespace DG.Tweening
             var segmentCount = (int) (vibrato * duration);
             if (segmentCount < 2) segmentCount = 2;
             var opts = SpecialTweenUtils.CalculateShake(strength, segmentCount, randomness, ignoreZAxis, vectorBased, fadeOut, randomnessMode);
-            var t = ToArray(getter, setter, duration, opts);
+            var t = To(getter, setter, duration, opts);
             SpecialTweenUtils.SetupShake(t);
             return t;
         }
