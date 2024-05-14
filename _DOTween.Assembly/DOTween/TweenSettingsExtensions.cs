@@ -189,25 +189,6 @@ namespace DG.Tweening
             }
         }
 
-        /// <summary>Allows the tween to be recycled after being killed.</summary>
-        public static T SetRecyclable<T>(this T t) where T : Tween
-        {
-            if (t is not { active: true }) return t;
-
-            t.isRecyclable = true;
-            return t;
-        }
-
-        /// <summary>Sets the recycling behaviour for the tween.</summary>
-        /// <param name="recyclable">If TRUE the tween will be recycled after being killed, otherwise it will be destroyed.</param>
-        public static T SetRecyclable<T>(this T t, bool recyclable) where T : Tween
-        {
-            if (t is not { active: true }) return t;
-
-            t.isRecyclable = recyclable;
-            return t;
-        }
-
         /// <summary>Sets the type of update for the tween</summary>
         /// <param name="updateType">The type of update (defalt: UpdateType.Normal)</param>
         public static T SetUpdate<T>(this T t, UpdateType updateType) where T : Tween

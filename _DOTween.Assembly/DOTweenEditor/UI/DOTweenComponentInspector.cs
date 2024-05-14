@@ -30,8 +30,6 @@ namespace DG.DOTweenEditor.UI
             if (playing)
             {
                 int totActiveTweens = TweenManager.totActiveTweens;
-                int totPlayingTweens = TweenManager.TotalPlayingTweens();
-                int totPausedTweens = totActiveTweens - totPlayingTweens;
                 int totActiveDefaultTweens = TweenManager.totActiveDefaultTweens;
                 int totActiveManualTweens = TweenManager.totActiveManualTweens;
 
@@ -47,11 +45,11 @@ namespace DG.DOTweenEditor.UI
                 GUILayout.Label(_strb.ToString());
 
                 GUILayout.Space(4);
-                DrawTweensButtons(totPlayingTweens, totPausedTweens);
+                DrawTweensButtons();
 
                 GUILayout.Space(2);
                 _strb.Clear();
-                _strb.Append("Pooled tweens: ").Append(TweenManager.TotalPooledTweens())
+                _strb.Append("Pooled tweens")
                     .Append(" (").Append(TweenManager.totPooledTweeners).Append(" TW, ")
                     .Append(TweenManager.totPooledSequences).Append(" SE)");
                 GUILayout.Label(_strb.ToString());
@@ -71,29 +69,20 @@ namespace DG.DOTweenEditor.UI
 
         #region Methods
 
-        void DrawTweensButtons(int totPlayingTweens, int totPausedTweens)
+        void DrawTweensButtons()
         {
-            _strb.Length = 0;
-            _strb.Append("Playing tweens: ").Append(totPlayingTweens);
-            _settings.showPlayingTweens = EditorGUILayout.Foldout(_settings.showPlayingTweens, _strb.ToString());
-            if (_settings.showPlayingTweens)
+            GUILayout.Label("Playing tweens");
+            foreach (var t in TweenManager._activeTweens)
             {
-                foreach (Tween t in TweenManager._activeTweens)
-                {
-                    if (t == null || !t.isPlaying) continue;
-                    DrawTweenButton(t, true);
-                }
+                if (t is not { isPlaying: true }) continue;
+                DrawTweenButton(t, true);
             }
-            _strb.Length = 0;
-            _strb.Append("Paused tweens: ").Append(totPausedTweens);
-            _settings.showPausedTweens = EditorGUILayout.Foldout(_settings.showPausedTweens, _strb.ToString());
-            if (_settings.showPausedTweens)
+
+            GUILayout.Label("Paused tweens");
+            foreach (var t in TweenManager._activeTweens)
             {
-                foreach (Tween t in TweenManager._activeTweens)
-                {
-                    if (t == null || t.isPlaying) continue;
-                    DrawTweenButton(t, false);
-                }
+                if (t is null || t.isPlaying) continue;
+                DrawTweenButton(t, false);
             }
         }
 

@@ -45,7 +45,6 @@ namespace DG.Tweening.Core
 
             // Defaults
             autoKill = true;
-            isRecyclable = true;
             easeType = DOTween.defaultEaseType;
             easeOvershootOrAmplitude = DOTween.defaultEaseOvershootOrAmplitude;
             easePeriod = DOTween.defaultEasePeriod;

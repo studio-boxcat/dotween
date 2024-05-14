@@ -20,9 +20,6 @@ namespace DG.Tweening.Core
         public float defaultEaseOvershootOrAmplitude = 1.70158f;
         public float defaultEasePeriod = 0;
 
-        // Editor-Only ► DOTween Inspector
-        public bool showPlayingTweens, showPausedTweens;
-
         // █████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
         // ███ INTERNAL CLASSES ████████████████████████████████████████████████████████████████████████████████████████████████
         // █████████████████████████████████████████████████████████████████████████████████████████████████████████████████████

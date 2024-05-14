@@ -6,7 +6,10 @@
 
 using DG.Tweening.Core;
 using DG.Tweening.Core.Easing;
+using DG.Tweening.Core.Enums;
+using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 #pragma warning disable 1573
 namespace DG.Tweening
@@ -628,7 +631,8 @@ namespace DG.Tweening
         /// </summary>
         /// <param name="withCallbacks">For Sequences only: if TRUE also internal Sequence callbacks will be fired,
         /// otherwise they will be ignored</param>
-        public static int DOComplete(this Object target, bool withCallbacks = false) => DOTween.Complete(target, withCallbacks);
+        public static int DOComplete([NotNull] this Object target, bool withCallbacks = false)
+            => TweenManager.FilteredOperation(OperationType.Complete, target, false, withCallbacks ? 1 : 0);
 
         /// <summary>
         /// Kills all tweens that have this target as a reference
@@ -636,14 +640,26 @@ namespace DG.Tweening
         /// and returns the total number of tweens killed.
         /// </summary>
         /// <param name="complete">If TRUE completes the tween before killing it</param>
-        public static int DOKill(this Object target, bool complete = false) => DOTween.Kill(target, complete);
+        public static void DOKill([NotNull] this object target, bool complete = false)
+        {
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (target is null)
+            {
+                L.W("[DOTween] Object target is NULL");
+                return;
+            }
+
+            if (complete) TweenManager.FilteredOperation(OperationType.Complete, target, true, 0);
+            TweenManager.FilteredOperation(OperationType.Despawn, target, false, 0);
+        }
 
         /// <summary>
         /// Flips the direction (backwards if it was going forward or viceversa) of all tweens that have this target as a reference
         /// (meaning tweens that were started from this target, or that had this target added as an Id)
         /// and returns the total number of tweens flipped.
         /// </summary>
-        public static int DOFlip(this Object target) => DOTween.Flip(target);
+        public static int DOFlip([NotNull] this Object target)
+            => TweenManager.FilteredOperation(OperationType.Flip, target, false, 0);
 
         /// <summary>
         /// Sends to the given position all tweens that have this target as a reference
@@ -653,56 +669,64 @@ namespace DG.Tweening
         /// <param name="to">Time position to reach
         /// (if higher than the whole tween duration the tween will simply reach its end)</param>
         /// <param name="andPlay">If TRUE will play the tween after reaching the given position, otherwise it will pause it</param>
-        public static int DOGoto(this Object target, float to, bool andPlay = false) => DOTween.Goto(target, to, andPlay);
+        public static int DOGoto([NotNull] this Object target, float to, bool andPlay = false)
+            => TweenManager.FilteredOperation(OperationType.Goto, target, andPlay, to);
 
         /// <summary>
         /// Pauses all tweens that have this target as a reference
         /// (meaning tweens that were started from this target, or that had this target added as an Id)
         /// and returns the total number of tweens paused.
         /// </summary>
-        public static int DOPause(this Object target) => DOTween.Pause(target);
+        public static int DOPause([NotNull] this Object target)
+            => TweenManager.FilteredOperation(OperationType.Pause, target, false, 0);
 
         /// <summary>
         /// Plays all tweens that have this target as a reference
         /// (meaning tweens that were started from this target, or that had this target added as an Id)
         /// and returns the total number of tweens played.
         /// </summary>
-        public static int DOPlay(this Object target) => DOTween.Play(target);
+        public static int DOPlay([NotNull] this Object target)
+            => TweenManager.FilteredOperation(OperationType.Play, target, false, 0);
 
         /// <summary>
         /// Plays backwards all tweens that have this target as a reference
         /// (meaning tweens that were started from this target, or that had this target added as an Id)
         /// and returns the total number of tweens played.
         /// </summary>
-        public static int DOPlayBackwards(this Object target) => DOTween.PlayBackwards(target);
+        public static void DOPlayBackwards([NotNull] this Object target)
+            => TweenManager.FilteredOperation(OperationType.PlayBackwards, target, false, 0);
 
         /// <summary>
         /// Plays forward all tweens that have this target as a reference
         /// (meaning tweens that were started from this target, or that had this target added as an Id)
         /// and returns the total number of tweens played.
         /// </summary>
-        public static int DOPlayForward(this Object target) => DOTween.PlayForward(target);
+        public static void DOPlayForward([NotNull] this Object target)
+            => TweenManager.FilteredOperation(OperationType.PlayForward, target, false, 0);
 
         /// <summary>
         /// Restarts all tweens that have this target as a reference
         /// (meaning tweens that were started from this target, or that had this target added as an Id)
         /// and returns the total number of tweens restarted.
         /// </summary>
-        public static int DORestart(this Object target, bool includeDelay = true) => DOTween.Restart(target, includeDelay);
+        public static void DORestart([NotNull] this Object target, bool includeDelay = true)
+            => TweenManager.FilteredOperation(OperationType.Restart, target, includeDelay, -1);
 
         /// <summary>
         /// Rewinds all tweens that have this target as a reference
         /// (meaning tweens that were started from this target, or that had this target added as an Id)
         /// and returns the total number of tweens rewinded.
         /// </summary>
-        public static int DORewind(this Object target, bool includeDelay = true) => DOTween.Rewind(target, includeDelay);
+        public static int DORewind([NotNull] this Object target, bool includeDelay = true)
+            => TweenManager.FilteredOperation(OperationType.Rewind, target, includeDelay, 0);
 
         /// <summary>
         /// Toggles the paused state (plays if it was paused, pauses if it was playing) of all tweens that have this target as a reference
         /// (meaning tweens that were started from this target, or that had this target added as an Id)
         /// and returns the total number of tweens involved.
         /// </summary>
-        public static int DOTogglePause(this Object target) => DOTween.TogglePause(target);
+        public static void DOTogglePause([NotNull] this Object target)
+            => TweenManager.FilteredOperation(OperationType.TogglePause, target, false, 0);
 
         #endregion
     }

@@ -18,7 +18,7 @@ namespace DG.Tweening
     /// <summary>
     /// Main DOTween class. Contains static methods to create and control tweens in a generic way
     /// </summary>
-    public class DOTween
+    public static class DOTween
     {
         // public static readonly string Version = "1.2.751"; // Last version before modules: 1.1.755
 
@@ -116,46 +116,16 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Tweens a property or field to the given value using default plugins</summary>
-        /// <param name="getter">A getter for the field or property to tween.
-        /// <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-        /// <param name="setter">A setter for the field or property to tween
-        /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
         public static TweenerCore<float> To(DOGetter<float> getter, DOSetter<float> setter, float endValue, float duration)
-        { return To(getter, setter, endValue, duration, FloatPlugin.Instance); }
-        /// <summary>Tweens a property or field to the given value using default plugins</summary>
-        /// <param name="getter">A getter for the field or property to tween.
-        /// <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-        /// <param name="setter">A setter for the field or property to tween
-        /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
+            => To(getter, setter, endValue, duration, FloatPlugin.Instance);
         public static TweenerCore<int> To(DOGetter<int> getter, DOSetter<int> setter, int endValue, float duration)
-        { return To(getter, setter, endValue, duration, IntPlugin.Instance); }
-        /// <summary>Tweens a property or field to the given value using default plugins</summary>
-        /// <param name="getter">A getter for the field or property to tween.
-        /// <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-        /// <param name="setter">A setter for the field or property to tween
-        /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
+            => To(getter, setter, endValue, duration, IntPlugin.Instance);
         public static TweenerCore<Vector2> To(DOGetter<Vector2> getter, DOSetter<Vector2> setter, Vector2 endValue, float duration)
-        { return To(getter, setter, endValue, duration, Vector2Plugin.Instance); }
-        /// <summary>Tweens a property or field to the given value using default plugins</summary>
-        /// <param name="getter">A getter for the field or property to tween.
-        /// <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-        /// <param name="setter">A setter for the field or property to tween
-        /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
+            => To(getter, setter, endValue, duration, Vector2Plugin.Instance);
         public static TweenerCore<Vector3> To(DOGetter<Vector3> getter, DOSetter<Vector3> setter, Vector3 endValue, float duration)
-        { return To(getter, setter, endValue, duration, Vector3Plugin.Instance); }
-        /// <summary>Tweens a property or field to the given value using default plugins</summary>
-        /// <param name="getter">A getter for the field or property to tween.
-        /// <para>Example usage with lambda:</para><code>()=> myProperty</code></param>
-        /// <param name="setter">A setter for the field or property to tween
-        /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
+            => To(getter, setter, endValue, duration, Vector3Plugin.Instance);
         public static TweenerCore<Color> To(DOGetter<Color> getter, DOSetter<Color> setter, Color endValue, float duration)
-        { return To(getter, setter, endValue, duration, ColorPlugin.Instance); }
+            => To(getter, setter, endValue, duration, ColorPlugin.Instance);
 
         /// <summary>Tweens only the alpha of a Color to the given value using default plugins</summary>
         /// <param name="getter">A getter for the field or property to tween.
@@ -296,102 +266,12 @@ namespace DG.Tweening
 
         #region Play Operations
 
-        /// <summary>Completes all tweens with the given ID or target and returns the number of actual tweens completed
-        /// (meaning the tweens that don't have infinite loops and were not already complete)</summary>
-        /// <param name="withCallbacks">For Sequences only: if TRUE internal Sequence callbacks will be fired,
-        /// otherwise they will be ignored</param>
-        public static int Complete(object targetOrId, bool withCallbacks = false)
-        {
-            if (targetOrId == null) return 0;
-            return TweenManager.FilteredOperation(OperationType.Complete, targetOrId, false, withCallbacks ? 1 : 0);
-        }
-        internal static int CompleteAndReturnKilledTot(object targetOrId)
-        {
-            if (targetOrId == null) return 0;
-            return TweenManager.FilteredOperation(OperationType.Complete, targetOrId, true, 0);
-        }
-
-        /// <summary>Flips the tweens with the given ID or target (changing their direction to forward if it was backwards and viceversa),
-        /// then returns the number of actual tweens flipped</summary>
-        public static int Flip(object targetOrId)
-        {
-            if (targetOrId == null) return 0;
-            return TweenManager.FilteredOperation(OperationType.Flip, targetOrId, false, 0);
-        }
-
-        /// <summary>Sends all tweens with the given ID or target to the given position (calculating also eventual loop cycles)
-        /// and returns the actual tweens involved</summary>
-        public static int Goto(object targetOrId, float to, bool andPlay = false)
-        {
-            if (targetOrId == null) return 0;
-            return TweenManager.FilteredOperation(OperationType.Goto, targetOrId, andPlay, to);
-        }
-
         /// <summary>Kills all tweens with the given ID or target and returns the number of actual tweens killed</summary>
+        /// <param name="targetOrId"></param>
         /// <param name="complete">If TRUE completes the tweens before killing them</param>
-        public static int Kill(object targetOrId, bool complete = false)
-        {
-            if (targetOrId == null) return 0;
-            int tot = complete ? CompleteAndReturnKilledTot(targetOrId) : 0;
-            return tot + TweenManager.FilteredOperation(OperationType.Despawn, targetOrId, false, 0);
-        }
+        public static void Kill(Object targetOrId, bool complete = false)
+            => targetOrId.DOKill(complete);
 
-        /// <summary>Pauses all tweens with the given ID or target and returns the number of actual tweens paused
-        /// (meaning the tweens that were actually playing and have been paused)</summary>
-        public static int Pause(object targetOrId)
-        {
-            if (targetOrId == null) return 0;
-            return TweenManager.FilteredOperation(OperationType.Pause, targetOrId, false, 0);
-        }
-
-        /// <summary>Plays all tweens with the given ID or target and returns the number of actual tweens played
-        /// (meaning the tweens that were not already playing or complete)</summary>
-        public static int Play(object targetOrId)
-        {
-            if (targetOrId == null) return 0;
-            return TweenManager.FilteredOperation(OperationType.Play, targetOrId, false, 0);
-        }
-
-        /// <summary>Plays backwards all tweens with the given ID or target and returns the number of actual tweens played
-        /// (meaning the tweens that were not already started, playing backwards or rewinded)</summary>
-        public static int PlayBackwards(object targetOrId)
-        {
-            if (targetOrId == null) return 0;
-            return TweenManager.FilteredOperation(OperationType.PlayBackwards, targetOrId, false, 0);
-        }
-
-        /// <summary>Plays forward all tweens with the given ID or target and returns the number of actual tweens played
-        /// (meaning the tweens that were not already playing forward or complete)</summary>
-        public static int PlayForward(object targetOrId)
-        {
-            if (targetOrId == null) return 0;
-            return TweenManager.FilteredOperation(OperationType.PlayForward, targetOrId, false, 0);
-        }
-
-        /// <summary>Restarts all tweens with the given ID or target, then returns the number of actual tweens restarted</summary>
-        /// <param name="includeDelay">If TRUE includes the eventual tweens delays, otherwise skips them</param>
-        /// <param name="changeDelayTo">If >= 0 changes the startup delay of all involved tweens to this value, otherwise doesn't touch it</param>
-        public static int Restart(object targetOrId, bool includeDelay = true, float changeDelayTo = -1)
-        {
-            if (targetOrId == null) return 0;
-            return TweenManager.FilteredOperation(OperationType.Restart, targetOrId, includeDelay, changeDelayTo);
-        }
-
-        /// <summary>Rewinds and pauses all tweens with the given ID or target, then returns the number of actual tweens rewinded
-        /// (meaning the tweens that were not already rewinded)</summary>
-        public static int Rewind(object targetOrId, bool includeDelay = true)
-        {
-            if (targetOrId == null) return 0;
-            return TweenManager.FilteredOperation(OperationType.Rewind, targetOrId, includeDelay, 0);
-        }
-
-        /// <summary>Toggles the play state of all tweens with the given ID or target and returns the number of actual tweens toggled
-        /// (meaning the tweens that could be played or paused, depending on the toggle state)</summary>
-        public static int TogglePause(object targetOrId)
-        {
-            if (targetOrId == null) return 0;
-            return TweenManager.FilteredOperation(OperationType.TogglePause, targetOrId, false, 0);
-        }
         #endregion
 
         #region Global Info Getters
