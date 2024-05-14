@@ -64,13 +64,6 @@ namespace DG.DOTweenEditor.UI
                 GUILayout.Label(_strb.ToString());
             }
 
-            GUILayout.Space(8);
-            _strb.Clear();
-            _strb.Append("SETTINGS ▼");
-            _strb.Append("\nSafe Mode: ").Append((playing ? DOTween.useSafeMode : _settings.useSafeMode) ? "ON" : "OFF");
-            _strb.Append("\ndefaultEaseType: ").Append(playing ? DOTween.defaultEaseType : _settings.defaultEaseType);
-            GUILayout.Label(_strb.ToString());
-
             GUILayout.Space(10);
         }
 

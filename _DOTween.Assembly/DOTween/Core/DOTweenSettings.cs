@@ -15,7 +15,6 @@ namespace DG.Tweening.Core
         [NotNull]
         public static DOTweenSettings Instance => _instanceCache ??= Resources.Load<DOTweenSettings>("DOTweenSettings");
 
-        public bool useSafeMode = true;
         public SafeModeOptions safeModeOptions = new SafeModeOptions();
         public Ease defaultEaseType = Ease.OutQuad;
         public float defaultEaseOvershootOrAmplitude = 1.70158f;

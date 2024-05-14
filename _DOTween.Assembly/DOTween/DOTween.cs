@@ -28,7 +28,7 @@ namespace DG.Tweening
         /// <summary>If TRUE (default) makes tweens slightly slower but safer, automatically taking care of a series of things
         /// (like targets becoming null while a tween is playing).
         /// <para>Default: TRUE</para></summary>
-        public static bool useSafeMode = true;
+        public const bool useSafeMode = true;
         /// <summary>Behaviour in case a tween nested inside a Sequence fails (and is caught by safe mode).
         /// <para>Default: NestedTweenFailureBehaviour.TryToPreserveSequence</para></summary>
         public static NestedTweenFailureBehaviour nestedTweenFailureBehaviour = NestedTweenFailureBehaviour.TryToPreserveSequence;
@@ -64,7 +64,6 @@ namespace DG.Tweening
 
             // Assign settings
             var settings = DOTweenSettings.Instance;
-            useSafeMode = settings.useSafeMode;
             nestedTweenFailureBehaviour = settings.safeModeOptions.nestedTweenFailureBehaviour;
             defaultEaseType = settings.defaultEaseType;
             defaultEaseOvershootOrAmplitude = settings.defaultEaseOvershootOrAmplitude;
@@ -84,7 +83,6 @@ namespace DG.Tweening
             DOTweenUnityBridge.DestroyInstance();
 
             initialized = false;
-            useSafeMode = false;
             nestedTweenFailureBehaviour = NestedTweenFailureBehaviour.TryToPreserveSequence;
             defaultEaseType = Ease.OutQuad;
             defaultEaseOvershootOrAmplitude = 1.70158f;

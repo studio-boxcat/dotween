@@ -283,30 +283,6 @@ namespace DG.Tweening.Core
             _KillList.Capacity = maxActive;
         }
 
-        // Looks through all active tweens and removes the ones whose getters generate errors
-        // (usually meaning their target has become NULL).
-        // Returns the total number of invalid tweens found and removed
-        // BEWARE: this is an expensive operation
-        internal static int Validate()
-        {
-            if (_requiresActiveReorganization) ReorganizeActiveTweens();
-
-            int totInvalid = 0;
-            for (int i = 0; i < _maxActiveLookupId + 1; ++i) {
-                Tween t = _activeTweens[i];
-                if (!t.Validate()) {
-                    totInvalid++;
-                    MarkForKilling(t);
-                }
-            }
-            // Kill all eventually marked tweens
-            if (totInvalid > 0) {
-                DespawnActiveTweens(_KillList);
-                _KillList.Clear();
-            }
-            return totInvalid;
-        }
-
         // deltaTime will be passed as fixedDeltaTime in case of UpdateType.Fixed
         internal static void Update(UpdateType updateType, float deltaTime, float independentTime)
         {

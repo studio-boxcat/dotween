@@ -139,17 +139,6 @@ namespace DG.Tweening
             lastTweenInsertTime = 0;
         }
 
-        // Called by TweenManager.Validate.
-        // Returns TRUE if the tween is valid
-        internal override bool Validate()
-        {
-            int len = sequencedTweens.Count;
-            for (int i = 0; i < len; i++) {
-                if (!sequencedTweens[i].Validate()) return false;
-            }
-            return true;
-        }
-
         // CALLED BY Tween the moment the tween starts.
         // Returns TRUE in case of success
         internal override bool Startup()

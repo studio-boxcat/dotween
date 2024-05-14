@@ -73,18 +73,6 @@ namespace DG.Tweening.Core
             isFromAllowed = true;
         }
 
-        // Called by TweenManager.Validate.
-        // Returns TRUE if the tween is valid
-        internal override bool Validate()
-        {
-            try {
-                getter();
-            } catch {
-                return false;
-            }
-            return true;
-        }
-
         // CALLED BY TweenManager at each update.
         // Returns TRUE if the tween needs to be killed
         internal override float UpdateDelay(float elapsed)

@@ -118,10 +118,6 @@ namespace DG.Tweening
             delayComplete = true;
         }
 
-        // Called by TweenManager.Validate.
-        // Returns TRUE if the tween is valid
-        internal abstract bool Validate();
-
         // Called by TweenManager in case a tween has a delay that needs to be updated.
         // Returns the eventual time in excess compared to the tween's delay time.
         // Previously unused by Sequences but now implemented.
