@@ -17,6 +17,7 @@ namespace DG.Tweening.Plugins.Options
 
         public Vector3ArrayOptions(float[] startTimes, Vector3[] startValues)
         {
+            Assert.AreEqual(startTimes.Length, startValues.Length, "startTimes and startValues must have the same length");
             Assert.IsTrue(startTimes[0] > 0, "Last time value must be less than 1");
             Assert.IsFalse(startTimes[^1] is 0 or 1, "Last time value must be less than 1");
             Assert.IsTrue(startValues[0] != Vector3.zero, "Last value must be different from Vector3.zero");

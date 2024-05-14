@@ -34,7 +34,7 @@ namespace DG.Tweening
                 startTimes[i] = segmentDuration * (i + 1);
 
             // Create the tween
-            var startValues = new Vector3[segmentCount]; // Start value for the first segment is omitted.
+            var startValues = new Vector3[segmentCount - 1]; // Start value for the first segment is omitted.
             startValues[0] = direction;
             var strength = direction.magnitude;
             direction /= strength; // Normalize the direction.
