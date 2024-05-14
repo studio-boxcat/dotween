@@ -218,7 +218,7 @@ namespace DG.Tweening
                 try {
                     callback();
                 } catch (Exception e) {
-                    Debugger.LogSafeModeCapturedError($"An error inside a tween callback was taken care of ({e.TargetSite}) ► {e.Message}\n\n{e.StackTrace}\n\n", t);
+                    Debugger.LogSafeModeCapturedError(e, t);
                     return false; // Callback error
                 }
             } else callback();

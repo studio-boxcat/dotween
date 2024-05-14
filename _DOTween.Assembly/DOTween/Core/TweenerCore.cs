@@ -99,7 +99,7 @@ namespace DG.Tweening.Core
                             isRelative = false;
                         } else startValue = getter();
                     } catch (Exception e) {
-                        Debugger.LogSafeModeCapturedError($"Tween startup failed (NULL target/property - {e.TargetSite}): the tween will now be killed ► {e.Message}", this);
+                        Debugger.LogSafeModeCapturedError(e, this);
                         return false; // Target/field doesn't exist: kill tween
                     }
                 } else {
@@ -140,7 +140,7 @@ namespace DG.Tweening.Core
                     tweenPlugin.EvaluateAndApply(this, useInversePosition);
                 } catch (Exception e) {
                     // Target/field doesn't exist anymore: kill tween
-                    Debugger.LogSafeModeCapturedError($"Target or field is missing/null ({e.TargetSite}) ► {e.Message}\n\n{e.StackTrace}\n\n", this);
+                    Debugger.LogSafeModeCapturedError(e, this);
                     return true;
                 }
             } else {

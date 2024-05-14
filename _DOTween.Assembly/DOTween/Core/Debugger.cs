@@ -4,9 +4,10 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
+using System;
 using System.Diagnostics;
-using UnityEngine;
 using Debug = UnityEngine.Debug;
+using Object = UnityEngine.Object;
 
 #pragma warning disable 1591
 namespace DG.Tweening.Core
@@ -35,6 +36,12 @@ namespace DG.Tweening.Core
         public static void LogSafeModeCapturedError(object message, Tween t = null)
         {
             Debug.LogWarning(_prefix + GetDebugDataMessage(t) + message, t?.target as Object);
+        }
+
+        [Conditional("DEBUG")]
+        public static void LogSafeModeCapturedError(Exception e, Tween t = null)
+        {
+            Debug.LogException(e, t?.target as Object);
         }
 
         [Conditional("DEBUG")]
