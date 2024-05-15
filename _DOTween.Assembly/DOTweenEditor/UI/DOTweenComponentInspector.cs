@@ -112,7 +112,7 @@ namespace DG.DOTweenEditor.UI
 
         static void BuildTweenButtonLabel(Tween t, StringBuilder sb)
         {
-            if (t.tweenType == TweenType.Sequence)
+            if (t is Sequence)
                 sb.Append("[SEQUENCE] ");
 
             if (string.IsNullOrEmpty(t.debugHint) == false)

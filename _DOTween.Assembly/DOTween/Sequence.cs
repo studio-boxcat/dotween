@@ -285,7 +285,7 @@ namespace DG.Tweening
                         }
 
                         // Fixes nested callbacks not being called correctly if main sequence has loops and nested ones don't
-                        if (multiCycleStep && t.tweenType == TweenType.Sequence) {
+                        if (multiCycleStep && t is Sequence) {
                             if (s.position <= 0 && s.completedLoops == 0) t.position = 0;
                             else {
                                 bool toZero = s.completedLoops == 0 || s.isBackwards && (s.completedLoops < s.loops || s.loops == -1);

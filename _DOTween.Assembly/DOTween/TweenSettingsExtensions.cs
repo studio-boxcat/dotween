@@ -236,27 +236,27 @@ namespace DG.Tweening
         /// <summary>Adds the given tween to the end of the Sequence.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="t">The tween to append</param>
-        public static Sequence Append(this Sequence s, Tween t)
+        public static Sequence Append([NotNull] this Sequence s, [NotNull] Tween t)
         {
-            if (!ValidateAddToSequence(s, t)) return s;
+            if (!ValidateAddToSequence(s) || !ValidateAddToSequence(t)) return s;
             Sequence.DoInsert(s, t, s.duration);
             return s;
         }
         /// <summary>Adds the given tween to the beginning of the Sequence, pushing forward the other nested content.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="t">The tween to prepend</param>
-        public static Sequence Prepend(this Sequence s, Tween t)
+        public static Sequence Prepend([NotNull] this Sequence s, [NotNull] Tween t)
         {
-            if (!ValidateAddToSequence(s, t)) return s;
+            if (!ValidateAddToSequence(s) || !ValidateAddToSequence(t)) return s;
             Sequence.DoPrepend(s, t);
             return s;
         }
         /// <summary>Inserts the given tween at the same time position of the last tween, callback or intervale added to the Sequence.
         /// Note that, in case of a Join after an interval, the insertion time will be the time where the interval starts, not where it finishes.
         /// Has no effect if the Sequence has already started</summary>
-        public static Sequence Join(this Sequence s, Tween t)
+        public static Sequence Join([NotNull] this Sequence s, [NotNull] Tween t)
         {
-            if (!ValidateAddToSequence(s, t)) return s;
+            if (!ValidateAddToSequence(s) || !ValidateAddToSequence(t)) return s;
             Sequence.DoInsert(s, t, s.lastTweenInsertTime);
             return s;
         }
@@ -265,9 +265,9 @@ namespace DG.Tweening
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="atPosition">The time position where the tween will be placed</param>
         /// <param name="t">The tween to insert</param>
-        public static Sequence Insert(this Sequence s, float atPosition, Tween t)
+        public static Sequence Insert([NotNull] this Sequence s, float atPosition, [NotNull] Tween t)
         {
-            if (!ValidateAddToSequence(s, t)) return s;
+            if (!ValidateAddToSequence(s) || !ValidateAddToSequence(t)) return s;
             Sequence.DoInsert(s, t, atPosition);
             return s;
         }
@@ -275,18 +275,18 @@ namespace DG.Tweening
         /// <summary>Adds the given interval to the end of the Sequence.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="interval">The interval duration</param>
-        public static Sequence AppendInterval(this Sequence s, float interval)
+        public static Sequence AppendInterval([NotNull] this Sequence s, float interval)
         {
-            if (!ValidateAddToSequence(s, null, true)) return s;
+            if (!ValidateAddToSequence(s)) return s;
             Sequence.DoAppendInterval(s, interval);
             return s;
         }
         /// <summary>Adds the given interval to the beginning of the Sequence, pushing forward the other nested content.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="interval">The interval duration</param>
-        public static Sequence PrependInterval(this Sequence s, float interval)
+        public static Sequence PrependInterval([NotNull] this Sequence s, float interval)
         {
-            if (!ValidateAddToSequence(s, null, true)) return s;
+            if (!ValidateAddToSequence(s)) return s;
             Sequence.DoPrependInterval(s, interval);
             return s;
         }
@@ -294,9 +294,9 @@ namespace DG.Tweening
         /// <summary>Adds the given callback to the end of the Sequence.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="callback">The callback to append</param>
-        public static Sequence AppendCallback(this Sequence s, TweenCallback callback)
+        public static Sequence AppendCallback([NotNull] this Sequence s, TweenCallback callback)
         {
-            if (!ValidateAddToSequence(s, null, true)) return s;
+            if (!ValidateAddToSequence(s)) return s;
             if (callback == null) return s;
 
             Sequence.DoInsertCallback(s, callback, s.duration);
@@ -305,9 +305,9 @@ namespace DG.Tweening
         /// <summary>Adds the given callback to the beginning of the Sequence, pushing forward the other nested content.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="callback">The callback to prepend</param>
-        public static Sequence PrependCallback(this Sequence s, TweenCallback callback)
+        public static Sequence PrependCallback([NotNull] this Sequence s, TweenCallback callback)
         {
-            if (!ValidateAddToSequence(s, null, true)) return s;
+            if (!ValidateAddToSequence(s)) return s;
             if (callback == null) return s;
 
             Sequence.DoInsertCallback(s, callback, 0);
@@ -318,42 +318,37 @@ namespace DG.Tweening
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="atPosition">The time position where the callback will be placed</param>
         /// <param name="callback">The callback to insert</param>
-        public static Sequence InsertCallback(this Sequence s, float atPosition, TweenCallback callback)
+        public static Sequence InsertCallback([NotNull] this Sequence s, float atPosition, TweenCallback callback)
         {
-            if (!ValidateAddToSequence(s, null, true)) return s;
+            if (!ValidateAddToSequence(s)) return s;
             if (callback == null) return s;
 
             Sequence.DoInsertCallback(s, callback, atPosition);
             return s;
         }
 
-        static bool ValidateAddToSequence(Sequence s, Tween t, bool ignoreTween = false)
+        static bool ValidateAddToSequence([NotNull] Sequence s)
         {
-            if (s == null) {
-                Debugger.Sequence.LogAddToNullSequence();
-                return false;
-            }
             if (!s.active) {
-                Debugger.Sequence.LogAddToInactiveSequence();
+                L.W("You can't add elements to an inactive/killed Sequence");
                 return false;
             }
             if (s.creationLocked) {
-                Debugger.Sequence.LogAddToLockedSequence();
+                L.W("The Sequence has started and is now locked, you can only elements to a Sequence before it starts");
                 return false;
             }
-            if (!ignoreTween) {
-                if (t == null) {
-                    Debugger.Sequence.LogAddNullTween();
-                    return false;
-                }
-                if (!t.active) {
-                    Debugger.Sequence.LogAddInactiveTween(t);
-                    return false;
-                }
-                if (t.isSequenced) {
-                    Debugger.Sequence.LogAddAlreadySequencedTween(t);
-                    return false;
-                }
+            return true;
+        }
+
+        static bool ValidateAddToSequence([NotNull] Tween t)
+        {
+            if (!t.active) {
+                L.W("You can't add an inactive/killed tween to a Sequence", t);
+                return false;
+            }
+            if (t.isSequenced) {
+                L.W("You can't add a tween that is already nested into a Sequence to another Sequence", t);
+                return false;
             }
             return true;
         }
@@ -366,12 +361,8 @@ namespace DG.Tweening
 
         /// <summary>Changes a TO tween into a FROM tween: sets the current target's position as the tween's endValue
         /// then immediately sends the target to the previously set endValue.</summary>
-        public static T From<T>(this T t) where T : Tweener
-        { return From(t, false); }
-        /// <summary>Changes a TO tween into a FROM tween: sets the current target's position as the tween's endValue
-        /// then immediately sends the target to the previously set endValue.</summary>
         /// <param name="isRelative">If TRUE the FROM value will be calculated as relative to the current one</param>
-        public static T From<T>(this T t, bool isRelative) where T : Tweener
+        public static T From<T>(this T t, bool isRelative = false) where T : Tweener
         {
             if (t is not { active: true } || t.creationLocked || !t.isFromAllowed) return t;
 
@@ -406,30 +397,11 @@ namespace DG.Tweening
         {
             if (t is not { active: true } || t.creationLocked) return t;
 
-            if (t.tweenType == TweenType.Sequence) {
-                (t as Sequence).PrependInterval(delay);
+            if (t is Sequence s) {
+                s.PrependInterval(delay);
             } else {
                 t.delay = delay;
                 t.delayComplete = delay <= 0;
-            }
-            return t;
-        }
-        /// <summary>EXPERIMENTAL: implemented in v1.2.340.<para/>
-        /// Sets a delayed startup for the tween with options to choose how the delay is applied in case of Sequences.<para/>
-        /// Has no effect if the tween has already started</summary>
-        /// <param name="asPrependedIntervalIfSequence">Only used by <see cref="Sequence"/> types: If FALSE sets the delay as a one-time occurrence
-        /// (defaults to this for <see cref="Tweener"/> types),
-        /// otherwise as a Sequence interval which will repeat at the beginning of every loop cycle</param>
-        public static T SetDelay<T>(this T t, float delay, bool asPrependedIntervalIfSequence) where T : Tween
-        {
-            if (t is not { active: true } || t.creationLocked) return t;
-
-            bool isSequence = t.tweenType == TweenType.Sequence;
-            if (!isSequence || !asPrependedIntervalIfSequence) {
-                t.delay = delay;
-                t.delayComplete = delay <= 0;
-            } else {
-                (t as Sequence).PrependInterval(delay);
             }
             return t;
         }
