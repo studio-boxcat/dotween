@@ -18,7 +18,6 @@ namespace DG.Tweening.Core
 
         public TweenEnumerable StartIterate()
         {
-            L.I("[DOTween] StartIterate");
             if (_iterateDepth is not 0)
                 L.W("[DOTween] Iteration started while already iterating: " + _iterateDepth);
             _iterateDepth++;
@@ -27,7 +26,6 @@ namespace DG.Tweening.Core
 
         public void EndIterate()
         {
-            L.I("[DOTween] EndIterate");
             _iterateDepth--;
             Assert.IsTrue(_iterateDepth >= 0, "Iterate depth is below 0");
 
