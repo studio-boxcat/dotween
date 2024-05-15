@@ -46,10 +46,7 @@ namespace DG.Tweening.Core
         internal static void DetachAllTweens()
         {
             var tweens = Tweens.StartIterate();
-            foreach (var t in tweens)
-            {
-                DetachTween(t);
-            }
+            foreach (var t in tweens) DetachTween(t);
             Tweens.EndIterate();
         }
 
@@ -115,9 +112,10 @@ namespace DG.Tweening.Core
             // Determine if ID is required.
             bool useId = false;
             int id = 0;
-            if (targetOrId is int) {
+            if (targetOrId is int)
+            {
                 useId = true;
-                id = (int)targetOrId;
+                id = (int) targetOrId;
                 Assert.AreNotEqual(Tween.invalidId, id, "Cannot filter by invalid id");
             }
             else
@@ -231,10 +229,12 @@ namespace DG.Tweening.Core
             t.elapsedDelay = t.delay;
             int toCompletedLoops = t.duration <= 0 ? 1 : Mathf.FloorToInt(to / t.duration); // Still generates imprecision with some values (like 0.4)
             float toPosition = to % t.duration;
-            if (t.loops != -1 && toCompletedLoops >= t.loops) {
+            if (t.loops != -1 && toCompletedLoops >= t.loops)
+            {
                 toCompletedLoops = t.loops;
                 toPosition = t.duration;
-            } else if (toPosition >= t.duration) toPosition = 0;
+            }
+            else if (toPosition >= t.duration) toPosition = 0;
             // If andPlay is FALSE manage onPause from here because DoGoto won't detect it (since t.isPlaying was already set from here)
             return t.ForceGoto(toPosition, toCompletedLoops, updateMode);
         }
@@ -242,7 +242,8 @@ namespace DG.Tweening.Core
         // Returns TRUE if the given tween was not already paused
         internal static bool Pause(Tween t)
         {
-            if (t.isPlaying) {
+            if (t.isPlaying)
+            {
                 t.isPlaying = false;
                 return true;
             }
@@ -252,7 +253,8 @@ namespace DG.Tweening.Core
         // Returns TRUE if the given tween was not already playing and is not complete
         internal static bool Play(Tween t)
         {
-            if (!t.isPlaying && (!t.isBackwards && !t.isComplete || t.isBackwards && (t.completedLoops > 0 || t.position > 0))) {
+            if (!t.isPlaying && (!t.isBackwards && !t.isComplete || t.isBackwards && (t.completedLoops > 0 || t.position > 0)))
+            {
                 t.isPlaying = true;
                 return true;
             }
@@ -261,12 +263,14 @@ namespace DG.Tweening.Core
 
         internal static bool PlayBackwards(Tween t)
         {
-            if (t.completedLoops == 0 && t.position <= 0) {
+            if (t.completedLoops == 0 && t.position <= 0)
+            {
                 t.isBackwards = true;
                 t.isPlaying = false;
                 return false;
             }
-            if (!t.isBackwards) {
+            if (!t.isBackwards)
+            {
                 t.isBackwards = true;
                 Play(t);
                 return true;
@@ -276,12 +280,14 @@ namespace DG.Tweening.Core
 
         internal static bool PlayForward(Tween t)
         {
-            if (t.isComplete) {
+            if (t.isComplete)
+            {
                 t.isBackwards = false;
                 t.isPlaying = false;
                 return false;
             }
-            if (t.isBackwards) {
+            if (t.isBackwards)
+            {
                 t.isBackwards = false;
                 Play(t);
                 return true;
@@ -302,18 +308,23 @@ namespace DG.Tweening.Core
         {
             t.isPlaying = false;
             var rewinded = false;
-            if (t.delay > 0) {
-                if (includeDelay) {
+            if (t.delay > 0)
+            {
+                if (includeDelay)
+                {
                     rewinded = t.delay > 0 && t.elapsedDelay > 0;
                     t.elapsedDelay = 0;
                     t.delayComplete = false;
-                } else {
+                }
+                else
+                {
                     rewinded = t.elapsedDelay < t.delay;
                     t.elapsedDelay = t.delay;
                     t.delayComplete = true;
                 }
             }
-            if (t.position > 0 || t.completedLoops > 0 || !t.startupDone) {
+            if (t.position > 0 || t.completedLoops > 0 || !t.startupDone)
+            {
                 rewinded = true;
                 t.ForceGoto(0, 0, UpdateMode.Goto);
             }
