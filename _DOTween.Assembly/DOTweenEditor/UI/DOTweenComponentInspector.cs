@@ -12,8 +12,6 @@ namespace DG.DOTweenEditor.UI
     public class DOTweenComponentInspector : Editor
     {
         readonly StringBuilder _sb = new();
-        readonly GUIContent _gcPlay = new("►");
-        readonly GUIContent _gcPause = new("❚❚");
 
         #region Unity + GUI
 
@@ -40,32 +38,18 @@ namespace DG.DOTweenEditor.UI
         {
             var tweens = TweenManager.Tweens.StartIterate(out var lastUpdateId);
 
-            GUILayout.Label("Playing tweens");
             foreach (var t in tweens)
             {
                 if (t.updateId.IsInvalid()) continue;
                 if (t.updateId > lastUpdateId) break;
                 Assert.IsTrue(t.active, "Tween is not active");
-
-                if (t.isPlaying)
-                    DrawTweenButton(t, true);
-            }
-
-            GUILayout.Label("Paused tweens");
-            foreach (var t in tweens)
-            {
-                if (t.updateId.IsInvalid()) continue;
-                if (t.updateId > lastUpdateId) break;
-                Assert.IsTrue(t.active, "Tween is not active");
-
-                if (t.isPlaying is false)
-                    DrawTweenButton(t, false);
+                DrawTweenButton(t);
             }
 
             TweenManager.Tweens.EndIterate();
         }
 
-        void DrawTweenButton(Tween tween, bool isPlaying, bool isSequenced = false)
+        void DrawTweenButton(Tween tween, bool isSequenced = false)
         {
             _sb.Length = 0;
 
@@ -75,11 +59,7 @@ namespace DG.DOTweenEditor.UI
                     if (!isSequenced)
                     {
                         GUILayout.BeginHorizontal();
-                        if (GUILayout.Button(isPlaying ? _gcPause : _gcPlay, GUILayout.Width(30)))
-                        {
-                            if (isPlaying) TweenManager.Pause(tween);
-                            else TweenManager.Play(tween);
-                        }
+                        DrawPlayToggle(tween);
                     }
 
                     if (tween.target is Object obj && obj != null)
@@ -100,11 +80,7 @@ namespace DG.DOTweenEditor.UI
                     if (!isSequenced)
                     {
                         GUILayout.BeginHorizontal();
-                        if (GUILayout.Button(isPlaying ? _gcPause : _gcPlay, GUILayout.Width(30)))
-                        {
-                            if (isPlaying) TweenManager.Pause(tween);
-                            else TweenManager.Play(tween);
-                        }
+                        DrawPlayToggle(tween);
                     }
                     BuildTweenButtonLabel(tween, _sb);
                     GUILayout.Label(_sb.ToString());
@@ -112,8 +88,21 @@ namespace DG.DOTweenEditor.UI
 
                     var s = (Sequence) tween;
                     foreach (var t in s.sequencedTweens)
-                        DrawTweenButton(t, isPlaying, true);
+                        DrawTweenButton(t);
                     break;
+            }
+        }
+
+        static readonly GUIContent _gcPlay = new("►");
+        static readonly GUIContent _gcPause = new("❚❚");
+
+        static void DrawPlayToggle(Tween tween)
+        {
+            var isPlaying = tween.isPlaying;
+            if (GUILayout.Button(isPlaying ? _gcPause : _gcPlay, GUILayout.Width(30)))
+            {
+                if (isPlaying) TweenManager.Pause(tween);
+                else TweenManager.Play(tween);
             }
         }
 
