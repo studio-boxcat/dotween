@@ -12,8 +12,7 @@ namespace DG.DOTweenEditor.UI
     {
         static readonly StringBuilder _sb = new();
 
-        // Open
-        [MenuItem("Meow Tower/DOTween Inspector")]
+        [MenuItem("Window/DOTween Inspector")]
         static void Open()
         {
             GetWindow<DOTweenInspector>().Show();
