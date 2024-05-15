@@ -59,15 +59,23 @@ namespace DG.Tweening.Core
 
         public static Sequence RentSequence()
         {
+            Sequence sequence = null;
+
             var count = _sequence.Count;
             if (count is 0)
             {
                 RecordCreate(typeof(Sequence));
-                return new Sequence();
+                sequence = new Sequence();
+            }
+            else
+            {
+                sequence = _sequence[count - 1];
+                _sequence.RemoveAt(count - 1);
             }
 
-            var sequence = _sequence[count - 1];
-            _sequence.RemoveAt(count - 1);
+            Assert.IsFalse(sequence.active, "Polled tweener is still active");
+            Assert.IsTrue(sequence.updateId.IsInvalid(), "Polled tweener has a valid updateId");
+            sequence.active = true;
             return sequence;
         }
 
@@ -89,7 +97,10 @@ namespace DG.Tweening.Core
             }
 
             foreach (var sequence in _recyclableSequences)
+            {
                 Assert.IsFalse(sequence.active, "Sequence to recycle is still active");
+                Assert.IsTrue(sequence.updateId.IsInvalid(), "Tween to recycle has a valid updateId");
+            }
 #endif
 
             if (_recyclableTweens.Count >= _recycleThreshold)
@@ -104,6 +115,7 @@ namespace DG.Tweening.Core
             {
                 // L.I("[DOTween] Recycling sequences: " + _recyclableSequences.Count);
                 _sequence.AddRange(_recyclableSequences);
+                _recyclableSequences.Clear();
             }
         }
 
@@ -138,6 +150,19 @@ namespace DG.Tweening.Core
         public static int SumPooledSequences()
         {
             return _sequence.Count;
+        }
+
+        public static void Editor_Clear()
+        {
+            _float.Clear();
+            _int.Clear();
+            _color.Clear();
+            _vector2.Clear();
+            _vector3.Clear();
+            _sequence.Clear();
+            _recyclableTweens.Clear();
+            _recyclableSequences.Clear();
+            _debugCreateCount.Clear();
         }
 #endif
     }

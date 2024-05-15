@@ -133,8 +133,8 @@ namespace DG.Tweening
 #if DEBUG
             foreach (var t in sequencedTweens)
             {
-                Assert.IsFalse(t.active, "Tween is not active");
-                Assert.IsTrue(t.updateId.IsValid(), "Tween has an invalid updateId");
+                Assert.IsFalse(t.active, "Tween is still active");
+                Assert.IsTrue(t.updateId.IsInvalid(), "Tween has a valid updateId");
             }
 #endif
 

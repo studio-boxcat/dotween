@@ -34,7 +34,9 @@ namespace DG.Tweening.Core
         {
             Assert.IsTrue(ReferenceEquals(_instance, gameObject), "Instance mismatch");
             _instance = null;
-            DOTween.Clear();
+#if UNITY_EDITOR
+            DOTween.Editor_Clear();
+#endif
         }
 
         internal static void Create()

@@ -30,24 +30,19 @@ namespace DG.Tweening
                 return;
 
             L.I("[DOTween] Init");
-
             initialized = true;
-
             DOTweenUnityBridge.Create();
         }
 
-        /// <summary>
-        /// Kills all tweens, clears all cached tween pools and plugins and resets the max Tweeners/Sequences capacities to the default values.
-        /// </summary>
-        /// (so that next time you use it it will need to be re-initialized)</param>
-        public static void Clear()
+#if UNITY_EDITOR
+        public static void Editor_Clear()
         {
             L.I("[DOTween] Clear");
-
             initialized = false;
-
-            TweenManager.DetachAllTweens();
+            TweenManager.Editor_DetachAllTweens();
+            TweenPool.Editor_Clear();
         }
+#endif
 
         public static void Update()
         {
@@ -211,7 +206,9 @@ namespace DG.Tweening
         /// <param name="target">The target of the Sequence. Relevant only for static target-based methods like DOTween.Kill(target),
         /// useless otherwise</param>
         public static Sequence Sequence(object target)
-        { return Sequence().SetTarget(target); }
+        {
+            return Sequence().SetTarget(target);
+        }
 
         #endregion
 

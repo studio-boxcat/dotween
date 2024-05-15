@@ -43,13 +43,6 @@ namespace DG.Tweening.Core
         // Also removes any TweenLinks associated to this tween.
         internal static void DetachTween(Tween t) => Tweens.Remove(t);
 
-        internal static void DetachAllTweens()
-        {
-            var tweens = Tweens.StartIterate();
-            foreach (var t in tweens) DetachTween(t);
-            Tweens.EndIterate();
-        }
-
         internal static void KillTween(Tween t)
         {
             Assert.IsTrue(t.active, "Tween is not active");
@@ -62,8 +55,7 @@ namespace DG.Tweening.Core
 
             if (t is Tweener tweener)
             {
-                if (tweener.updateId.IsValid())
-                    DetachTween(t);
+                if (tweener.updateId.IsValid()) DetachTween(t);
                 TweenPool.ReturnTweener(tweener);
                 return;
             }
@@ -72,6 +64,7 @@ namespace DG.Tweening.Core
             var len = s.sequencedTweens.Count;
             for (var i = len - 1; i >= 0; --i)
                 KillTween(s.sequencedTweens[i]);
+            if (s.updateId.IsValid()) DetachTween(t);
             TweenPool.ReturnSequence(s);
         }
 
@@ -358,5 +351,14 @@ namespace DG.Tweening.Core
         }
 
         #endregion
+
+#if UNITY_EDITOR
+        internal static void Editor_DetachAllTweens()
+        {
+            var tweens = Tweens.StartIterate();
+            foreach (var t in tweens) DetachTween(t);
+            Tweens.EndIterate();
+        }
+#endif
     }
 }
