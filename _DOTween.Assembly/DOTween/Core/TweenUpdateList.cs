@@ -16,17 +16,18 @@ namespace DG.Tweening.Core
             _iterateDepth = 0;
         }
 
-        public List<Tween> StartIterate(out TweenUpdateId count)
+        public TweenEnumerable StartIterate()
         {
+            L.I("[DOTween] StartIterate");
             if (_iterateDepth is not 0)
                 L.W("[DOTween] Iteration started while already iterating: " + _iterateDepth);
             _iterateDepth++;
-            count = (TweenUpdateId) _list.Count;
-            return _list;
+            return new TweenEnumerable(_list, (TweenUpdateId) _list.Count);
         }
 
         public void EndIterate()
         {
+            L.I("[DOTween] EndIterate");
             _iterateDepth--;
             Assert.IsTrue(_iterateDepth >= 0, "Iterate depth is below 0");
 
@@ -140,6 +141,49 @@ namespace DG.Tweening.Core
             // L.I($"[DOTween] Will be removed: {tween}", tween);
             _reservedToRemove.Add((int) tween.updateId);
             tween.updateId = TweenUpdateId.Invalid;
+        }
+
+        public struct TweenEnumerable
+        {
+            readonly List<Tween> _list;
+            readonly TweenUpdateId _lastUpdateId;
+
+            public TweenEnumerable(List<Tween> list, TweenUpdateId lastUpdateId)
+            {
+                _list = list;
+                _lastUpdateId = lastUpdateId;
+            }
+
+            public TweenEnumerator GetEnumerator() => new TweenEnumerator(_list, _lastUpdateId);
+
+            public struct TweenEnumerator
+            {
+                readonly List<Tween> _list;
+                readonly TweenUpdateId _lastUpdateId;
+                int _index;
+
+                public TweenEnumerator(List<Tween> list, TweenUpdateId lastUpdateId)
+                {
+                    _list = list;
+                    _lastUpdateId = lastUpdateId;
+                    _index = -1;
+                }
+
+                public Tween Current => _list[_index];
+
+                public bool MoveNext()
+                {
+                    while (++_index < _list.Count)
+                    {
+                        var t = _list[_index];
+                        if (t.updateId.IsInvalid()) continue;
+                        if (t.updateId > _lastUpdateId) break;
+                        Assert.IsTrue(t.active, "Tween is not active");
+                        return true;
+                    }
+                    return false;
+                }
+            }
         }
     }
 }

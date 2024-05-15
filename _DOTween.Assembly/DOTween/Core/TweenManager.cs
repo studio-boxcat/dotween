@@ -45,12 +45,9 @@ namespace DG.Tweening.Core
 
         internal static void DetachAllTweens()
         {
-            var tweens = Tweens.StartIterate(out var lastUpdateId);
+            var tweens = Tweens.StartIterate();
             foreach (var t in tweens)
             {
-                if (t.updateId.IsInvalid()) continue;
-                if (t.updateId > lastUpdateId) break;
-                Assert.IsTrue(t.active, "Tween is not active");
                 DetachTween(t);
             }
             Tweens.EndIterate();
@@ -85,13 +82,9 @@ namespace DG.Tweening.Core
         {
             TweenPool.Recycle();
 
-            var tweens = Tweens.StartIterate(out var lastUpdateId);
+            var tweens = Tweens.StartIterate();
             foreach (var t in tweens)
             {
-                if (t.updateId.IsInvalid()) continue;
-                if (t.updateId > lastUpdateId) break;
-                Assert.IsTrue(t.active, "Tween is not active");
-
                 // The tween is marked for killing when Kill() is called inside a tween's callback.
                 if (t.ForceUpdate(deltaTime))
                     KillTween(t);
@@ -101,13 +94,9 @@ namespace DG.Tweening.Core
 
         internal static bool IsTweening([NotNull] Object target)
         {
-            var tweens = Tweens.StartIterate(out var lastUpdateId);
+            var tweens = Tweens.StartIterate();
             foreach (var t in tweens)
             {
-                if (t.updateId.IsInvalid()) continue;
-                if (t.updateId > lastUpdateId) break;
-                Assert.IsTrue(t.active, "Tween is not active");
-
                 if (ReferenceEquals(target, t.target) is false)
                     continue;
                 if (t.isComplete && t.autoKill)
@@ -136,13 +125,9 @@ namespace DG.Tweening.Core
                 Assert.IsTrue(targetOrId is not null, "Target cannot be null");
             }
 
-            var tweens = Tweens.StartIterate(out var lastUpdateId);
+            var tweens = Tweens.StartIterate();
             foreach (var t in tweens)
             {
-                if (t.updateId.IsInvalid()) continue;
-                if (t.updateId > lastUpdateId) break;
-                Assert.IsTrue(t.active, "Tween is not active");
-
                 if (useId)
                 {
                     if (t.id != id)

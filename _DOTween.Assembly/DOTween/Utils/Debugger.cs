@@ -29,7 +29,7 @@ namespace DG.Tweening.Core
         [Conditional("DEBUG")]
         public static void LogSafeModeCapturedError(Exception e, Tween t = null)
         {
-            Debug.LogException(e, t?.target as Object);
+            Debug.LogWarning($"{_prefix}Exception in DOTween SafeMode ({GetDebugDataMessage(t)})\n{e.Message} at:\n{e.StackTrace}", t?.target as Object);
         }
 
         [Conditional("DEBUG")]

@@ -35,16 +35,9 @@ namespace DG.DOTweenEditor.UI
 
         void DrawTweensButtons()
         {
-            var tweens = TweenManager.Tweens.StartIterate(out var lastUpdateId);
-
+            var tweens = TweenManager.Tweens.StartIterate();
             foreach (var t in tweens)
-            {
-                if (t.updateId.IsInvalid()) continue;
-                if (t.updateId > lastUpdateId) break;
-                Assert.IsTrue(t.active, "Tween is not active");
                 DrawTweenButton(t);
-            }
-
             TweenManager.Tweens.EndIterate();
         }
 
