@@ -9,7 +9,7 @@ using UnityEngine;
 #pragma warning disable 1591
 namespace DG.Tweening.Core
 {
-    public class DOTweenSettings : ScriptableObject
+    class DOTweenSettings : ScriptableObject
     {
         static DOTweenSettings _instanceCache = null;
         [NotNull]

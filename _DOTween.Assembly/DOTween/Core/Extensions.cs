@@ -19,14 +19,5 @@ namespace DG.Tweening.Core
             t.isBlendable = true;
             return t;
         }
-
-        /// <summary>
-        /// INTERNAL: used by DO shortcuts and Modules to prevent a tween from using a From setup even if passed
-        /// </summary>
-        public static TweenerCore<T> NoFrom<T>(this TweenerCore<T> t)
-        {
-            t.isFromAllowed = false;
-            return t;
-        }
     }
 }

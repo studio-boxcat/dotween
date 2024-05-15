@@ -11,7 +11,7 @@ namespace DG.Tweening
             t.isRelative = false;
             t.easeType = Ease.OutQuad;
             t.customEase = null;
-            t.NoFrom();
+            t.isFromAllowed = false;
         }
 
         internal static void SetupShake(TweenerCore<Vector3> t)
@@ -19,7 +19,7 @@ namespace DG.Tweening
             t.isRelative = false;
             t.easeType = Ease.Linear;
             t.customEase = null;
-            t.NoFrom();
+            t.isFromAllowed = false;
         }
 
         public static Vector3ArrayOptions CalculatePunch(Vector3 direction, int segmentCount, float elasticity)
