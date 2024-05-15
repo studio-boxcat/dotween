@@ -6,7 +6,6 @@
 
 using System;
 using DG.Tweening.Core;
-using DG.Tweening.Core.Enums;
 using UnityEngine.Assertions;
 
 namespace DG.Tweening
@@ -68,6 +67,7 @@ namespace DG.Tweening
 
         /// <summary>Returns TRUE if the tween is set to loop (either a set number of times or infinitely)</summary>
         public bool hasLoops => loops is -1 or > 1;
+        internal int completedLoops;
 
         internal bool creationLocked; // TRUE after the tween was updated the first time (even if it was delayed), or when added to a Sequence
         internal bool startupDone; // TRUE the first time the actual tween starts, AFTER any delay has elapsed (unless it's a FROM tween)
@@ -76,7 +76,6 @@ namespace DG.Tweening
         /// <summary>Time position within a single loop cycle</summary>
         public float position { get; internal set; } // Required by Modules
         internal float fullDuration; // Total duration loops included
-        internal int completedLoops;
         internal bool isPlaying; // Set by TweenManager when getting a new tween
         internal bool isComplete;
         internal float elapsedDelay; // Amount of eventual delay elapsed (shared by Sequences only for compatibility reasons, otherwise not used)
@@ -171,7 +170,7 @@ namespace DG.Tweening
                     newCompletedSteps = completedLoops < prevCompletedLoops ? prevCompletedLoops - completedLoops : (toPosition <= 0 && !wasRewinded ? 1 : 0);
                     if (wasComplete) newCompletedSteps--;
                 } else newCompletedSteps = completedLoops > prevCompletedLoops ? completedLoops - prevCompletedLoops : 0;
-            } else if (tweenType == TweenType.Sequence) {
+            } else if (this is Sequence) {
                 newCompletedSteps = prevCompletedLoops - toCompletedLoops;
                 if (newCompletedSteps < 0) newCompletedSteps = -newCompletedSteps;
             }

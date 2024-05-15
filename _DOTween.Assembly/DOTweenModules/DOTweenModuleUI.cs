@@ -7,8 +7,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening.Core;
 using DG.Tweening.Core.Easing;
-using DG.Tweening.Core.Enums;
-using DG.Tweening.Plugins.Options;
 
 #pragma warning disable 1591
 namespace DG.Tweening

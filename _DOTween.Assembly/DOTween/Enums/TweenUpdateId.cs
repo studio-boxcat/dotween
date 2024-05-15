@@ -1,4 +1,4 @@
-namespace DG.Tweening.Core.Enums
+namespace DG.Tweening
 {
     public enum TweenUpdateId
     {

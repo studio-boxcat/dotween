@@ -4,7 +4,7 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
-namespace DG.Tweening.Core.Enums
+namespace DG.Tweening
 {
     enum OperationType : byte
     {

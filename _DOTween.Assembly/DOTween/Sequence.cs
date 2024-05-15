@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using DG.Tweening.Core;
 using DG.Tweening.Core.Easing;
-using DG.Tweening.Core.Enums;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -29,7 +28,6 @@ namespace DG.Tweening
 
         internal Sequence()
         {
-            tweenType = TweenType.Sequence;
             Reset();
         }
 
@@ -260,7 +258,7 @@ namespace DG.Tweening
                     if (!s.isPlaying && wasPlaying) return false; // Paused by internal callback
                     ABSSequentiable sequentiable = s._sequencedObjs[i];
                     if (sequentiable.sequencedEndPosition < toPos || sequentiable.sequencedPosition > fromPos) continue;
-                    if (sequentiable.tweenType == TweenType.Callback) {
+                    if (sequentiable is SequenceCallback) {
                         if (updateMode == UpdateMode.Update && prevPosIsInverse) {
                             OnTweenCallback(sequentiable.onStart, s);
                         }
@@ -303,7 +301,7 @@ namespace DG.Tweening
                         || sequentiable.sequencedPosition > 0 && sequentiable.sequencedEndPosition <= fromPos
                         || sequentiable.sequencedPosition <= 0 && sequentiable.sequencedEndPosition < fromPos
                     ) continue;
-                    if (sequentiable.tweenType == TweenType.Callback) {
+                    if (sequentiable is SequenceCallback) {
                         if (updateMode == UpdateMode.Update) {
                             bool fire = !s.isBackwards && !useInverse && !prevPosIsInverse
                                 || s.isBackwards && useInverse && !prevPosIsInverse;
@@ -328,7 +326,7 @@ namespace DG.Tweening
                         }
 
                         // Fixes nested callbacks not being called correctly if main sequence has loops and nested ones don't
-                        if (multiCycleStep && t.tweenType == TweenType.Sequence) {
+                        if (multiCycleStep && t is Sequence) {
                             if (s.position <= 0 && s.completedLoops == 0) t.position = 0;
                             else {
                                 bool toZero = s.completedLoops == 0 || !s.isBackwards && (s.completedLoops < s.loops || s.loops == -1);

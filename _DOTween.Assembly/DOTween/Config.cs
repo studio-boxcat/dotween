@@ -1,5 +1,3 @@
-using DG.Tweening.Core.Enums;
-
 namespace DG.Tweening
 {
     class Config
@@ -13,7 +11,5 @@ namespace DG.Tweening
         public const Ease defaultEaseType = Ease.OutQuad;
         /// <summary>Default overshoot/amplitude used for eases.</summary>
         public const float defaultEaseOvershootOrAmplitude = 1.70158f;
-
-        public const NestedTweenFailureBehaviour nestedTweenFailureBehaviour = NestedTweenFailureBehaviour.KillWholeSequence;
     }
 }

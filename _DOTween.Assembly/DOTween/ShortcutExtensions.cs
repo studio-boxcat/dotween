@@ -6,10 +6,8 @@
 
 using DG.Tweening.Core;
 using DG.Tweening.Core.Easing;
-using DG.Tweening.Core.Enums;
 using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 #pragma warning disable 1573
 namespace DG.Tweening

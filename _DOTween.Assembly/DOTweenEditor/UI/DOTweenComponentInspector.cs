@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using DG.Tweening;
 using DG.Tweening.Core;
-using DG.Tweening.Core.Enums;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -53,43 +52,41 @@ namespace DG.DOTweenEditor.UI
         {
             _sb.Length = 0;
 
-            switch (tween.tweenType)
+            if (tween is Tweener)
             {
-                case TweenType.Tweener:
-                    if (!isSequenced)
-                    {
-                        GUILayout.BeginHorizontal();
-                        DrawPlayToggle(tween);
-                    }
+                if (!isSequenced)
+                {
+                    GUILayout.BeginHorizontal();
+                    DrawPlayToggle(tween);
+                }
 
-                    if (tween.target is Object obj && obj != null)
-                    {
-                        EditorGUI.BeginDisabledGroup(true);
-                        EditorGUILayout.ObjectField(obj, obj.GetType(), true);
-                        EditorGUI.EndDisabledGroup();
-                    }
-                    else
-                    {
-                        BuildTweenButtonLabel(tween, _sb);
-                        GUILayout.Label(_sb.ToString());
-                    }
-
-                    if (!isSequenced) GUILayout.EndHorizontal();
-                    break;
-                case TweenType.Sequence:
-                    if (!isSequenced)
-                    {
-                        GUILayout.BeginHorizontal();
-                        DrawPlayToggle(tween);
-                    }
+                if (tween.target is Object obj && obj != null)
+                {
+                    EditorGUI.BeginDisabledGroup(true);
+                    EditorGUILayout.ObjectField(obj, obj.GetType(), true);
+                    EditorGUI.EndDisabledGroup();
+                }
+                else
+                {
                     BuildTweenButtonLabel(tween, _sb);
                     GUILayout.Label(_sb.ToString());
-                    if (!isSequenced) GUILayout.EndHorizontal();
+                }
 
-                    var s = (Sequence) tween;
-                    foreach (var t in s.sequencedTweens)
-                        DrawTweenButton(t);
-                    break;
+                if (!isSequenced) GUILayout.EndHorizontal();
+            }
+            else if (tween is Sequence s)
+            {
+                if (!isSequenced)
+                {
+                    GUILayout.BeginHorizontal();
+                    DrawPlayToggle(s);
+                }
+                BuildTweenButtonLabel(s, _sb);
+                GUILayout.Label(_sb.ToString());
+                if (!isSequenced) GUILayout.EndHorizontal();
+
+                foreach (var t in s.sequencedTweens)
+                    DrawTweenButton(t);
             }
         }
 

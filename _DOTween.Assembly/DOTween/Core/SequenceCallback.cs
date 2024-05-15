@@ -10,7 +10,6 @@ namespace DG.Tweening.Core
     {
         public SequenceCallback(float sequencedPosition, TweenCallback callback)
         {
-            tweenType = TweenType.Callback;
             this.sequencedPosition = sequencedPosition;
             onStart = callback;
         }

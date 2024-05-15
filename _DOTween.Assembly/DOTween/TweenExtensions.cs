@@ -5,7 +5,6 @@
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
 using DG.Tweening.Core;
-using DG.Tweening.Core.Enums;
 using UnityEngine;
 
 #pragma warning disable 1573
@@ -348,7 +347,7 @@ namespace DG.Tweening
         /// IMPORTANT: if used inside a tween's callback, this will return a result concerning the exact frame when it's asked,
         /// so for example in a callback at the end of a Yoyo loop step this method will never return FALSE
         /// because the frame will never end exactly there and the tween will already be going backwards when the callback is fired</summary>
-        public static bool IsLoopingOrExecutingBackwards(this Tween t)
+        public static bool IsLoopingOrExecutingBackwards(this Tweener t)
         {
             if (!t.active) {
                 Debugger.LogInvalidTween(t);

@@ -6,7 +6,6 @@
 
 
 using DG.Tweening.Core;
-using DG.Tweening.Core.Enums;
 using DG.Tweening.Plugins;
 using DG.Tweening.Plugins.Core;
 using DG.Tweening.Plugins.Options;

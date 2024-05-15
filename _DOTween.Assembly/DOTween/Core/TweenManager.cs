@@ -4,7 +4,6 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
-using DG.Tweening.Core.Enums;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -308,7 +307,7 @@ namespace DG.Tweening.Core
         internal static bool Restart(Tween t, bool includeDelay = true, float changeDelayTo = -1)
         {
             t.isBackwards = false;
-            if (changeDelayTo >= 0 && t.tweenType == TweenType.Tweener) t.delay = changeDelayTo;
+            if (changeDelayTo >= 0 && t is Tweener) t.delay = changeDelayTo;
             Rewind(t, includeDelay);
             t.isPlaying = true;
             return true;

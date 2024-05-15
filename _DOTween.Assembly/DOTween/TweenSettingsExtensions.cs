@@ -87,8 +87,7 @@ namespace DG.Tweening
             else if (loops == 0) loops = 1;
             t.loops = loops;
             t.loopType = loopType;
-//            if (t.tweenType == TweenType.Tweener) t.fullDuration = loops > -1 ? t.duration * loops : Mathf.Infinity;
-            if (t.tweenType == TweenType.Tweener) {
+            if (t is Tweener) {
                 if (loops > -1) t.fullDuration = t.duration * loops;
                 else t.fullDuration = Mathf.Infinity;
             }
