@@ -95,7 +95,7 @@ namespace DG.Tweening.Core
 
             if (_recyclableTweens.Count >= _recycleThreshold)
             {
-                L.I("[DOTween] Recycling tweens: " + _recyclableTweens.Count);
+                // L.I("[DOTween] Recycling tweens: " + _recyclableTweens.Count);
                 foreach (var tweener in _recyclableTweens)
                     GetTweenerList(tweener.GetType()).Add(tweener);
                 _recyclableTweens.Clear();
@@ -103,7 +103,7 @@ namespace DG.Tweening.Core
 
             if (_recyclableSequences.Count >= _recycleThreshold)
             {
-                L.I("[DOTween] Recycling sequences: " + _recyclableSequences.Count);
+                // L.I("[DOTween] Recycling sequences: " + _recyclableSequences.Count);
                 _sequence.AddRange(_recyclableSequences);
             }
         }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening.Core.Enums;
 using UnityEngine.Assertions;
 
@@ -52,21 +53,48 @@ namespace DG.Tweening.Core
                 return;
             }
 
+#if DEBUG
+            // Validate integrity.
+            foreach (var i in _reservedToRemove)
+                Assert.IsTrue(_list[i].updateId.IsInvalid(), "updateId is valid");
+            foreach (var tween in _list)
+            {
+                if (tween.updateId.IsValid()) continue;
+                Assert.IsFalse(_reservedToRemove.Contains((int) tween.updateId),
+                    "Tween is not reserved to be removed");
+            }
+#endif
+
+            // L.I($"[DOTween] Will remove tweens: {string.Join(", ", _reservedToRemove)}");
+            // L.I($"[DOTween] Update list: {string.Join(", ", _list.Select(x => (int) x.updateId))}");
+
             // Reorder list.
+            Tween lastTween = null;
             var lastIndex = listCount;
             foreach (var removeIndex in _reservedToRemove)
             {
-                --lastIndex;
-                Assert.IsTrue(lastIndex >= 0, "Index is below 0");
-                var lastTween = SearchEligibleTweenBackward(_list, ref lastIndex);
+                if (lastTween is null)
+                {
+                    --lastIndex;
+                    Assert.IsTrue(lastIndex >= 0, "Index is below 0");
+                    lastTween = SearchEligibleTweenBackward(_list, ref lastIndex);
+                    Assert.AreEqual(lastTween, _list[lastIndex], "Tween is not equal to last tween");
+                    Assert.AreNotEqual(removeIndex, lastIndex, "removeIndex is equal to lastIndex");
+                }
+
                 if (removeIndex > lastIndex) continue; // Skip if the tween is already removed.
-
-                Assert.AreNotEqual(removeIndex, lastIndex, "removeIndex is equal to lastIndex");
+                Assert.IsNotNull(lastTween, "lastTween is null");
                 Assert.IsTrue(lastTween.updateId.IsValid(), "updateId is invalid");
+                Assert.IsTrue(_list[removeIndex].updateId.IsInvalid(), "updateId is valid");
 
+                // L.I("[DOTween] Swap: " + lastTween.updateId + " <-> " + removeIndex);
                 lastTween.updateId = (TweenUpdateId) removeIndex;
                 _list[removeIndex] = lastTween;
+                lastTween = null;
+                // L.I($"[DOTween] Update list: {string.Join(", ", _list.Select(x => (int) x.updateId))}");
             }
+
+            // L.I($"[DOTween] Update list: {string.Join(", ", _list.Select(x => (int) x.updateId))}");
 
             // Validate list.
             var newCount = listCount - removeCount;
@@ -74,7 +102,8 @@ namespace DG.Tweening.Core
             for (var i = 0; i < newCount; i++)
             {
                 var tween = _list[i];
-                Assert.AreEqual((TweenUpdateId) i, tween.updateId, "updateId is not equal to index");
+                Assert.AreEqual((TweenUpdateId) i, tween.updateId,
+                    $"updateId is not equal to index: expected={i}, actual={tween.updateId}, listCount={listCount}, newCount={newCount}");
             }
 #endif
 
@@ -92,7 +121,7 @@ namespace DG.Tweening.Core
                     if (tween.updateId.IsValid())
                         return tween;
                     index--;
-                    Assert.AreNotEqual(0, index, "Can't find an eligible tween");
+                    Assert.IsTrue(index >= 0, "Can't find an eligible tween");
                 }
             }
         }

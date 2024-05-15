@@ -69,6 +69,7 @@ namespace DG.Tweening
 
         internal static Sequence DoInsert(Sequence inSequence, Tween t, float atPosition)
         {
+            Assert.IsTrue(t.updateId.IsValid(), "Tween has an invalid updateId");
             TweenManager.DetachTween(t);
 
             // If t has a delay add it as an interval
