@@ -8,6 +8,7 @@ using DG.Tweening.Core;
 using DG.Tweening.Core.Easing;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 #pragma warning disable 1573
 namespace DG.Tweening
@@ -459,72 +460,48 @@ namespace DG.Tweening
         /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param>
         /// <param name="jumpPower">Power of the jump (the max height of the jump is represented by this plus the final Y offset)</param>
-        /// <param name="numJumps">Total number of jumps</param>
         /// <param name="duration">The duration of the tween</param>
-        public static Sequence DOJump(this Transform target, Vector2 endValue, float jumpPower, int numJumps, float duration)
+        public static Tweener DOJump(this Transform target, Vector2 endValue, float jumpPower, float duration)
         {
-            if (numJumps < 1) numJumps = 1;
-            var startPosY = target.position.y; // Temporary fix for OnStart not being called when using Goto instead of GotoWithCallbacks
-            float offsetY = -1;
-            var offsetYSet = false;
+            // x, y = start position, z = normalized time.
+            var data = new Vector3(float.NaN, float.NaN, 0);
+            return DOTween.To(
+                    () =>
+                    {
+                        if (data.x is float.NaN)
+                        {
+                            var pos = target.position;
+                            data.x = pos.x;
+                            data.y = pos.y;
+                        }
 
-            // Separate Y Tween so we can elaborate elapsedPercentage on that instead of on the Sequence
-            // (in case users add a delay or other elements to the Sequence)
-            var s = DOTween.Sequence();
-            Tween yTween = DOTween.To(() => target.position, x => target.position = x, new Vector3(0, jumpPower, 0), duration / (numJumps * 2))
-                .SetOptions(AxisConstraint.Y).SetEase(Ease.OutQuad).SetRelative()
-                .SetLoops(numJumps * 2, LoopType.Yoyo)
-                .OnStart(()=> startPosY = target.position.y); // FIXME not called if you only use Goto (and not GotoWithCallbacks)
-            s.Append(DOTween.To(() => target.position, x => target.position = x, new Vector3(endValue.x, 0, 0), duration)
-                    .SetOptions(AxisConstraint.X).SetEase(Ease.Linear)
-                ).Join(yTween)
-                .SetTarget(target).SetEase(Config.defaultEaseType);
-            yTween.OnUpdate(() => {
-                if (!offsetYSet) {
-                    offsetYSet = true;
-                    offsetY = s.isRelative ? endValue.y : endValue.y - startPosY;
-                }
-                var pos = target.position;
-                pos.y += EaseManager.Evaluate(0, offsetY, yTween.ElapsedPercentage(), Ease.OutQuad);
-                target.position = pos;
-            });
-            return s;
-        }
-        /// <summary>Tweens a Transform's localPosition to the given value, while also applying a jump effect along the Y axis.
-        /// Returns a Sequence instead of a Tweener.
-        /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param>
-        /// <param name="jumpPower">Power of the jump (the max height of the jump is represented by this plus the final Y offset)</param>
-        /// <param name="numJumps">Total number of jumps</param>
-        /// <param name="duration">The duration of the tween</param>
-        public static Sequence DOLocalJump(this Transform target, Vector3 endValue, float jumpPower, int numJumps, float duration)
-        {
-            if (numJumps < 1) numJumps = 1;
-            var startPosY = target.localPosition.y; // Temporary fix for OnStart not being called when using Goto instead of GotoWithCallbacks
-            float offsetY = -1;
-            var offsetYSet = false;
+                        return data.z;
+                    },
+                    t =>
+                    {
+                        data.z = t; // Store the time for the next frame.
 
-            // Separate Y Tween so we can elaborate elapsedPercentage on that instead of on the Sequence
-            // (in case users add a delay or other elements to the Sequence)
-            var s = DOTween.Sequence();
-            Tween yTween = DOTween.To(() => target.localPosition, x => target.localPosition = x, new Vector3(0, jumpPower, 0), duration / (numJumps * 2))
-                .SetOptions(AxisConstraint.Y).SetEase(Ease.OutQuad).SetRelative()
-                .SetLoops(numJumps * 2, LoopType.Yoyo)
-                .OnStart(()=> startPosY = target.localPosition.y); // FIXME not called if you only use Goto (and not GotoWithCallbacks)
-            s.Append(DOTween.To(() => target.localPosition, x => target.localPosition = x, new Vector3(endValue.x, 0, 0), duration)
-                    .SetOptions(AxisConstraint.X).SetEase(Ease.Linear)
-                ).Join(yTween)
-                .SetTarget(target).SetEase(Config.defaultEaseType);
-            yTween.OnUpdate(() => {
-                if (!offsetYSet) {
-                    offsetYSet = true;
-                    offsetY = s.isRelative ? endValue.y : endValue.y - startPosY;
-                }
-                var pos = target.localPosition;
-                pos.y += EaseManager.Evaluate(0, offsetY, yTween.ElapsedPercentage(), Ease.OutQuad);
-                target.localPosition = pos;
-            });
-            return s;
+                        var startX = data.x;
+                        var startY = data.y;
+                        Assert.AreNotEqual(float.NaN, startX);
+                        Assert.AreNotEqual(float.NaN, startY);
+
+                        // Calculate X
+                        var pos = target.position;
+                        pos.x = Mathf.Lerp(startX, endValue.x, t);
+
+                        // Calculate Y
+                        // Linear part (OutQuad): -t * (t - 2)
+                        // Jump part (OutQuad with Yoyo): 4 * -t * (t - 1)
+                        var jumpProgress = 4 * -t * (t - 1); // 0 -> 1 -> 0
+                        var jumpPart = jumpPower * jumpProgress;
+                        var linearPart = Mathf.Lerp(startY, endValue.y, -t * (t - 2));
+                        pos.y = linearPart + jumpPart;
+
+                        target.position = pos;
+                    },
+                    1, duration)
+                .SetEase(Config.defaultEaseType);
         }
 
         #endregion

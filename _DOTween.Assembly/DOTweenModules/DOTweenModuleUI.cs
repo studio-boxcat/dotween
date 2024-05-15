@@ -253,47 +253,6 @@ namespace DG.Tweening
                 .SetTarget(target);
         }
 
-        #region Special
-
-        /// <summary>Tweens a RectTransform's anchoredPosition to the given value, while also applying a jump effect along the Y axis.
-        /// Returns a Sequence instead of a Tweener.
-        /// Also stores the RectTransform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param>
-        /// <param name="jumpPower">Power of the jump (the max height of the jump is represented by this plus the final Y offset)</param>
-        /// <param name="numJumps">Total number of jumps</param>
-        /// <param name="duration">The duration of the tween</param>
-        public static Sequence DOJumpAnchorPos(this RectTransform target, Vector2 endValue, float jumpPower, int numJumps, float duration)
-        {
-            if (numJumps < 1) numJumps = 1;
-            float startPosY = 0;
-            float offsetY = -1;
-            bool offsetYSet = false;
-
-            // Separate Y Tween so we can elaborate elapsedPercentage on that insted of on the Sequence
-            // (in case users add a delay or other elements to the Sequence)
-            Sequence s = DOTween.Sequence();
-            Tween yTween = DOTween.To(() => target.anchoredPosition, x => target.anchoredPosition = x, new Vector2(0, jumpPower), duration / (numJumps * 2))
-                .SetOptions(AxisConstraint.Y).SetEase(Ease.OutQuad).SetRelative()
-                .SetLoops(numJumps * 2, LoopType.Yoyo)
-                .OnStart(()=> startPosY = target.anchoredPosition.y);
-            s.Append(DOTween.To(() => target.anchoredPosition, x => target.anchoredPosition = x, new Vector2(endValue.x, 0), duration)
-                    .SetOptions(AxisConstraint.X).SetEase(Ease.Linear)
-                ).Join(yTween)
-                .SetTarget(target).SetEase(Config.defaultEaseType);
-            s.OnUpdate(() => {
-                if (!offsetYSet) {
-                    offsetYSet = true;
-                    offsetY = s.isRelative ? endValue.y : endValue.y - startPosY;
-                }
-                Vector2 pos = target.anchoredPosition;
-                pos.y += EaseManager.Evaluate(0, offsetY, s.ElapsedDirectionalPercentage(), Ease.OutQuad);
-                target.anchoredPosition = pos;
-            });
-            return s;
-        }
-
-        #endregion
-
         #endregion
 
         #region ScrollRect

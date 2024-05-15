@@ -173,12 +173,6 @@ namespace DG.Tweening.Core.Easing
             }
         }
 
-        public static float Evaluate(float from, float to, float lifetimePercentage, Ease easeType)
-        {
-            var value = Evaluate(easeType, null, lifetimePercentage, 1, Config.defaultEaseOvershootOrAmplitude, 0);
-            return from + (to - from) * value;
-        }
-
         internal static bool IsFlashEase(Ease ease)
         {
             return ease is Ease.Flash or Ease.InFlash or Ease.OutFlash or Ease.InOutFlash;
