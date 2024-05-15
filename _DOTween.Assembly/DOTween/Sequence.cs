@@ -40,7 +40,7 @@ namespace DG.Tweening
             isPlaying = true;
             loopType = LoopType.Restart;
             easeType = Ease.Linear;
-            easeOvershootOrAmplitude = Const.defaultEaseOvershootOrAmplitude;
+            easeOvershootOrAmplitude = Config.defaultEaseOvershootOrAmplitude;
             easePeriod = 0;
         }
 
@@ -274,14 +274,7 @@ namespace DG.Tweening
                         if (TweenManager.Goto(t, gotoPos, false, updateMode)) {
                             // Nested tween failed. If it's the only tween and there's no callbacks mark for killing the whole sequence
                             // (default behaviour in any case prior to v1.2.060)...
-                            if (DOTween.nestedTweenFailureBehaviour == NestedTweenFailureBehaviour.KillWholeSequence) return true;
-                            if (s.sequencedTweens.Count == 1 && s._sequencedObjs.Count == 1 && !IsAnyCallbackSet(s)) return true;
-                            // ...otherwise remove failed tween from Sequence and continue
-                            TweenManager.KillTween(t);
-                            s._sequencedObjs.RemoveAt(i);
-                            s.sequencedTweens.Remove(t);
-                            --i; --len;
-                            continue;
+                            return true;
                         }
 
                         // Fixes nested callbacks not being called correctly if main sequence has loops and nested ones don't
@@ -331,14 +324,7 @@ namespace DG.Tweening
                         if (TweenManager.Goto(t, gotoPos, false, updateMode)) {
                             // Nested tween failed. If it's the only tween and there's no callbacks mark for killing the whole sequence
                             // (default behaviour in any case prior to v1.2.060)...
-                            if (DOTween.nestedTweenFailureBehaviour == NestedTweenFailureBehaviour.KillWholeSequence) return true;
-                            if (s.sequencedTweens.Count == 1 && s._sequencedObjs.Count == 1 && !IsAnyCallbackSet(s)) return true;
-                            // ...otherwise remove failed tween from Sequence and continue
-                            TweenManager.KillTween(t);
-                            s._sequencedObjs.RemoveAt(i);
-                            s.sequencedTweens.Remove(t);
-                            --i; --len;
-                            continue;
+                            return true;
                         }
 
                         // Fixes nested callbacks not being called correctly if main sequence has loops and nested ones don't

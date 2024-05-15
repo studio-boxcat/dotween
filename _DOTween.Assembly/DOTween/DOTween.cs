@@ -23,14 +23,6 @@ namespace DG.Tweening
         // public static readonly string Version = "1.2.751"; // Last version before modules: 1.1.755
         internal static bool initialized; // Can be set to false by DOTweenComponent OnDestroy
 
-        /// <summary>If TRUE (default) makes tweens slightly slower but safer, automatically taking care of a series of things
-        /// (like targets becoming null while a tween is playing).
-        /// <para>Default: TRUE</para></summary>
-        public const bool useSafeMode = true;
-        /// <summary>Behaviour in case a tween nested inside a Sequence fails (and is caught by safe mode).
-        /// <para>Default: NestedTweenFailureBehaviour.TryToPreserveSequence</para></summary>
-        public static NestedTweenFailureBehaviour nestedTweenFailureBehaviour = NestedTweenFailureBehaviour.TryToPreserveSequence;
-
         #region Public Methods
 
         static void InitCheck()
@@ -43,10 +35,6 @@ namespace DG.Tweening
             initialized = true;
 
             DOTweenUnityBridge.Create();
-
-            // Assign settings
-            var settings = DOTweenSettings.Instance;
-            nestedTweenFailureBehaviour = settings.safeModeOptions.nestedTweenFailureBehaviour;
         }
 
         /// <summary>
@@ -60,8 +48,6 @@ namespace DG.Tweening
             initialized = false;
 
             TweenManager.DetachAllTweens();
-
-            nestedTweenFailureBehaviour = NestedTweenFailureBehaviour.TryToPreserveSequence;
         }
 
         public static void Update()
@@ -232,16 +218,6 @@ namespace DG.Tweening
 
         /////////////////////////////////////////////////////////////////////
         // OTHER STUFF //////////////////////////////////////////////////////
-
-        #region Play Operations
-
-        /// <summary>Kills all tweens with the given ID or target and returns the number of actual tweens killed</summary>
-        /// <param name="targetOrId"></param>
-        /// <param name="complete">If TRUE completes the tweens before killing them</param>
-        public static void Kill(Object targetOrId, bool complete = false)
-            => targetOrId.DOKill(complete);
-
-        #endregion
 
         #region Global Info Getters
 

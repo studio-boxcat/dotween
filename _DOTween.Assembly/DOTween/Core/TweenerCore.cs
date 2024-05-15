@@ -47,8 +47,8 @@ namespace DG.Tweening.Core
 
             // Defaults
             autoKill = true;
-            easeType = Const.defaultEaseType;
-            easeOvershootOrAmplitude = Const.defaultEaseOvershootOrAmplitude;
+            easeType = Config.defaultEaseType;
+            easeOvershootOrAmplitude = Config.defaultEaseOvershootOrAmplitude;
             easePeriod = 0;
             loopType = LoopType.Restart;
             isPlaying = true;
@@ -100,7 +100,7 @@ namespace DG.Tweening.Core
 
             if (!hasManuallySetStartValue) {
                 // Take start value from current target value
-                if (DOTween.useSafeMode) {
+                if (Config.useSafeMode) {
                     try {
                         if (isFrom) {
                             // From tween without forced From value and where setImmediately was FALSE
@@ -146,7 +146,7 @@ namespace DG.Tweening.Core
         internal override bool ApplyTween(float prevPosition, int prevCompletedLoops, int newCompletedSteps, bool useInversePosition, UpdateMode updateMode)
         {
             var elapsed = useInversePosition ? duration - position : position;
-            if (DOTween.useSafeMode) {
+            if (Config.useSafeMode) {
                 try {
                     plugin.EvaluateAndApply(this, elapsed);
                 } catch (Exception e) {

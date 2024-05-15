@@ -480,7 +480,7 @@ namespace DG.Tweening
             s.Append(DOTween.To(() => target.position, x => target.position = x, new Vector3(endValue.x, 0, 0), duration)
                     .SetOptions(AxisConstraint.X).SetEase(Ease.Linear)
                 ).Join(yTween)
-                .SetTarget(target).SetEase(Const.defaultEaseType);
+                .SetTarget(target).SetEase(Config.defaultEaseType);
             yTween.OnUpdate(() => {
                 if (!offsetYSet) {
                     offsetYSet = true;
@@ -516,7 +516,7 @@ namespace DG.Tweening
             s.Append(DOTween.To(() => target.localPosition, x => target.localPosition = x, new Vector3(endValue.x, 0, 0), duration)
                     .SetOptions(AxisConstraint.X).SetEase(Ease.Linear)
                 ).Join(yTween)
-                .SetTarget(target).SetEase(Const.defaultEaseType);
+                .SetTarget(target).SetEase(Config.defaultEaseType);
             yTween.OnUpdate(() => {
                 if (!offsetYSet) {
                     offsetYSet = true;

@@ -283,7 +283,7 @@ namespace DG.Tweening
         // Returns TRUE in case of success, FALSE in case of error (if safeMode is on)
         internal static bool OnTweenCallback(TweenCallback callback, Tween t)
         {
-            if (DOTween.useSafeMode) {
+            if (Config.useSafeMode) {
                 try {
                     callback();
                 } catch (Exception e) {
