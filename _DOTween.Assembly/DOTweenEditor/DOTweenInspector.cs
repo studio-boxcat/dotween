@@ -1,49 +1,44 @@
 ﻿using System.Text;
 using DG.Tweening;
 using DG.Tweening.Core;
+using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace DG.DOTweenEditor.UI
 {
-    [CustomEditor(typeof(DOTweenUnityBridge))]
-    public class DOTweenComponentInspector : Editor
+    public class DOTweenInspector : OdinEditorWindow
     {
-        readonly StringBuilder _sb = new();
+        static readonly StringBuilder _sb = new();
 
-        #region Unity + GUI
+        // Open
+        [MenuItem("Meow Tower/DOTween Inspector")]
+        static void Open()
+        {
+            GetWindow<DOTweenInspector>().Show();
+        }
 
-        public override void OnInspectorGUI()
+        protected override void OnImGUI()
         {
             if (EditorApplication.isPlaying is false)
                 return;
 
-            DrawTweensButtons();
-            GUILayout.Space(2);
+            GUILayout.Label("Pooled tweens");
+            GUILayout.Label("    Tweeners: " + TweenPool.SumPooledTweeners());
+            GUILayout.Label("    Sequences: " + TweenPool.SumPooledSequences());
 
-            _sb.Clear();
-            _sb.Append("Pooled tweens")
-                .Append(" (").Append(TweenPool.SumPooledTweeners()).Append(" TW, ")
-                .Append(TweenPool.SumPooledSequences()).Append(" SE)");
-            GUILayout.Label(_sb.ToString());
-        }
+            base.OnImGUI();
 
-        #endregion
-
-        #region Methods
-
-        void DrawTweensButtons()
-        {
+            // Draw playing tweens.
             var tweens = TweenManager.Tweens.StartIterate();
-            foreach (var t in tweens)
-                DrawTweenButton(t);
+            foreach (var t in tweens) DrawTweenButton(t);
             TweenManager.Tweens.EndIterate();
         }
 
-        void DrawTweenButton(Tween tween, bool isSequenced = false)
+        static void DrawTweenButton(Tween tween, bool isSequenced = false)
         {
-            _sb.Length = 0;
+            var label = BuildTweenLabel(tween);
 
             if (tween is Tweener)
             {
@@ -61,11 +56,11 @@ namespace DG.DOTweenEditor.UI
                 }
                 else
                 {
-                    BuildTweenButtonLabel(tween, _sb);
-                    GUILayout.Label(_sb.ToString());
+                    GUILayout.Label(label);
                 }
 
-                if (!isSequenced) GUILayout.EndHorizontal();
+                if (!isSequenced)
+                    GUILayout.EndHorizontal();
             }
             else if (tween is Sequence s)
             {
@@ -74,9 +69,11 @@ namespace DG.DOTweenEditor.UI
                     GUILayout.BeginHorizontal();
                     DrawPlayToggle(s);
                 }
-                BuildTweenButtonLabel(s, _sb);
-                GUILayout.Label(_sb.ToString());
-                if (!isSequenced) GUILayout.EndHorizontal();
+
+                GUILayout.Label(label);
+
+                if (!isSequenced)
+                    GUILayout.EndHorizontal();
 
                 foreach (var t in s.sequencedTweens)
                     DrawTweenButton(t);
@@ -96,22 +93,19 @@ namespace DG.DOTweenEditor.UI
             }
         }
 
-        #endregion
-
-        #region Helpers
-
-        static void BuildTweenButtonLabel(Tween t, StringBuilder sb)
+        static string BuildTweenLabel(Tween t)
         {
+            Assert.AreEqual(0, _sb.Length, "StringBuilder not empty");
             if (t is Sequence)
-                sb.Append("[SEQUENCE] ");
-
+                _sb.Append("[SEQUENCE] ");
             if (string.IsNullOrEmpty(t.debugHint) == false)
-                sb.Append(t.debugHint).Append(';');
+                _sb.Append(t.debugHint).Append(';');
             if (t.id != Tween.invalidId)
-                sb.Append(t.id).Append(";");
-            sb.Append(t.target ?? "null");
+                _sb.Append(t.id).Append(";");
+            _sb.Append(t.target ?? "null");
+            var str = _sb.ToString();
+            _sb.Clear();
+            return str;
         }
-
-        #endregion
     }
 }
