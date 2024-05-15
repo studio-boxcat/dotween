@@ -14,7 +14,6 @@ using DG.Tweening.Plugins.Options;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Debugger = DG.Tweening.Core.Debugger;
 
 #pragma warning disable 1573
 namespace DG.Tweening

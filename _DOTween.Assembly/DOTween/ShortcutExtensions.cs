@@ -455,53 +455,46 @@ namespace DG.Tweening
 
         #region Special
 
-        /// <summary>Tweens a Transform's position to the given value, while also applying a jump effect along the Y axis.
-        /// Returns a Sequence instead of a Tweener.
-        /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param>
-        /// <param name="jumpPower">Power of the jump (the max height of the jump is represented by this plus the final Y offset)</param>
-        /// <param name="duration">The duration of the tween</param>
         public static Tweener DOJump(this Transform target, Vector2 endValue, float jumpPower, float duration)
         {
-            // x, y = start position, z = normalized time.
-            var data = new Vector3(float.NaN, float.NaN, 0);
+            var t = 0f;
+            var startPos = new Vector3(float.NaN, float.NaN, float.NaN);
             return DOTween.To(
                     () =>
                     {
-                        if (data.x is float.NaN)
-                        {
-                            var pos = target.position;
-                            data.x = pos.x;
-                            data.y = pos.y;
-                        }
-
-                        return data.z;
+                        if (startPos.x is float.NaN)
+                            startPos = target.position;
+                        return t;
                     },
-                    t =>
+                    x =>
                     {
-                        data.z = t; // Store the time for the next frame.
-
-                        var startX = data.x;
-                        var startY = data.y;
-                        Assert.AreNotEqual(float.NaN, startX);
-                        Assert.AreNotEqual(float.NaN, startY);
-
-                        // Calculate X
-                        var pos = target.position;
-                        pos.x = Mathf.Lerp(startX, endValue.x, t);
-
-                        // Calculate Y
-                        // Linear part (OutQuad): -t * (t - 2)
-                        // Jump part (OutQuad with Yoyo): 4 * -t * (t - 1)
-                        var jumpProgress = 4 * -t * (t - 1); // 0 -> 1 -> 0
-                        var jumpPart = jumpPower * jumpProgress;
-                        var linearPart = Mathf.Lerp(startY, endValue.y, -t * (t - 2));
-                        pos.y = linearPart + jumpPart;
-
-                        target.position = pos;
+                        t = x; // Store the time for the next frame.
+                        var pos = JumpUtils.Calculate(
+                            x, startPos.x, startPos.y, endValue.x, endValue.y, jumpPower);
+                        target.position = new Vector3(pos.x, pos.y, startPos.z);
                     },
-                    1, duration)
-                .SetEase(Config.defaultEaseType);
+                    1, duration);
+        }
+
+        public static Tweener DOLocalJump(this Transform target, Vector2 endValue, float jumpPower, float duration)
+        {
+            var t = 0f;
+            var startPos = new Vector3(float.NaN, float.NaN, float.NaN);
+            return DOTween.To(
+                    () =>
+                    {
+                        if (startPos.x is float.NaN)
+                            startPos = target.localPosition;
+                        return t;
+                    },
+                    x =>
+                    {
+                        t = x; // Store the time for the next frame.
+                        var pos = JumpUtils.Calculate(
+                            x, startPos.x, startPos.y, endValue.x, endValue.y, jumpPower);
+                        target.localPosition = new Vector3(pos.x, pos.y, startPos.z);
+                    },
+                    1, duration);
         }
 
         #endregion

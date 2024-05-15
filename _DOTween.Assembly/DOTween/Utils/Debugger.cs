@@ -4,7 +4,7 @@ using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
 #pragma warning disable 1591
-namespace DG.Tweening.Core
+namespace DG.Tweening
 {
     /// <summary>
     /// Public so it can be used by lose scripts related to DOTween (like DOTweenAnimation)
