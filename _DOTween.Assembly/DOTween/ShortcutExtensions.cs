@@ -246,8 +246,8 @@ namespace DG.Tweening
         /// <param name="duration">The duration of the tween</param>
         public static TweenerCore<float> DOLocalRotateZ(this Transform target, float endValue, float duration)
         {
-            var t = DOTween.To
-                (() => target.localEulerAngles.z,
+            var t = DOTween.To(
+                () => target.localEulerAngles.z,
                 x => target.localEulerAngles = new Vector3(0, 0, x),
                 endValue,
                 duration);

@@ -213,13 +213,15 @@ namespace DG.Tweening
                 or AnimationType.ShakePosition)
             {
                 if (optionalBool0)
-                    result.AddError("Punch and Shake animations cannot have snapping enabled");
+                    result.AddError("Snapping is not supported anymore.");
             }
 
             if (animationType is AnimationType.LocalRotateZ)
             {
                 if (endValueV3.x != 0 || endValueV3.y != 0)
-                    result.AddError("LocalRotate animation can only rotate on the Z axis");
+                    result.AddError("LocalRotateZ can only rotate on the Z axis");
+                if (isRelative is false)
+                    result.AddError("LocalRotateZ must be relative. Otherwise, it would result unexpected rotation.");
             }
 
             if (animationType
@@ -228,11 +230,9 @@ namespace DG.Tweening
                 or AnimationType.PunchScale)
             {
                 if (easeType is not Ease.OutQuad)
-                    result.AddError("Punch animations must use OutQuad ease type");
-                if (isRelative)
-                    result.AddError("Punch animations cannot be relative");
+                    result.AddError("Punch must use OutQuad ease type.");
                 if (isFrom)
-                    result.AddError("Punch animations cannot be from");
+                    result.AddError("Punch cannot be from.");
             }
 
             if (animationType
@@ -241,11 +241,9 @@ namespace DG.Tweening
                 or AnimationType.ShakeScale)
             {
                 if (easeType is not Ease.Linear)
-                    result.AddError("Shake animations must use Linear ease type");
-                if (isRelative)
-                    result.AddError("Shake animations cannot be relative");
+                    result.AddError("Shake must use Linear ease type.");
                 if (isFrom)
-                    result.AddError("Shake animations cannot be from");
+                    result.AddError("Shake cannot be from.");
             }
 
             if (animationType
@@ -260,7 +258,7 @@ namespace DG.Tweening
                 or AnimationType.UIAnchors)
             {
                 if (isRelative)
-                    result.AddError("Fade and Color animations cannot be relative");
+                    result.AddError(animationType + " cannot be relative.");
             }
         }
 #endif
