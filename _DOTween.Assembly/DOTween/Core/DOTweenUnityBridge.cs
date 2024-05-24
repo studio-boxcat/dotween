@@ -49,18 +49,17 @@ namespace DG.Tweening.Core
 
         static DOTweenUnityBridge()
         {
+            L.I("[DOTweenUnityBridge] Initializing");
             _editor_IsPlaying = false;
 
             UnityEditor.EditorApplication.playModeStateChanged += state =>
             {
                 if (state is UnityEditor.PlayModeStateChange.ExitingPlayMode)
                 {
-                    Assert.IsTrue(_editor_IsPlaying, "DOTweenUnityBridge is not playing");
                     _editor_IsPlaying = false;
                 }
                 else if (state is UnityEditor.PlayModeStateChange.ExitingEditMode)
                 {
-                    Assert.IsFalse(_editor_IsPlaying, "DOTweenUnityBridge is playing");
                     _editor_IsPlaying = true;
                 }
             };
