@@ -124,6 +124,8 @@ namespace DG.Tweening
         [MustUseReturnValue]
         public Tweener CreateTweenInstance()
         {
+            L.I($"[DOTweenAnimation] CreateTweenInstance: {animationType} - {target}", this);
+
             // Create tween.
             var t = CreateTween(
                 target, transform, animationType, duration,

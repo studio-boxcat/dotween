@@ -43,12 +43,6 @@ namespace DG.DOTweenEditor
 
         public override void OnInspectorGUI()
         {
-            if (EditorApplication.isPlaying)
-            {
-                GUILayout.Label("Animation Editor disabled while in play mode");
-                return;
-            }
-
             Undo.RecordObject(_src, "DOTween Animation");
 
             EditorGUIUtility.labelWidth = 100;
@@ -210,8 +204,7 @@ namespace DG.DOTweenEditor
             GUILayout.BeginHorizontal();
             EditorGUIUtility.labelWidth = 70;
             _src.autoGenerate = EditorGUILayout.ToggleLeft(new GUIContent("AutoGenerate", "If selected, the tween will be generated at startup (during Start for RectTransform position tween, Awake for all the others)"), _src.autoGenerate);
-            if (_src.autoGenerate)
-                _src.autoPlay = EditorGUILayout.ToggleLeft(new GUIContent("AutoPlay", "If selected, the tween will play automatically"), _src.autoPlay);
+            _src.autoPlay = EditorGUILayout.ToggleLeft(new GUIContent("AutoPlay", "If selected, the tween will play automatically"), _src.autoPlay);
             _src.autoKill = EditorGUILayout.ToggleLeft(new GUIContent("AutoKill", "If selected, the tween will be killed when it completes, and won't be reusable"), _src.autoKill);
             GUILayout.FlexibleSpace();
             EditorGUIUtility.labelWidth = 110;
