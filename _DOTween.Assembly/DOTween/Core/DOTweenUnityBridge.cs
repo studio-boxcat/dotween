@@ -44,6 +44,12 @@ namespace DG.Tweening.Core
             _instance.AddComponent<DOTweenUnityBridge>();
         }
 
+        internal static void Destroy()
+        {
+            if (_instance is not null)
+                Destroy(_instance);
+        }
+
 #if UNITY_EDITOR
         static bool _editor_IsPlaying;
 

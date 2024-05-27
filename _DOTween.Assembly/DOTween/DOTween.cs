@@ -41,6 +41,7 @@ namespace DG.Tweening
             initialized = false;
             TweenManager.Editor_DetachAllTweens();
             TweenPool.Editor_Clear();
+            DOTweenUnityBridge.Destroy();
         }
 #endif
 
