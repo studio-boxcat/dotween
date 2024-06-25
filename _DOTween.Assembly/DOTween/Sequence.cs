@@ -22,7 +22,6 @@ namespace DG.Tweening
 
         internal readonly List<Tween> sequencedTweens = new(); // Only Tweens (used for despawning and validation)
         readonly List<ABSSequentiable> _sequencedObjs = new(); // Tweens plus SequenceCallbacks
-        internal float lastTweenInsertTime; // Used to insert a tween at the position of the previous one
 
         #region Constructor
 
@@ -72,7 +71,6 @@ namespace DG.Tweening
 
             // If t has a delay add it as an interval
             atPosition += t.delay;
-            inSequence.lastTweenInsertTime = atPosition;
 
             t.isSequenced = t.creationLocked = true;
             if (t.loops == -1) {
@@ -95,14 +93,12 @@ namespace DG.Tweening
 
         internal static Sequence DoAppendInterval(Sequence inSequence, float interval)
         {
-            inSequence.lastTweenInsertTime = inSequence.duration;
             inSequence.duration += interval;
             return inSequence;
         }
 
         internal static Sequence DoPrependInterval(Sequence inSequence, float interval)
         {
-            inSequence.lastTweenInsertTime = 0;
             inSequence.duration += interval;
             int len = inSequence._sequencedObjs.Count;
             for (int i = 0; i < len; ++i) {
@@ -116,7 +112,6 @@ namespace DG.Tweening
 
         internal static Sequence DoInsertCallback(Sequence inSequence, TweenCallback callback, float atPosition)
         {
-            inSequence.lastTweenInsertTime = atPosition;
             var c = new SequenceCallback(atPosition, callback);
             c.sequencedPosition = c.sequencedEndPosition = atPosition;
             inSequence._sequencedObjs.Add(c);
@@ -140,7 +135,6 @@ namespace DG.Tweening
 
             sequencedTweens.Clear();
             _sequencedObjs.Clear();
-            lastTweenInsertTime = 0;
         }
 
         // CALLED BY Tween the moment the tween starts.

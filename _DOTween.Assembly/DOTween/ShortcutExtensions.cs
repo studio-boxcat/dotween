@@ -505,22 +505,6 @@ namespace DG.Tweening
 
         #region Transform
 
-        /// <summary>Tweens a Transform's position BY the given value (as if you chained a <code>SetRelative</code>),
-        /// in a way that allows other DOBlendableMove tweens to work together on the same target,
-        /// instead than fight each other as multiple DOMove would do.
-        /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="byValue">The value to tween by</param><param name="duration">The duration of the tween</param>
-        public static Tweener DOBlendableMoveBy(this Transform target, Vector3 byValue, float duration)
-        {
-            var to = Vector3.zero;
-            return DOTween.To(() => to, x => {
-                var diff = x - to;
-                to = x;
-                target.position += diff;
-            }, byValue, duration)
-                .Blendable().SetTarget(target);
-        }
-
         /// <summary>Tweens a Transform's localPosition BY the given value (as if you chained a <code>SetRelative</code>),
         /// in a way that allows other DOBlendableMove tweens to work together on the same target,
         /// instead than fight each other as multiple DOMove would do.
@@ -564,22 +548,6 @@ namespace DG.Tweening
             }, punch, duration, vibrato, elasticity)
                 .Blendable().SetTarget(target);
             return t;
-        }
-
-        /// <summary>Tweens a Transform's localScale BY the given value (as if you chained a <code>SetRelative</code>),
-        /// in a way that allows other DOBlendableScale tweens to work together on the same target,
-        /// instead than fight each other as multiple DOScale would do.
-        /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="byValue">The value to tween by</param><param name="duration">The duration of the tween</param>
-        public static Tweener DOBlendableScaleBy(this Transform target, Vector3 byValue, float duration)
-        {
-            var to = Vector3.zero;
-            return DOTween.To(() => to, x => {
-                var diff = x - to;
-                to = x;
-                target.localScale += diff;
-            }, byValue, duration)
-                .Blendable().SetTarget(target);
         }
 
         #endregion

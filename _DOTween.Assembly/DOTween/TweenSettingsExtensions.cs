@@ -240,35 +240,6 @@ namespace DG.Tweening
             Sequence.DoInsert(s, t, s.duration);
             return s;
         }
-        /// <summary>Adds the given tween to the beginning of the Sequence, pushing forward the other nested content.
-        /// Has no effect if the Sequence has already started</summary>
-        /// <param name="t">The tween to prepend</param>
-        public static Sequence Prepend([NotNull] this Sequence s, [NotNull] Tween t)
-        {
-            if (!ValidateAddToSequence(s) || !ValidateAddToSequence(t)) return s;
-            Sequence.DoPrepend(s, t);
-            return s;
-        }
-        /// <summary>Inserts the given tween at the same time position of the last tween, callback or intervale added to the Sequence.
-        /// Note that, in case of a Join after an interval, the insertion time will be the time where the interval starts, not where it finishes.
-        /// Has no effect if the Sequence has already started</summary>
-        public static Sequence Join([NotNull] this Sequence s, [NotNull] Tween t)
-        {
-            if (!ValidateAddToSequence(s) || !ValidateAddToSequence(t)) return s;
-            Sequence.DoInsert(s, t, s.lastTweenInsertTime);
-            return s;
-        }
-        /// <summary>Inserts the given tween at the given time position in the Sequence,
-        /// automatically adding an interval if needed.
-        /// Has no effect if the Sequence has already started</summary>
-        /// <param name="atPosition">The time position where the tween will be placed</param>
-        /// <param name="t">The tween to insert</param>
-        public static Sequence Insert([NotNull] this Sequence s, float atPosition, [NotNull] Tween t)
-        {
-            if (!ValidateAddToSequence(s) || !ValidateAddToSequence(t)) return s;
-            Sequence.DoInsert(s, t, atPosition);
-            return s;
-        }
 
         /// <summary>Adds the given interval to the end of the Sequence.
         /// Has no effect if the Sequence has already started</summary>
@@ -298,30 +269,6 @@ namespace DG.Tweening
             if (callback == null) return s;
 
             Sequence.DoInsertCallback(s, callback, s.duration);
-            return s;
-        }
-        /// <summary>Adds the given callback to the beginning of the Sequence, pushing forward the other nested content.
-        /// Has no effect if the Sequence has already started</summary>
-        /// <param name="callback">The callback to prepend</param>
-        public static Sequence PrependCallback([NotNull] this Sequence s, TweenCallback callback)
-        {
-            if (!ValidateAddToSequence(s)) return s;
-            if (callback == null) return s;
-
-            Sequence.DoInsertCallback(s, callback, 0);
-            return s;
-        }
-        /// <summary>Inserts the given callback at the given time position in the Sequence,
-        /// automatically adding an interval if needed.
-        /// Has no effect if the Sequence has already started</summary>
-        /// <param name="atPosition">The time position where the callback will be placed</param>
-        /// <param name="callback">The callback to insert</param>
-        public static Sequence InsertCallback([NotNull] this Sequence s, float atPosition, TweenCallback callback)
-        {
-            if (!ValidateAddToSequence(s)) return s;
-            if (callback == null) return s;
-
-            Sequence.DoInsertCallback(s, callback, atPosition);
             return s;
         }
 
