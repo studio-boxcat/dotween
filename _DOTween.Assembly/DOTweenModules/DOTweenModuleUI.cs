@@ -6,7 +6,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening.Core;
-using DG.Tweening.Core.Easing;
 
 #pragma warning disable 1591
 namespace DG.Tweening
@@ -99,16 +98,6 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Tweens a Shadow's effectDistance to the given value.
-        /// Also stores the Shadow as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Vector2> DOScale(this Shadow target, Vector2 endValue, float duration)
-        {
-            TweenerCore<Vector2> t = DOTween.To(() => target.effectDistance, x => target.effectDistance = x, endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
-
         #endregion
 
         #region RectTransform
@@ -141,16 +130,6 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Tweens a RectTransform's anchoredPosition3D to the given value.
-        /// Also stores the RectTransform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Vector3> DOAnchorPos3D(this RectTransform target, Vector3 endValue, float duration)
-        {
-            TweenerCore<Vector3> t = DOTween.To(() => target.anchoredPosition3D, x => target.anchoredPosition3D = x, endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
-
         /// <summary>Tweens a RectTransform's anchorMax to the given value.
         /// Also stores the RectTransform as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
@@ -168,34 +147,6 @@ namespace DG.Tweening
         {
             TweenerCore<Vector2> t = DOTween.To(() => target.anchorMin, x => target.anchorMin = x, endValue, duration);
             t.SetTarget(target);
-            return t;
-        }
-
-        /// <summary>Tweens a RectTransform's pivot to the given value.
-        /// Also stores the RectTransform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Vector2> DOPivot(this RectTransform target, Vector2 endValue, float duration)
-        {
-            TweenerCore<Vector2> t = DOTween.To(() => target.pivot, x => target.pivot = x, endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
-        /// <summary>Tweens a RectTransform's pivot X to the given value.
-        /// Also stores the RectTransform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Vector2> DOPivotX(this RectTransform target, float endValue, float duration)
-        {
-            TweenerCore<Vector2> t = DOTween.To(() => target.pivot, x => target.pivot = x, new Vector2(endValue, 0), duration);
-            t.SetOptions(AxisConstraint.X).SetTarget(target);
-            return t;
-        }
-        /// <summary>Tweens a RectTransform's pivot Y to the given value.
-        /// Also stores the RectTransform as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Vector2> DOPivotY(this RectTransform target, float endValue, float duration)
-        {
-            TweenerCore<Vector2> t = DOTween.To(() => target.pivot, x => target.pivot = x, new Vector2(0, endValue), duration);
-            t.SetOptions(AxisConstraint.Y).SetTarget(target);
             return t;
         }
 
@@ -299,31 +250,6 @@ namespace DG.Tweening
             t.SetTarget(target);
             return t;
         }
-
-        #endregion
-
-        #region Blendables
-
-        #region Graphic
-
-        /// <summary>Tweens a Graphic's color to the given value,
-        /// in a way that allows other DOBlendableColor tweens to work together on the same target,
-        /// instead than fight each other as multiple DOColor would do.
-        /// Also stores the Graphic as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The value to tween to</param><param name="duration">The duration of the tween</param>
-        public static Tweener DOBlendableColor(this Graphic target, Color endValue, float duration)
-        {
-            endValue = endValue - target.color;
-            Color to = new Color(0, 0, 0, 0);
-            return DOTween.To(() => to, x => {
-                Color diff = x - to;
-                to = x;
-                target.color += diff;
-            }, endValue, duration)
-                .Blendable().SetTarget(target);
-        }
-
-        #endregion
 
         #endregion
 

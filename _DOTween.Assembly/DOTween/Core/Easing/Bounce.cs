@@ -33,7 +33,7 @@ namespace DG.Tweening.Core.Easing
     /// <summary>
     /// This class contains a C# port of the easing equations created by Robert Penner (http://robertpenner.com/easing).
     /// </summary>
-    public static class Bounce
+    static class Bounce
     {
         /// <summary>
         /// Easing equation function for a bounce (exponentially decaying parabolic bounce) easing in: accelerating from zero velocity.

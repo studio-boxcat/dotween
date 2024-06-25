@@ -103,7 +103,7 @@ namespace DG.Tweening.Core
                         if (isFrom) {
                             // From tween without forced From value and where setImmediately was FALSE
                             // (contrary to other forms of From tweens its values will be set at startup)
-                            SetFrom(isRelative && !isBlendable);
+                            SetFrom(isRelative);
                             isRelative = false;
                         } else startValue = getter();
                     } catch (Exception e) {
@@ -114,7 +114,7 @@ namespace DG.Tweening.Core
                     if (isFrom) {
                         // From tween without forced From value and where setImmediately was FALSE
                         // (contrary to other forms of From tweens its values will be set at startup)
-                        SetFrom(isRelative && !isBlendable);
+                        SetFrom(isRelative);
                         isRelative = false;
                     }
                     else startValue = getter();

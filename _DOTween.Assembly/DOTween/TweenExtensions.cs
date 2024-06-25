@@ -50,20 +50,6 @@ namespace DG.Tweening
             TweenManager.Flip(t);
         }
 
-        /// <summary>Forces the tween to initialize its settings immediately</summary>
-        public static void ForceInit(this Tween t)
-        {
-            if (t == null) {
-                Debugger.LogNullTween(t); return;
-            } else if (!t.active) {
-                Debugger.LogInvalidTween(t); return;
-            } else if (t.isSequenced) {
-                Debugger.LogNestedTween(t); return;
-            }
-
-            TweenManager.ForceInit(t);
-        }
-
         /// <summary>Send the tween to the given position in time</summary>
         /// <param name="to">Time position to reach
         /// (if higher than the whole tween duration the tween will simply reach its end)</param>
@@ -337,28 +323,6 @@ namespace DG.Tweening
             }
 
             return t.isBackwards;
-        }
-
-        /// <summary>NOTE: To check if a tween was simply set to go backwards see <see cref="IsBackwards"/>.<para/>
-        /// Returns TRUE if this tween is going backwards for any of these reasons:<para/>
-        /// - The tween was reversed and is going backwards on a straight loop<para/>
-        /// - The tween was reversed and is going backwards on an odd Yoyo loop<para/>
-        /// - The tween is going forward but on an even Yoyo loop<para/>
-        /// IMPORTANT: if used inside a tween's callback, this will return a result concerning the exact frame when it's asked,
-        /// so for example in a callback at the end of a Yoyo loop step this method will never return FALSE
-        /// because the frame will never end exactly there and the tween will already be going backwards when the callback is fired</summary>
-        public static bool IsLoopingOrExecutingBackwards(this Tweener t)
-        {
-            if (!t.active) {
-                Debugger.LogInvalidTween(t);
-                return false;
-            }
-
-            if (t.isBackwards) {
-                return t.completedLoops < 1 || t.loopType != LoopType.Yoyo || t.completedLoops % 2 == 0;
-            } else {
-                return t.completedLoops >= 1 && t.loopType == LoopType.Yoyo && t.completedLoops % 2 != 0;
-            }
         }
 
         /// <summary>Returns TRUE if the tween is complete

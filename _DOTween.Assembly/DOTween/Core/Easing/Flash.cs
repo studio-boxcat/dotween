@@ -19,7 +19,7 @@ namespace DG.Tweening.Core.Easing
             float dir = (stepIndex % 2 != 0) ? 1 : -1;
             if (dir < 0) time -= stepDuration;
             float res = (time * dir) / stepDuration;
-            return WeightedEase(overshootOrAmplitude, period, stepIndex, stepDuration, dir, res);
+            return WeightedEase(overshootOrAmplitude, period, stepIndex, dir, res);
         }
 
         public static float EaseIn(float time, float duration, float overshootOrAmplitude, float period)
@@ -29,9 +29,9 @@ namespace DG.Tweening.Core.Easing
             time -= stepDuration * (stepIndex - 1);
             float dir = (stepIndex % 2 != 0) ? 1 : -1;
             if (dir < 0) time -= stepDuration;
-            time = time * dir;
+            time *= dir;
             float res = (time /= stepDuration) * time;
-            return WeightedEase(overshootOrAmplitude, period, stepIndex, stepDuration, dir, res);
+            return WeightedEase(overshootOrAmplitude, period, stepIndex, dir, res);
         }
 
         public static float EaseOut(float time, float duration, float overshootOrAmplitude, float period)
@@ -41,9 +41,9 @@ namespace DG.Tweening.Core.Easing
             time -= stepDuration * (stepIndex - 1);
             float dir = (stepIndex % 2 != 0) ? 1 : -1;
             if (dir < 0) time -= stepDuration;
-            time = time * dir;
+            time *= dir;
             float res = -(time /= stepDuration) * (time - 2);
-            return WeightedEase(overshootOrAmplitude, period, stepIndex, stepDuration, dir, res);
+            return WeightedEase(overshootOrAmplitude, period, stepIndex, dir, res);
         }
 
         public static float EaseInOut(float time, float duration, float overshootOrAmplitude, float period)
@@ -53,14 +53,14 @@ namespace DG.Tweening.Core.Easing
             time -= stepDuration * (stepIndex - 1);
             float dir = (stepIndex % 2 != 0) ? 1 : -1;
             if (dir < 0) time -= stepDuration;
-            time = time * dir;
+            time *= dir;
             float res = (time /= stepDuration * 0.5f) < 1
                 ? 0.5f * time * time
                 : -0.5f * ((--time) * (time - 2) - 1);
-            return WeightedEase(overshootOrAmplitude, period, stepIndex, stepDuration, dir, res);
+            return WeightedEase(overshootOrAmplitude, period, stepIndex, dir, res);
         }
 
-        static float WeightedEase(float overshootOrAmplitude, float period, int stepIndex, float stepDuration, float dir, float res)
+        static float WeightedEase(float overshootOrAmplitude, float period, int stepIndex, float dir, float res)
         {
             float easedRes = 0;
             float finalDecimals = 0;

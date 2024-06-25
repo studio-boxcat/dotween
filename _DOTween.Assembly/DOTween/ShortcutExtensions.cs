@@ -5,7 +5,6 @@
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
 using DG.Tweening.Core;
-using DG.Tweening.Core.Easing;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -469,7 +468,7 @@ namespace DG.Tweening
                     x =>
                     {
                         t = x; // Store the time for the next frame.
-                        var pos = JumpUtils.Calculate(
+                        var pos = CalculateJump(
                             x, startPos.x, startPos.y, endValue.x, endValue.y, jumpPower);
                         target.position = new Vector3(pos.x, pos.y, startPos.z);
                     },
@@ -490,11 +489,34 @@ namespace DG.Tweening
                     x =>
                     {
                         t = x; // Store the time for the next frame.
-                        var pos = JumpUtils.Calculate(
+                        var pos = CalculateJump(
                             x, startPos.x, startPos.y, endValue.x, endValue.y, jumpPower);
                         target.localPosition = new Vector3(pos.x, pos.y, startPos.z);
                     },
                     1, duration);
+        }
+
+        static Vector2 CalculateJump(
+            float t,
+            float startX, float startY,
+            float endX, float endY,
+            float jumpPower)
+        {
+            Assert.AreNotEqual(float.NaN, startX);
+            Assert.AreNotEqual(float.NaN, startY);
+
+            // Calculate X
+            var posX = Mathf.Lerp(startX, endX, t);
+
+            // Calculate Y
+            // Linear part (OutQuad): -t * (t - 2)
+            // Jump part (OutQuad with Yoyo): 4 * -t * (t - 1)
+            var jumpProgress = 4 * -t * (t - 1); // 0 -> 1 -> 0
+            var jumpPart = jumpPower * jumpProgress;
+            var linearPart = Mathf.Lerp(startY, endY, -t * (t - 2));
+            var posY = linearPart + jumpPart;
+
+            return new Vector2(posX, posY);
         }
 
         #endregion
@@ -510,15 +532,15 @@ namespace DG.Tweening
         /// instead than fight each other as multiple DOMove would do.
         /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
         /// <param name="byValue">The value to tween by</param><param name="duration">The duration of the tween</param>
-        public static Tweener DOBlendableLocalMoveBy(this Transform target, Vector3 byValue, float duration)
+        public static Tweener DOBlendableLocalMoveYBy(this Transform target, float byValue, float duration)
         {
-            var to = Vector3.zero;
+            var to = 0f;
             return DOTween.To(() => to, x => {
                 var diff = x - to;
                 to = x;
-                target.localPosition += diff;
+                target.localPosition += new Vector3(0, diff, 0);
             }, byValue, duration)
-                .Blendable().SetTarget(target);
+                .SetTarget(target);
         }
 
         // Added by Steve Streeting > https://github.com/sinbad
@@ -531,7 +553,7 @@ namespace DG.Tweening
         /// <param name="elasticity">Represents how much (0 to 1) the vector will go beyond the starting rotation when bouncing backwards.
         /// 1 creates a full oscillation between the punch rotation and the opposite rotation,
         /// while 0 oscillates only between the punch and the start rotation</param>
-        public static Tweener DOBlendablePunchRotation(this Transform target, Vector3 punch, float duration, int vibrato = 10, float elasticity = 1)
+        public static Tweener DOBlendablePunchRotationZ(this Transform target, float punch, float duration, int vibrato = 10, float elasticity = 1)
         {
             if (duration <= 0) {
                 Debug.LogWarning("DOBlendablePunchRotation: duration can't be 0, returning NULL without creating a tween");
@@ -539,14 +561,14 @@ namespace DG.Tweening
             }
             var to = Vector3.zero;
             var t = DOTween.Punch(() => to, v => {
-                var qto = Quaternion.Euler(to.x, to.y, to.z);
-                var qnew = Quaternion.Euler(v.x, v.y, v.z);
+                var qto = Quaternion.Euler(0, 0, to.z);
+                var qnew = Quaternion.Euler(0, 0, v.z);
                 var diff = qnew * Quaternion.Inverse(qto);
                 to = v;
                 var currRot = target.rotation;
                 target.rotation = currRot * Quaternion.Inverse(currRot) * diff * currRot;
-            }, punch, duration, vibrato, elasticity)
-                .Blendable().SetTarget(target);
+            }, new Vector3(0, 0, punch), duration, vibrato, elasticity)
+                .SetTarget(target);
             return t;
         }
 

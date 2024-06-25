@@ -153,7 +153,7 @@ namespace DG.Tweening
             // Set relative nested tweens
             if (isRelative) {
                 for (int len = sequencedTweens.Count, i = 0; i < len; ++i) {
-                    if (!isBlendable) sequencedTweens[i].isRelative = true;
+                    sequencedTweens[i].isRelative = true;
                 }
             }
             return true;
