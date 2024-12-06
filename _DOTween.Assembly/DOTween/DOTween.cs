@@ -5,12 +5,15 @@
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
 
+using System;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins;
 using DG.Tweening.Plugins.Core;
 using DG.Tweening.Plugins.Options;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.LowLevel;
+using Object = UnityEngine.Object;
 
 namespace DG.Tweening
 {
@@ -20,36 +23,55 @@ namespace DG.Tweening
     public static class DOTween
     {
         // public static readonly string Version = "1.2.751"; // Last version before modules: 1.1.755
-        internal static bool initialized; // Can be set to false by DOTweenComponent OnDestroy
 
         #region Public Methods
 
-        static void InitCheck()
+        static DOTween()
         {
-            if (initialized || !DOTweenUnityBridge.IsPlaying())
-                return;
+            L.I("[DOTween] Initialize PlayerLoop");
 
-            L.I("[DOTween] Init");
-            initialized = true;
-            DOTweenUnityBridge.Create();
+            var playerLoop = PlayerLoop.GetCurrentPlayerLoop();
+
+            // Find update loop.
+            var mainLoops = playerLoop.subSystemList;
+            // Update: ScriptRunBehaviourUpdate, DirectorUpdate
+            // PreLateUpdate: DOTween, LegacyAnimationUpdate, ScriptRunBehaviourLateUpdate
+            // PostLateUpdate: PlayerUpdateCanvases, PlayerEmitCanvasGeometry
+            ref var updateLoop = ref mainLoops[FindLoopIndex(mainLoops, typeof(UnityEngine.PlayerLoop.PreLateUpdate))];
+
+            // Update subSystem.
+            var orgLoops = updateLoop.subSystemList;
+            var orgCount = orgLoops.Length;
+            var newLoops = new PlayerLoopSystem[orgCount + 1];
+            Array.Copy(orgLoops, 0, newLoops, 1, orgCount); // Copy original loops to new loops. (1 offset)
+            newLoops[0] = new PlayerLoopSystem { type = typeof(DOTween), updateDelegate = Update }; // Add DOTween at the start of the loop.
+            updateLoop.subSystemList = newLoops;
+
+            // Set new subSystem.
+            PlayerLoop.SetPlayerLoop(playerLoop);
+            return;
+
+            static int FindLoopIndex(PlayerLoopSystem[] systems, Type type)
+            {
+                for (var i = 0; i < systems.Length; i++)
+                {
+                    if (systems[i].type == type)
+                        return i;
+                }
+                return -1;
+            }
+
+            static void Update() => TweenManager.Update(Time.deltaTime);
         }
 
 #if UNITY_EDITOR
         public static void Editor_Clear()
         {
             L.I("[DOTween] Clear");
-            initialized = false;
             TweenManager.Editor_DetachAllTweens();
             TweenPool.Editor_Clear();
-            DOTweenUnityBridge.Destroy();
         }
 #endif
-
-        public static void Update()
-        {
-            if (!initialized) return;
-            TweenManager.Update(Time.deltaTime);
-        }
 
         #endregion
 
@@ -60,7 +82,6 @@ namespace DG.Tweening
 
         static TweenerCore<T> To<T>(DOGetter<T> getter, DOSetter<T> setter, T endValue, float duration, TweenPlugin<T> plugin)
         {
-            InitCheck();
             var t = TweenManager.GetTweener<T>();
             t.Setup(getter, setter, endValue, duration, plugin);
             return t;
@@ -194,7 +215,6 @@ namespace DG.Tweening
         /// </summary>
         public static Sequence Sequence()
         {
-            InitCheck();
             var sequence = TweenManager.GetSequence();
             sequence.Setup();
             return sequence;

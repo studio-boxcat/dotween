@@ -81,7 +81,6 @@ namespace DG.Tweening
         /// <param name="complete">If TRUE completes the tween before killing it</param>
         public static void Kill(this Tween t, bool complete = false)
         {
-            if (!DOTween.initialized) return;
             if (t is not { active: true })
                 return;
             if (t.isSequenced) {
@@ -99,12 +98,6 @@ namespace DG.Tweening
 
         public static void KillRewind(this Tweener t)
         {
-            if (!DOTween.initialized)
-            {
-                L.W("DOTween is not initialized.", t);
-                return;
-            }
-
             if (t is not { active: true })
             {
                 L.E("Tween is not active.");
