@@ -152,30 +152,11 @@ namespace DG.Tweening.Core.Easing
                 return Bounce.EaseInOut(time, duration);
             case Ease.INTERNAL_Custom:
                 return customEase(time, duration, overshootOrAmplitude, period);
-            case Ease.INTERNAL_Zero:
-                // 0 duration tween
-                return 1;
-
-            // Extra custom eases ////////////////////////////////////////////////////
-            case Ease.Flash:
-                return Flash.Ease(time, duration, overshootOrAmplitude, period);
-            case Ease.InFlash:
-                return Flash.EaseIn(time, duration, overshootOrAmplitude, period);
-            case Ease.OutFlash:
-                return Flash.EaseOut(time, duration, overshootOrAmplitude, period);
-            case Ease.InOutFlash:
-                return Flash.EaseInOut(time, duration, overshootOrAmplitude, period);
 
             // Default
             default:
-                // OutQuad
-                return -(time /= duration) * (time - 2);
+                throw new ArgumentOutOfRangeException(nameof(easeType));
             }
-        }
-
-        internal static bool IsFlashEase(Ease ease)
-        {
-            return ease is Ease.Flash or Ease.InFlash or Ease.OutFlash or Ease.InOutFlash;
         }
     }
 }

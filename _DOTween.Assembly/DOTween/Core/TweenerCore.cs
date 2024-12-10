@@ -129,7 +129,8 @@ namespace DG.Tweening.Core
             fullDuration = loops > -1 ? duration * loops : Mathf.Infinity;
 
             // Applied here so that the eventual duration derived from a speedBased tween has been set
-            if (duration <= 0) easeType = Ease.INTERNAL_Zero;
+            if (duration <= 0)
+                L.E("[DOTween] Invalid duration: " + duration);
 
             return true;
         }

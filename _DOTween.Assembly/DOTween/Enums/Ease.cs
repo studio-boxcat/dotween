@@ -8,8 +8,7 @@ namespace DG.Tweening
 {
     public enum Ease
     {
-        Unset, // Used to let TweenParams know that the ease was not set and apply it differently if used on Tweeners or Sequences
-        Linear,
+        Linear = 1,
         InSine,
         OutSine,
         InOutSine,
@@ -36,19 +35,13 @@ namespace DG.Tweening
         InOutElastic,
         InBack,
         OutBack,
-        InOutBack,
-        InBounce,
-        OutBounce,
-        InOutBounce,
-        // Extra custom eases
-        Flash, InFlash, OutFlash, InOutFlash,
-        /// <summary>
-        /// Don't assign this! It's assigned automatically when creating 0 duration tweens
-        /// </summary>
-        INTERNAL_Zero,
+        InOutBack = 28,
+        InBounce = 29,
+        OutBounce = 30,
+        InOutBounce = 31,
         /// <summary>
         /// Don't assign this! It's assigned automatically when setting the ease to an AnimationCurve or to a custom ease function
         /// </summary>
-        INTERNAL_Custom
+        INTERNAL_Custom = 37,
     }
 }

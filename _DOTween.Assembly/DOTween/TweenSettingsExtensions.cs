@@ -100,8 +100,6 @@ namespace DG.Tweening
             if (t is not { active: true }) return t;
 
             t.easeType = ease;
-            if (EaseManager.IsFlashEase(ease)) t.easeOvershootOrAmplitude = (int)t.easeOvershootOrAmplitude;
-
             t.customEase = null;
             ValidateEase(t);
             return t;
@@ -118,7 +116,6 @@ namespace DG.Tweening
             if (t is not { active: true }) return t;
 
             t.easeType = ease;
-            if (EaseManager.IsFlashEase(ease)) overshoot = (int)overshoot;
             t.easeOvershootOrAmplitude = overshoot;
             t.customEase = null;
             ValidateEase(t);
@@ -139,7 +136,6 @@ namespace DG.Tweening
             if (t is not { active: true }) return t;
 
             t.easeType = ease;
-            if (EaseManager.IsFlashEase(ease)) amplitude = (int)amplitude;
             t.easeOvershootOrAmplitude = amplitude;
             t.easePeriod = period;
             t.customEase = null;

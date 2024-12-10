@@ -13,20 +13,20 @@ namespace DG.DOTweenEditor
     [CustomEditor(typeof(DOTweenAnimation))]
     public class DOTweenAnimationInspector : Editor
     {
-        static readonly Dictionary<DOTweenAnimation.AnimationType, Type[]> _eligibleTargetTypes = new()
+        static readonly Dictionary<DOTweenAnimationType, Type[]> _eligibleTargetTypes = new()
         {
-            { DOTweenAnimation.AnimationType.LocalMove, new[] { typeof(Transform) } },
-            { DOTweenAnimation.AnimationType.LocalRotateZ, new[] { typeof(Transform) } },
-            { DOTweenAnimation.AnimationType.Scale, new[] { typeof(Transform) } },
-            { DOTweenAnimation.AnimationType.Color, new[] { typeof(Graphic), typeof(SpriteRenderer), typeof(Renderer), } },
-            { DOTweenAnimation.AnimationType.Fade, new[] { typeof(CanvasGroup), typeof(Graphic), typeof(SpriteRenderer), typeof(Renderer) } },
-            { DOTweenAnimation.AnimationType.PunchPosition, new[] { typeof(RectTransform), typeof(Transform) } },
-            { DOTweenAnimation.AnimationType.PunchRotation, new[] { typeof(Transform) } },
-            { DOTweenAnimation.AnimationType.PunchScale, new[] { typeof(Transform) } },
-            { DOTweenAnimation.AnimationType.ShakePosition, new[] { typeof(RectTransform), typeof(Transform) } },
-            { DOTweenAnimation.AnimationType.ShakeRotation, new[] { typeof(Transform) } },
-            { DOTweenAnimation.AnimationType.ShakeScale, new[] { typeof(Transform) } },
-            { DOTweenAnimation.AnimationType.UIAnchors, new[] { typeof(RectTransform) } },
+            { DOTweenAnimationType.LocalMove, new[] { typeof(Transform) } },
+            { DOTweenAnimationType.LocalRotateZ, new[] { typeof(Transform) } },
+            { DOTweenAnimationType.Scale, new[] { typeof(Transform) } },
+            { DOTweenAnimationType.Color, new[] { typeof(Graphic), typeof(SpriteRenderer), typeof(Renderer), } },
+            { DOTweenAnimationType.Fade, new[] { typeof(CanvasGroup), typeof(Graphic), typeof(SpriteRenderer), typeof(Renderer) } },
+            { DOTweenAnimationType.PunchPosition, new[] { typeof(RectTransform), typeof(Transform) } },
+            { DOTweenAnimationType.PunchRotation, new[] { typeof(Transform) } },
+            { DOTweenAnimationType.PunchScale, new[] { typeof(Transform) } },
+            { DOTweenAnimationType.ShakePosition, new[] { typeof(RectTransform), typeof(Transform) } },
+            { DOTweenAnimationType.ShakeRotation, new[] { typeof(Transform) } },
+            { DOTweenAnimationType.ShakeScale, new[] { typeof(Transform) } },
+            { DOTweenAnimationType.UIAnchors, new[] { typeof(RectTransform) } },
         };
 
         DOTweenAnimation _src;
@@ -70,47 +70,47 @@ namespace DG.DOTweenEditor
 
             // Reset properties if the animation type changed.
             var prevAnimType = _src.animationType;
-            _src.animationType = (DOTweenAnimation.AnimationType) EditorGUILayout.EnumPopup("Animation Type", _src.animationType);
+            _src.animationType = (DOTweenAnimationType) EditorGUILayout.EnumPopup("Animation Type", _src.animationType);
             if (prevAnimType != _src.animationType)
             {
                 // Set default optional values based on animation type
                 switch (_src.animationType)
                 {
-                    case DOTweenAnimation.AnimationType.LocalMove:
-                    case DOTweenAnimation.AnimationType.LocalRotateZ:
-                    case DOTweenAnimation.AnimationType.Scale:
+                    case DOTweenAnimationType.LocalMove:
+                    case DOTweenAnimationType.LocalRotateZ:
+                    case DOTweenAnimationType.Scale:
                         _src.endValueV3 = Vector3.zero;
                         _src.endValueFloat = 0;
-                        _src.optionalBool0 = _src.animationType == DOTweenAnimation.AnimationType.Scale;
+                        _src.optionalBool0 = _src.animationType == DOTweenAnimationType.Scale;
                         break;
-                    case DOTweenAnimation.AnimationType.Color:
-                    case DOTweenAnimation.AnimationType.Fade:
+                    case DOTweenAnimationType.Color:
+                    case DOTweenAnimationType.Fade:
                         _src.endValueFloat = 0;
                         break;
-                    case DOTweenAnimation.AnimationType.PunchPosition:
-                    case DOTweenAnimation.AnimationType.PunchRotation:
-                    case DOTweenAnimation.AnimationType.PunchScale:
-                        _src.endValueV3 = _src.animationType == DOTweenAnimation.AnimationType.PunchRotation ? new Vector3(0, 180, 0) : Vector3.one;
+                    case DOTweenAnimationType.PunchPosition:
+                    case DOTweenAnimationType.PunchRotation:
+                    case DOTweenAnimationType.PunchScale:
+                        _src.endValueV3 = _src.animationType == DOTweenAnimationType.PunchRotation ? new Vector3(0, 180, 0) : Vector3.one;
                         _src.optionalFloat0 = 1;
                         _src.optionalInt0 = 10;
                         _src.optionalBool0 = false;
                         break;
-                    case DOTweenAnimation.AnimationType.ShakePosition:
-                    case DOTweenAnimation.AnimationType.ShakeRotation:
-                    case DOTweenAnimation.AnimationType.ShakeScale:
-                        _src.endValueV3 = _src.animationType == DOTweenAnimation.AnimationType.ShakeRotation ? new Vector3(90, 90, 90) : Vector3.one;
+                    case DOTweenAnimationType.ShakePosition:
+                    case DOTweenAnimationType.ShakeRotation:
+                    case DOTweenAnimationType.ShakeScale:
+                        _src.endValueV3 = _src.animationType == DOTweenAnimationType.ShakeRotation ? new Vector3(90, 90, 90) : Vector3.one;
                         _src.optionalInt0 = 10;
                         _src.optionalFloat0 = 90;
                         _src.optionalBool0 = false;
                         _src.optionalBool1 = true;
                         break;
-                    case DOTweenAnimation.AnimationType.UIAnchors:
+                    case DOTweenAnimationType.UIAnchors:
                         _src.endValueV3 = new Vector3(0.5f, 0.5f, 0);
                         break;
                 }
             }
 
-            if (_src.animationType == DOTweenAnimation.AnimationType.None)
+            if (_src.animationType == DOTweenAnimationType.None)
             {
                 if (GUI.changed) EditorUtility.SetDirty(_src);
                 return;
@@ -143,44 +143,44 @@ namespace DG.DOTweenEditor
             // End value and eventual specific options
             switch (_src.animationType)
             {
-                case DOTweenAnimation.AnimationType.LocalMove:
+                case DOTweenAnimationType.LocalMove:
                     GUIEndValueV3();
                     break;
-                case DOTweenAnimation.AnimationType.LocalRotateZ:
+                case DOTweenAnimationType.LocalRotateZ:
                     GUIEndValueZ();
                     break;
-                case DOTweenAnimation.AnimationType.Scale:
+                case DOTweenAnimationType.Scale:
                     if (_src.optionalBool0) GUIEndValueFloat();
                     else GUIEndValueV3();
                     _src.optionalBool0 = EditorGUILayout.Toggle("Uniform Scale", _src.optionalBool0);
                     break;
-                case DOTweenAnimation.AnimationType.Color:
+                case DOTweenAnimationType.Color:
                     GUIEndValueColor();
                     canBeRelative = false;
                     break;
-                case DOTweenAnimation.AnimationType.Fade:
+                case DOTweenAnimationType.Fade:
                     GUIEndValueFloat();
                     if (_src.endValueFloat < 0) _src.endValueFloat = 0;
                     canBeRelative = false;
                     break;
-                case DOTweenAnimation.AnimationType.PunchPosition:
-                case DOTweenAnimation.AnimationType.PunchRotation:
-                case DOTweenAnimation.AnimationType.PunchScale:
+                case DOTweenAnimationType.PunchPosition:
+                case DOTweenAnimationType.PunchRotation:
+                case DOTweenAnimationType.PunchScale:
                     GUIEndValueV3();
                     canBeRelative = false;
                     _src.optionalInt0 = EditorGUILayout.IntSlider(new GUIContent("    Vibrato", "How much will the punch vibrate"), _src.optionalInt0, 1, 50);
                     _src.optionalFloat0 = EditorGUILayout.Slider(new GUIContent("    Elasticity", "How much the vector will go beyond the starting position when bouncing backwards"), _src.optionalFloat0, 0, 1);
                     break;
-                case DOTweenAnimation.AnimationType.ShakePosition:
-                case DOTweenAnimation.AnimationType.ShakeRotation:
-                case DOTweenAnimation.AnimationType.ShakeScale:
+                case DOTweenAnimationType.ShakePosition:
+                case DOTweenAnimationType.ShakeRotation:
+                case DOTweenAnimationType.ShakeScale:
                     GUIEndValueV3();
                     canBeRelative = false;
                     _src.optionalInt0 = EditorGUILayout.IntSlider(new GUIContent("    Vibrato", "How much will the shake vibrate"), _src.optionalInt0, 1, 50);
                     _src.optionalFloat0 = EditorGUILayout.Slider(new GUIContent("    Randomness", "The shake randomness"), _src.optionalFloat0, 0, 90);
                     _src.optionalBool1 = EditorGUILayout.Toggle(new GUIContent("    FadeOut", "If selected the shake will fade out, otherwise it will constantly play with full force"), _src.optionalBool1);
                     break;
-                case DOTweenAnimation.AnimationType.UIAnchors:
+                case DOTweenAnimationType.UIAnchors:
                     GUIEndValueV2();
                     canBeRelative = false;
                     break;
@@ -242,7 +242,7 @@ namespace DG.DOTweenEditor
 
         #region Methods
 
-        static void CollectMatchingTargets(GameObject targetGO, DOTweenAnimation.AnimationType animType, List<Component> result)
+        static void CollectMatchingTargets(GameObject targetGO, DOTweenAnimationType animType, List<Component> result)
         {
             var types = _eligibleTargetTypes[animType];
             foreach (var t in types)
