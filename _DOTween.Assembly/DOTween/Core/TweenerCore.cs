@@ -7,6 +7,7 @@
 using System;
 using DG.Tweening.Plugins.Core;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 #pragma warning disable 1591
 namespace DG.Tweening.Core
@@ -35,6 +36,8 @@ namespace DG.Tweening.Core
 
         public void Setup(DOGetter<T> getter, DOSetter<T> setter, T endValue, float duration, TweenPlugin<T> plugin)
         {
+            Assert.AreNotEqual(0, duration, "Given duration is 0");
+
             // L.I($"[DOTween] Setup TweenerCore<{typeof(T).Name}>: endValue={endValue}, duration={duration}");
 
             this.getter = getter;
