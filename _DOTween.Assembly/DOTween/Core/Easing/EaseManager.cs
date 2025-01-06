@@ -44,8 +44,8 @@ namespace DG.Tweening.Core.Easing
 {
     public static class EaseManager
     {
-        const float _PiOver2 = Mathf.PI * 0.5f;
-        const float _TwoPi = Mathf.PI * 2;
+        private const float _PiOver2 = Mathf.PI * 0.5f;
+        private const float _TwoPi = Mathf.PI * 2;
 
         /// <summary>
         /// Returns a value between 0 and 1 (inclusive) based on the elapsed time and ease selected

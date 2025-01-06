@@ -21,7 +21,7 @@ namespace DG.Tweening
         // SETUP DATA ////////////////////////////////////////////////
 
         internal readonly List<Tween> sequencedTweens = new(); // Only Tweens (used for despawning and validation)
-        readonly List<ABSSequentiable> _sequencedObjs = new(); // Tweens plus SequenceCallbacks
+        private readonly List<ABSSequentiable> _sequencedObjs = new(); // Tweens plus SequenceCallbacks
 
         #region Constructor
 
@@ -241,7 +241,7 @@ namespace DG.Tweening
         // METHODS ---------------------------------------------------------------------------
 
         // Returns TRUE if the tween needs to be killed
-        static bool ApplyInternalCycle(Sequence s, float fromPos, float toPos, UpdateMode updateMode, bool useInverse, bool prevPosIsInverse, bool multiCycleStep = false)
+        private static bool ApplyInternalCycle(Sequence s, float fromPos, float toPos, UpdateMode updateMode, bool useInverse, bool prevPosIsInverse, bool multiCycleStep = false)
         {
             bool wasPlaying = s.isPlaying; // Used to interrupt for loops in case a callback pauses a running Sequence
             bool isBackwardsUpdate = toPos < fromPos;
@@ -336,7 +336,7 @@ namespace DG.Tweening
             return false;
         }
 
-        static bool IsAnyCallbackSet(Sequence s)
+        private static bool IsAnyCallbackSet(Sequence s)
         {
             return s.onComplete != null || s.onKill != null
                    || s.onStart != null || s.onUpdate != null;

@@ -496,7 +496,7 @@ namespace DG.Tweening
                     1, duration);
         }
 
-        static Vector2 CalculateJump(
+        private static Vector2 CalculateJump(
             float t,
             float startX, float startY,
             float endX, float endY,

@@ -13,7 +13,7 @@ namespace DG.DOTweenEditor
     [CustomEditor(typeof(DOTweenAnimation))]
     public class DOTweenAnimationInspector : Editor
     {
-        static readonly Dictionary<DOTweenAnimationType, Type[]> _eligibleTargetTypes = new()
+        private static readonly Dictionary<DOTweenAnimationType, Type[]> _eligibleTargetTypes = new()
         {
             { DOTweenAnimationType.LocalMove, new[] { typeof(Transform) } },
             { DOTweenAnimationType.LocalRotateZ, new[] { typeof(Transform) } },
@@ -29,17 +29,17 @@ namespace DG.DOTweenEditor
             { DOTweenAnimationType.UIAnchors, new[] { typeof(RectTransform) } },
         };
 
-        DOTweenAnimation _src;
-        int _totComponentsOnSrc; // Used to determine if a Component is added or removed from the source
+        private DOTweenAnimation _src;
+        private int _totComponentsOnSrc; // Used to determine if a Component is added or removed from the source
 
         #region MonoBehaviour Methods
 
-        void OnEnable()
+        private void OnEnable()
         {
             _src = target as DOTweenAnimation;
         }
 
-        static readonly List<Component> _componentBuf = new();
+        private static readonly List<Component> _componentBuf = new();
 
         public override void OnInspectorGUI()
         {
@@ -219,7 +219,7 @@ namespace DG.DOTweenEditor
         /// <summary>
         /// Returns TRUE if its actually previewing animations
         /// </summary>
-        static bool DrawPreview(bool previewing)
+        private static bool DrawPreview(bool previewing)
         {
             if (EditorApplication.isPlaying)
                 return false;
@@ -242,7 +242,7 @@ namespace DG.DOTweenEditor
 
         #region Methods
 
-        static void CollectMatchingTargets(GameObject targetGO, DOTweenAnimationType animType, List<Component> result)
+        private static void CollectMatchingTargets(GameObject targetGO, DOTweenAnimationType animType, List<Component> result)
         {
             var types = _eligibleTargetTypes[animType];
             foreach (var t in types)
@@ -255,7 +255,7 @@ namespace DG.DOTweenEditor
             }
         }
 
-        static Component ComponentSelector(string label, Component cur, List<Component> components)
+        private static Component ComponentSelector(string label, Component cur, List<Component> components)
         {
             var count = components.Count;
             var options = new string[count];
@@ -271,7 +271,7 @@ namespace DG.DOTweenEditor
 
         #region GUI Draw Methods
 
-        void GUIEndValueFloat()
+        private void GUIEndValueFloat()
         {
             GUILayout.BeginHorizontal();
             GUIToFromButton();
@@ -279,7 +279,7 @@ namespace DG.DOTweenEditor
             GUILayout.EndHorizontal();
         }
 
-        void GUIEndValueColor()
+        private void GUIEndValueColor()
         {
             GUILayout.BeginHorizontal();
             GUIToFromButton();
@@ -287,7 +287,7 @@ namespace DG.DOTweenEditor
             GUILayout.EndHorizontal();
         }
 
-        void GUIEndValueV2()
+        private void GUIEndValueV2()
         {
             GUILayout.BeginHorizontal();
             GUIToFromButton();
@@ -295,7 +295,7 @@ namespace DG.DOTweenEditor
             GUILayout.EndHorizontal();
         }
 
-        void GUIEndValueV3()
+        private void GUIEndValueV3()
         {
             GUILayout.BeginHorizontal();
             GUIToFromButton();
@@ -303,7 +303,7 @@ namespace DG.DOTweenEditor
             GUILayout.EndHorizontal();
         }
 
-        void GUIEndValueZ()
+        private void GUIEndValueZ()
         {
             GUILayout.BeginHorizontal();
             GUIToFromButton();
@@ -311,7 +311,7 @@ namespace DG.DOTweenEditor
             GUILayout.EndHorizontal();
         }
 
-        void GUIToFromButton()
+        private void GUIToFromButton()
         {
             if (GUILayout.Button(_src.isFrom ? "FROM" : "TO", GUILayout.Width(90))) _src.isFrom = !_src.isFrom;
             GUILayout.Space(EditorGUIUtility.labelWidth - 90);

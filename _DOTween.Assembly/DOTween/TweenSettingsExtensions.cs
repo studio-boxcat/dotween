@@ -174,7 +174,7 @@ namespace DG.Tweening
         }
 
         [Conditional("DEBUG")]
-        static void ValidateEase(Tween t)
+        private static void ValidateEase(Tween t)
         {
             if (t is TweenerCore<DOVector3> { plugin: Vector3ArrayPlugin }
                 && t.easeType is not (Ease.Linear or Ease.OutQuad))
@@ -268,7 +268,7 @@ namespace DG.Tweening
             return s;
         }
 
-        static bool ValidateAddToSequence([NotNull] Sequence s)
+        private static bool ValidateAddToSequence([NotNull] Sequence s)
         {
             if (!s.active) {
                 L.W("You can't add elements to an inactive/killed Sequence");
@@ -281,7 +281,7 @@ namespace DG.Tweening
             return true;
         }
 
-        static bool ValidateAddToSequence([NotNull] Tween t)
+        private static bool ValidateAddToSequence([NotNull] Tween t)
         {
             if (!t.active) {
                 L.W("You can't add an inactive/killed tween to a Sequence", t);

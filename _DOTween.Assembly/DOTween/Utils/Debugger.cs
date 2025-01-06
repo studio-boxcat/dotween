@@ -11,7 +11,7 @@ namespace DG.Tweening
     /// </summary>
     public static class Debugger
     {
-        const string _prefix = "[DOTween] ";
+        private const string _prefix = "[DOTween] ";
 
         #region Public Methods
 
@@ -64,7 +64,7 @@ namespace DG.Tweening
 
         #region Methods
 
-        static string GetDebugDataMessage(Tween t)
+        private static string GetDebugDataMessage(Tween t)
         {
             return t?.ToString() ?? "null";
         }

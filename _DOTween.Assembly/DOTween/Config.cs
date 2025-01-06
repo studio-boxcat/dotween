@@ -1,6 +1,6 @@
 namespace DG.Tweening
 {
-    static class Config
+    internal static class Config
     {
         /// <summary>If TRUE (default) makes tweens slightly slower but safer, automatically taking care of a series of things
         /// (like targets becoming null while a tween is playing).

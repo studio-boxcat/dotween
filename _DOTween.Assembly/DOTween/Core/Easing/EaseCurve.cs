@@ -15,7 +15,7 @@ namespace DG.Tweening.Core.Easing
     /// </summary>
     public class EaseCurve
     {
-        readonly AnimationCurve _animCurve;
+        private readonly AnimationCurve _animCurve;
 
         // ***********************************************************************************
         // CONSTRUCTOR

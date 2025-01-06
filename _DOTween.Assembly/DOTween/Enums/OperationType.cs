@@ -6,7 +6,7 @@
 
 namespace DG.Tweening
 {
-    enum OperationType : byte
+    internal enum OperationType : byte
     {
         Complete,
         Despawn,

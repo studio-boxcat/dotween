@@ -6,22 +6,22 @@ using UnityEngine.Assertions;
 
 namespace DG.Tweening.Core
 {
-    static class TweenPool
+    internal static class TweenPool
     {
-        const int _recycleThreshold = 4;
+        private const int _recycleThreshold = 4;
 
-        static readonly List<Tweener> _float = new();
-        static readonly List<Tweener> _int = new();
-        static readonly List<Tweener> _color = new();
-        static readonly List<Tweener> _vector2 = new();
-        static readonly List<Tweener> _vector3 = new();
-        static readonly List<Sequence> _sequence = new();
+        private static readonly List<Tweener> _float = new();
+        private static readonly List<Tweener> _int = new();
+        private static readonly List<Tweener> _color = new();
+        private static readonly List<Tweener> _vector2 = new();
+        private static readonly List<Tweener> _vector3 = new();
+        private static readonly List<Sequence> _sequence = new();
 
-        static readonly List<Tweener> _recyclableTweens = new();
-        static readonly List<Sequence> _recyclableSequences = new();
+        private static readonly List<Tweener> _recyclableTweens = new();
+        private static readonly List<Sequence> _recyclableSequences = new();
 
 #if DEBUG
-        static readonly Dictionary<Type, int> _debugCreateCount = new();
+        private static readonly Dictionary<Type, int> _debugCreateCount = new();
 #endif
 
         public static TweenerCore<T> RentTweener<T>()
@@ -119,7 +119,7 @@ namespace DG.Tweening.Core
             }
         }
 
-        static List<Tweener> GetTweenerList(Type tweenerType)
+        private static List<Tweener> GetTweenerList(Type tweenerType)
         {
             if (tweenerType == typeof(TweenerCore<float>)) return _float;
             if (tweenerType == typeof(TweenerCore<int>)) return _int;
@@ -130,7 +130,7 @@ namespace DG.Tweening.Core
         }
 
         [Conditional("DEBUG")]
-        static void RecordCreate(Type type)
+        private static void RecordCreate(Type type)
         {
 #if DEBUG
             var count = _debugCreateCount.GetValueOrDefault(type, 0);

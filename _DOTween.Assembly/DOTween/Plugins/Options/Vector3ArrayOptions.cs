@@ -12,8 +12,8 @@ namespace DG.Tweening.Plugins.Options
 {
     public class Vector3ArrayOptions
     {
-        readonly float[] startTimes; // normalized time values (0-1)
-        readonly Vector3[] startValues;
+        private readonly float[] startTimes; // normalized time values (0-1)
+        private readonly Vector3[] startValues;
 
         public Vector3ArrayOptions(float[] startTimes, Vector3[] startValues)
         {

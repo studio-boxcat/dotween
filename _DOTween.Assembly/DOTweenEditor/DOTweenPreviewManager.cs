@@ -11,8 +11,8 @@ namespace DG.DOTweenEditor
 {
     public static class DOTweenPreviewManager
     {
-        static readonly Dictionary<int, Tweener> _tweens = new();
-        static float _lastUpdateTime;
+        private static readonly Dictionary<int, Tweener> _tweens = new();
+        private static float _lastUpdateTime;
 
         public static bool IsPreviewing(int id, out Tweener t)
         {
@@ -55,7 +55,7 @@ namespace DG.DOTweenEditor
             Internal_StopPreview(t);
         }
 
-        static void Internal_StopPreview(Tweener t)
+        private static void Internal_StopPreview(Tweener t)
         {
             if (_tweens.Count is 0)
                 EditorApplication.update -= _update;
@@ -64,8 +64,8 @@ namespace DG.DOTweenEditor
             TweenManager.KillTween(t);
         }
 
-        static EditorApplication.CallbackFunction _update;
-        static void Update()
+        private static EditorApplication.CallbackFunction _update;
+        private static void Update()
         {
             Assert.IsTrue(_tweens.Count is not 0, "No tweens to update");
 
@@ -89,8 +89,8 @@ namespace DG.DOTweenEditor
             InternalEditorUtility.RepaintAllViews();
         }
 
-        static Action<PlayModeStateChange> _onPlayModeStateChanged;
-        static void OnPlayModeStateChanged(PlayModeStateChange state)
+        private static Action<PlayModeStateChange> _onPlayModeStateChanged;
+        private static void OnPlayModeStateChanged(PlayModeStateChange state)
         {
             EditorApplication.playModeStateChanged -= _onPlayModeStateChanged;
 

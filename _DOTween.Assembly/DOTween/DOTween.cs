@@ -80,7 +80,7 @@ namespace DG.Tweening
 
         #region Tween TO
 
-        static TweenerCore<T> To<T>(DOGetter<T> getter, DOSetter<T> setter, T endValue, float duration, TweenPlugin<T> plugin)
+        private static TweenerCore<T> To<T>(DOGetter<T> getter, DOSetter<T> setter, T endValue, float duration, TweenPlugin<T> plugin)
         {
             var t = TweenManager.GetTweener<T>();
             t.Setup(getter, setter, endValue, duration, plugin);
@@ -121,7 +121,7 @@ namespace DG.Tweening
 
         #region Special TOs (No FROMs)
 
-        static TweenerCore<Vector3> To(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration, Vector3ArrayOptions opts)
+        private static TweenerCore<Vector3> To(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration, Vector3ArrayOptions opts)
         {
             var t = To(getter, setter, default, duration, Vector3ArrayPlugin.Instance);
             t.plugOptions = opts;
@@ -190,7 +190,7 @@ namespace DG.Tweening
         {
             return Shake(getter, setter, duration, strength, vibrato, randomness, false, true, fadeOut, randomnessMode);
         }
-        static TweenerCore<Vector3> Shake(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration,
+        private static TweenerCore<Vector3> Shake(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration,
             Vector3 strength, int vibrato, float randomness, bool ignoreZAxis, bool vectorBased,
             bool fadeOut, ShakeRandomnessMode randomnessMode
         )

@@ -62,7 +62,7 @@ namespace DG.Tweening
         /// <param name="andPlay">If TRUE will play the tween after reaching the given position, otherwise it will pause it</param>
         public static void GotoWithCallbacks(this Tween t, float to, bool andPlay = false)
         { DoGoto(t, to, andPlay, true); }
-        static void DoGoto(Tween t, float to, bool andPlay, bool withCallbacks)
+        private static void DoGoto(Tween t, float to, bool andPlay, bool withCallbacks)
         {
             if (t == null) {
                 Debugger.LogNullTween(t); return;

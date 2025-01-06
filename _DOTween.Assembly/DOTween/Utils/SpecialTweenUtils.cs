@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace DG.Tweening
 {
-    static class SpecialTweenUtils
+    internal static class SpecialTweenUtils
     {
         internal static void SetupPunch(TweenerCore<Vector3> t)
         {

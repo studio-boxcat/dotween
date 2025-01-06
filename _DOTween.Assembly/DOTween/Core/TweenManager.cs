@@ -10,7 +10,7 @@ using UnityEngine.Assertions;
 
 namespace DG.Tweening.Core
 {
-    static class TweenManager
+    internal static class TweenManager
     {
         internal static TweenUpdateList Tweens = new(32);
 
@@ -37,7 +37,7 @@ namespace DG.Tweening.Core
         }
 
         // Adds the given tween to the active tweens list (updateType is always Normal, but can be changed by SetUpdateType)
-        static void AttachTween(Tween t) => Tweens.Add(t);
+        private static void AttachTween(Tween t) => Tweens.Add(t);
 
         // Removes a tween from the active list, then reorganizes said list and decreases the given total.
         // Also removes any TweenLinks associated to this tween.

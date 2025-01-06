@@ -10,10 +10,10 @@ namespace DG.DOTweenEditor.UI
 {
     public class DOTweenInspector : OdinEditorWindow
     {
-        static readonly StringBuilder _sb = new();
+        private static readonly StringBuilder _sb = new();
 
         [MenuItem("Window/DOTween Inspector")]
-        static void Open()
+        private static void Open()
         {
             GetWindow<DOTweenInspector>().Show();
         }
@@ -35,7 +35,7 @@ namespace DG.DOTweenEditor.UI
             TweenManager.Tweens.EndIterate();
         }
 
-        static void DrawTweenButton(Tween tween, bool isSequenced = false)
+        private static void DrawTweenButton(Tween tween, bool isSequenced = false)
         {
             var label = BuildTweenLabel(tween);
 
@@ -79,10 +79,10 @@ namespace DG.DOTweenEditor.UI
             }
         }
 
-        static readonly GUIContent _gcPlay = new("►");
-        static readonly GUIContent _gcPause = new("❚❚");
+        private static readonly GUIContent _gcPlay = new("►");
+        private static readonly GUIContent _gcPause = new("❚❚");
 
-        static void DrawPlayToggle(Tween tween)
+        private static void DrawPlayToggle(Tween tween)
         {
             var isPlaying = tween.isPlaying;
             if (GUILayout.Button(isPlaying ? _gcPause : _gcPlay, GUILayout.Width(30)))
@@ -92,7 +92,7 @@ namespace DG.DOTweenEditor.UI
             }
         }
 
-        static string BuildTweenLabel(Tween t)
+        private static string BuildTweenLabel(Tween t)
         {
             Assert.AreEqual(0, _sb.Length, "StringBuilder not empty");
             if (t is Sequence)

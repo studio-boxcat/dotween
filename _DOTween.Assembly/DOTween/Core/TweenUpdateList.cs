@@ -5,9 +5,9 @@ namespace DG.Tweening.Core
 {
     public struct TweenUpdateList
     {
-        readonly List<Tween> _list;
-        readonly List<int> _reservedToRemove;
-        int _iterateDepth;
+        private readonly List<Tween> _list;
+        private readonly List<int> _reservedToRemove;
+        private int _iterateDepth;
 
         public TweenUpdateList(int capacity)
         {
@@ -143,8 +143,8 @@ namespace DG.Tweening.Core
 
         public struct TweenEnumerable
         {
-            readonly List<Tween> _list;
-            readonly TweenUpdateId _lastUpdateId;
+            private readonly List<Tween> _list;
+            private readonly TweenUpdateId _lastUpdateId;
 
             public TweenEnumerable(List<Tween> list, TweenUpdateId lastUpdateId)
             {
@@ -156,9 +156,9 @@ namespace DG.Tweening.Core
 
             public struct TweenEnumerator
             {
-                readonly List<Tween> _list;
-                readonly TweenUpdateId _lastUpdateId;
-                int _index;
+                private readonly List<Tween> _list;
+                private readonly TweenUpdateId _lastUpdateId;
+                private int _index;
 
                 public TweenEnumerator(List<Tween> list, TweenUpdateId lastUpdateId)
                 {

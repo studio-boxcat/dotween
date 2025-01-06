@@ -11,11 +11,12 @@ namespace DG.Tweening
         , ISelfValidator
 #endif
     {
-        static readonly List<DOTweenAnimation> _animBuf = new();
-        static readonly Stack<List<Tweener>> _tweenListPool = new();
-        [CanBeNull] List<Tweener> _tweenList;
+        private static readonly List<DOTweenAnimation> _animBuf = new();
+        private static readonly Stack<List<Tweener>> _tweenListPool = new();
+        [CanBeNull]
+        private List<Tweener> _tweenList;
 
-        void OnEnable()
+        private void OnEnable()
         {
             if (_tweenList is null)
             {
@@ -36,7 +37,7 @@ namespace DG.Tweening
             }
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             var id = GetInstanceID();
 
@@ -51,7 +52,7 @@ namespace DG.Tweening
             _tweenList.Clear();
         }
 
-        void OnDestroy()
+        private void OnDestroy()
         {
             if (_tweenList is not null)
             {

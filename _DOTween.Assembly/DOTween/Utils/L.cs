@@ -5,7 +5,7 @@ using Object = UnityEngine.Object;
 
 namespace DG.Tweening
 {
-    static class L
+    internal static class L
     {
         [Conditional("DEBUG")]
         public static void I(string message, Object context = null) => Debug.Log(message, context);

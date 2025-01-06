@@ -6,7 +6,7 @@ namespace DG.Tweening.Core
     /// <summary>
     /// Various utils
     /// </summary>
-    static class DOTweenUtils
+    internal static class DOTweenUtils
     {
         [MustUseReturnValue]
         public static float Evaluate(Tween t, float elapsed)
