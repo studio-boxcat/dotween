@@ -1,13 +1,13 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using System;
 using System.Collections.Generic;
-using DG.Tweening;
 using DG.Tweening.Core;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace DG.DOTweenEditor
+namespace DG.Tweening
 {
     public static class DOTweenPreviewManager
     {
@@ -104,3 +104,4 @@ namespace DG.DOTweenEditor
         }
     }
 }
+#endif
