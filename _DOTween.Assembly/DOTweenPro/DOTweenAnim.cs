@@ -11,19 +11,20 @@ using Object = UnityEngine.Object;
 
 namespace DG.Tweening
 {
-    public enum DOTweenAnimationType : byte
+    public enum DOTweenAnimType : byte
     {
         None = 0,
+        MoveY = 3,
         Move = 2,
         Rotate = 4,
         Scale = 5,
         Color = 6,
         Fade = 7,
-        PunchPosition = 9,
-        PunchRotation = 10,
+        PunchPos = 9,
+        PunchRot = 10,
         PunchScale = 11,
-        ShakePosition = 12,
-        ShakeRotation = 13,
+        ShakePos = 12,
+        ShakeRot = 13,
         ShakeScale = 14,
         UIAnchors = 22,
     }
@@ -31,7 +32,7 @@ namespace DG.Tweening
     /// <summary>
     /// Attach this to a GameObject to create a tween
     /// </summary>
-    public sealed class DOTweenAnimation : MonoBehaviour
+    public sealed class DOTweenAnim : MonoBehaviour
 #if UNITY_EDITOR
         , ISelfValidator
 #endif
@@ -52,7 +53,7 @@ namespace DG.Tweening
 
         [Required, ChildGameObjectsOnly]
         public Component target = null!;
-        public DOTweenAnimationType animationType;
+        public DOTweenAnimType animationType;
         public bool autoPlay = true;
 
         public float endValueFloat;
@@ -71,7 +72,7 @@ namespace DG.Tweening
         {
             if (!autoGenerate) return;
 
-            CreateTween(false, autoPlay);
+            PopulateTween(autoPlay);
             _tweenAutoGenerationCalled = true;
         }
 
@@ -79,7 +80,7 @@ namespace DG.Tweening
         {
             if (_tweenAutoGenerationCalled || !autoGenerate) return;
 
-            CreateTween(false, autoPlay);
+            PopulateTween(autoPlay);
             _tweenAutoGenerationCalled = true;
         }
 
@@ -98,34 +99,26 @@ namespace DG.Tweening
         /// Creates the tween manually (called automatically if AutoGenerate is set in the Inspector)
         /// from its target's current value.
         /// </summary>
-        /// <param name="regenerateIfExists">If TRUE and an existing tween was already created (and not killed), kills it and recreates it with the current
-        /// parameters. Otherwise, if a tween already exists, does nothing.</param>
-        /// <param name="andPlay">If TRUE also plays the tween, otherwise only creates it</param>
-        public void CreateTween(bool regenerateIfExists = false, bool andPlay = true)
+        /// <param name="play">If TRUE also plays the tween, otherwise only creates it</param>
+        public void PopulateTween(bool play)
         {
-            Assert.AreNotEqual(DOTweenAnimationType.None, animationType, "AnimationType is None");
+            Assert.AreNotEqual(DOTweenAnimType.None, animationType, "AnimationType is None");
             Assert.IsNotNull(target, "Target is null");
 
             if (tween != null)
             {
-                if (tween.active)
-                {
-                    if (regenerateIfExists) tween.Kill();
-                    else return;
-                }
+                if (tween.active) return;
                 tween = null;
             }
 
-            tween = CreateTweenInstance();
+            tween = CreateTween(play: play);
             tween.OnKill(() => tween = null);
-            if (andPlay is false)
-                tween.Pause();
         }
 
         [MustUseReturnValue]
-        public Tweener CreateTweenInstance()
+        public Tweener CreateTween(bool play)
         {
-            L.I($"[DOTweenAnimation] CreateTweenInstance: {animationType} - {target}", this);
+            L.I($"[DOTweenAnimation] CreateTween: {animationType} - {target}", this);
 
             // Create tween.
             var t = CreateTween(
@@ -145,6 +138,7 @@ namespace DG.Tweening
             if (easeType is Ease.INTERNAL_Custom) t.SetEase(easeCurve);
             else t.SetEase(easeType);
 
+            if (play is false) t.Pause();
             return t;
         }
 
@@ -152,7 +146,7 @@ namespace DG.Tweening
 
         private static Tweener CreateTween(
             Object target, Transform transform,
-            DOTweenAnimationType animationType,
+            DOTweenAnimType animType,
             float duration,
             float endValueFloat,
             Vector3 endValueV3,
@@ -162,19 +156,20 @@ namespace DG.Tweening
             float optionalFloat0,
             int optionalInt0)
         {
-            return animationType switch
+            return animType switch
             {
-                DOTweenAnimationType.Move => transform.DOLocalMove(endValueV3, duration),
-                DOTweenAnimationType.Rotate => transform.DOLocalRotateZ(endValueV3.z, duration),
-                DOTweenAnimationType.Scale => transform.DOScale(optionalBool0 ? new Vector3(endValueFloat, endValueFloat, endValueFloat) : endValueV3, duration),
-                DOTweenAnimationType.Color => target switch
+                DOTweenAnimType.MoveY => transform.DOLocalMoveY(endValueV3.y, duration),
+                DOTweenAnimType.Move => transform.DOLocalMove(endValueV3, duration),
+                DOTweenAnimType.Rotate => transform.DOLocalRotateZ(endValueV3.z, duration),
+                DOTweenAnimType.Scale => transform.DOScale(optionalBool0 ? new Vector3(endValueFloat, endValueFloat, endValueFloat) : endValueV3, duration),
+                DOTweenAnimType.Color => target switch
                 {
                     Graphic t => t.DOColor(endValueColor, duration),
                     SpriteRenderer t => t.DOColor(endValueColor, duration),
                     Renderer t => t.material.DOColor(endValueColor, duration),
                     _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)
                 },
-                DOTweenAnimationType.Fade => target switch
+                DOTweenAnimType.Fade => target switch
                 {
                     CanvasGroup t => t.DOFade(endValueFloat, duration),
                     Graphic t => t.DOFade(endValueFloat, duration),
@@ -182,43 +177,43 @@ namespace DG.Tweening
                     Renderer t => t.material.DOFade(endValueFloat, duration),
                     _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)
                 },
-                DOTweenAnimationType.PunchPosition => target switch
+                DOTweenAnimType.PunchPos => target switch
                 {
                     RectTransform t => t.DOPunchAnchorPos(endValueV3, duration, optionalInt0, optionalFloat0),
                     Transform t => t.DOPunchPosition(endValueV3, duration, optionalInt0, optionalFloat0),
                     _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)
                 },
-                DOTweenAnimationType.PunchScale => transform.DOPunchScale(endValueV3, duration, optionalInt0, optionalFloat0),
-                DOTweenAnimationType.PunchRotation => transform.DOPunchRotation(endValueV3, duration, optionalInt0, optionalFloat0),
-                DOTweenAnimationType.ShakePosition => target switch
+                DOTweenAnimType.PunchScale => transform.DOPunchScale(endValueV3, duration, optionalInt0, optionalFloat0),
+                DOTweenAnimType.PunchRot => transform.DOPunchRotation(endValueV3, duration, optionalInt0, optionalFloat0),
+                DOTweenAnimType.ShakePos => target switch
                 {
                     RectTransform t => t.DOShakeAnchorPos(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool1),
                     Transform t => t.DOShakePosition(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool1),
                     _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)
                 },
-                DOTweenAnimationType.ShakeScale => transform.DOShakeScale(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool1),
-                DOTweenAnimationType.ShakeRotation => transform.DOShakeRotation(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool1),
-                DOTweenAnimationType.UIAnchors => DOTween.To(() => ((RectTransform) target).anchorMin, x => ((RectTransform) target).anchorMin = ((RectTransform) target).anchorMax = x, (Vector2) endValueV3, duration),
-                _ => throw new ArgumentOutOfRangeException(nameof(animationType), animationType, null)
+                DOTweenAnimType.ShakeScale => transform.DOShakeScale(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool1),
+                DOTweenAnimType.ShakeRot => transform.DOShakeRotation(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool1),
+                DOTweenAnimType.UIAnchors => DOTween.To(() => ((RectTransform) target).anchorMin, x => ((RectTransform) target).anchorMin = ((RectTransform) target).anchorMax = x, (Vector2) endValueV3, duration),
+                _ => throw new ArgumentOutOfRangeException(nameof(animType), animType, null)
             };
         }
 
 #if UNITY_EDITOR
         void ISelfValidator.Validate(SelfValidationResult result)
         {
-            if (animationType is DOTweenAnimationType.None)
+            if (animationType is DOTweenAnimType.None)
                 result.AddError("AnimationType must be set to a valid value");
 
             if (animationType
-                is DOTweenAnimationType.Move
-                or DOTweenAnimationType.PunchPosition
-                or DOTweenAnimationType.ShakePosition)
+                is DOTweenAnimType.Move
+                or DOTweenAnimType.PunchPos
+                or DOTweenAnimType.ShakePos)
             {
                 if (optionalBool0)
                     result.AddError("Snapping is not supported anymore.");
             }
 
-            if (animationType is DOTweenAnimationType.Rotate)
+            if (animationType is DOTweenAnimType.Rotate)
             {
                 if (endValueV3.x != 0 || endValueV3.y != 0)
                     result.AddError("Rotate can only rotate on the Z axis");
@@ -227,9 +222,9 @@ namespace DG.Tweening
             }
 
             if (animationType
-                is DOTweenAnimationType.PunchPosition
-                or DOTweenAnimationType.PunchRotation
-                or DOTweenAnimationType.PunchScale)
+                is DOTweenAnimType.PunchPos
+                or DOTweenAnimType.PunchRot
+                or DOTweenAnimType.PunchScale)
             {
                 if (easeType is not Ease.OutQuad)
                     result.AddError("Punch must use OutQuad ease type.");
@@ -238,9 +233,9 @@ namespace DG.Tweening
             }
 
             if (animationType
-                is DOTweenAnimationType.ShakePosition
-                or DOTweenAnimationType.ShakeRotation
-                or DOTweenAnimationType.ShakeScale)
+                is DOTweenAnimType.ShakePos
+                or DOTweenAnimType.ShakeRot
+                or DOTweenAnimType.ShakeScale)
             {
                 if (easeType is not Ease.Linear)
                     result.AddError("Shake must use Linear ease type.");
@@ -249,15 +244,15 @@ namespace DG.Tweening
             }
 
             if (animationType
-                is DOTweenAnimationType.Fade
-                or DOTweenAnimationType.Color
-                or DOTweenAnimationType.PunchPosition
-                or DOTweenAnimationType.PunchRotation
-                or DOTweenAnimationType.PunchScale
-                or DOTweenAnimationType.ShakePosition
-                or DOTweenAnimationType.ShakeRotation
-                or DOTweenAnimationType.ShakeScale
-                or DOTweenAnimationType.UIAnchors)
+                is DOTweenAnimType.Fade
+                or DOTweenAnimType.Color
+                or DOTweenAnimType.PunchPos
+                or DOTweenAnimType.PunchRot
+                or DOTweenAnimType.PunchScale
+                or DOTweenAnimType.ShakePos
+                or DOTweenAnimType.ShakeRot
+                or DOTweenAnimType.ShakeScale
+                or DOTweenAnimType.UIAnchors)
             {
                 if (isRelative)
                     result.AddError(animationType + " cannot be relative.");

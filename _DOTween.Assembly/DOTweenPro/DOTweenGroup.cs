@@ -1,20 +1,20 @@
+#nullable enable
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace DG.Tweening
 {
-    public class DOTweenVisualManager : MonoBehaviour
+    public class DOTweenGroup : MonoBehaviour
 #if UNITY_EDITOR
         , ISelfValidator
 #endif
     {
-        private static readonly List<DOTweenAnimation> _animBuf = new();
+        private List<Tweener>? _tweenList;
+
+        private static readonly List<DOTweenAnim> _animBuf = new();
         private static readonly Stack<List<Tweener>> _tweenListPool = new();
-        [CanBeNull]
-        private List<Tweener> _tweenList;
 
         private void OnEnable()
         {
@@ -31,7 +31,7 @@ namespace DG.Tweening
             GetComponents(_animBuf);
             foreach (var anim in _animBuf)
             {
-                var tween = anim.CreateTweenInstance();
+                var tween = anim.CreateTween(play: true);
                 tween.id = id;
                 _tweenList!.Add(tween);
             }
@@ -63,6 +63,18 @@ namespace DG.Tweening
         }
 
 #if UNITY_EDITOR
+        [Button]
+        private void PlayPreview()
+        {
+            GetComponents(_animBuf);
+            foreach (var anim in _animBuf)
+            {
+                var previewId = anim.GetInstanceID();
+                DOTweenPreviewManager.TryStopPreview(previewId);
+                DOTweenPreviewManager.StartPreview(anim.CreateTween(play: true).SetId(previewId));
+            }
+        }
+
         void ISelfValidator.Validate(SelfValidationResult result)
         {
             GetComponents(_animBuf);
@@ -76,22 +88,11 @@ namespace DG.Tweening
             foreach (var anim in _animBuf)
             {
                 if (anim.autoGenerate)
-                {
-                    result.AddError("매니저가 있는 경우 autoGenerate 가 비활성화되어있어야합니다.");
-                    return;
-                }
-
+                    result.AddError("매니저가 있는 경우 autoGenerate 가 비활성화되어있어야합니다.").WithFix(() => anim.autoGenerate = false);
                 if (anim.autoPlay)
-                {
-                    result.AddError("매니저가 있는 경우 autoPlay 가 비활성화되어있어야합니다.");
-                    return;
-                }
-
+                    result.AddError("매니저가 있는 경우 autoPlay 가 비활성화되어있어야합니다.").WithFix(() => anim.autoPlay = false);
                 if (anim.autoKill)
-                {
-                    result.AddError("매니저가 있는 경우 autoKill 이 비활성화되어있어야합니다.");
-                    return;
-                }
+                    result.AddError("매니저가 있는 경우 autoKill 이 비활성화되어있어야합니다.").WithFix(() => anim.autoKill = false);
             }
         }
 #endif
