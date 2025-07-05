@@ -1,6 +1,3 @@
-// Author: Daniele Giardini - http://www.demigiant.com
-// Created: 2015/03/12 16:03
-
 #nullable enable
 using System;
 using System.Collections.Generic;
@@ -40,8 +37,6 @@ namespace DG.DOTweenEditor
         {
             _src = (DOTweenAnimation) target;
         }
-
-        private static readonly List<Component> _componentBuf = new();
 
         public override void OnInspectorGUI()
         {
@@ -114,13 +109,7 @@ namespace DG.DOTweenEditor
 
 
             // Draw the target selector.
-            CollectMatchingTargets(_src.gameObject, _src.animationType, _componentBuf);
-            var newTarget = _componentBuf.Count is not 1
-                ? ComponentSelector("Target", _src.target, _componentBuf)
-                : _componentBuf[0];
-            _componentBuf.Clear();
-            if (_src.target.RefEq(newTarget) is false)
-                _src.target = newTarget;
+            _src.target = GUIComponentSelector("Target", type, _src.gameObject, _src.target);
 
 
             // Draw Duration & Delay.
@@ -134,20 +123,20 @@ namespace DG.DOTweenEditor
 
             // Draw the value, relative, from/to.
             EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PrefixLabel("Value");
             // End value and eventual specific options
             switch (type)
             {
                 case DOTweenAnimationType.None: // placeholder
                 case DOTweenAnimationType.Move:
-                    GUIValue_V3();
+                    GUIValue_V2();
                     break;
                 case DOTweenAnimationType.Rotate:
                     GUIValue_Z();
                     break;
                 case DOTweenAnimationType.Scale:
                     if (_src.optionalBool0) GUIValue_Float();
-                    else GUIValue_V3();
-                    _src.optionalBool0 = EditorGUILayout.Toggle("Uniform Scale", _src.optionalBool0);
+                    else GUIValue_V2();
                     break;
                 case DOTweenAnimationType.Color:
                     GUIValue_Color();
@@ -159,14 +148,16 @@ namespace DG.DOTweenEditor
                 case DOTweenAnimationType.PunchPosition:
                 case DOTweenAnimationType.PunchRotation:
                 case DOTweenAnimationType.PunchScale:
-                    GUIValue_V3();
+                    if (type is DOTweenAnimationType.PunchRotation) GUIValue_Z();
+                    else GUIValue_V2();
                     _src.optionalInt0 = EditorGUILayout.IntSlider(new GUIContent("Vibrato"), _src.optionalInt0, 1, 50);
                     _src.optionalFloat0 = EditorGUILayout.Slider(new GUIContent("Elasticity"), _src.optionalFloat0, 0, 1);
                     break;
                 case DOTweenAnimationType.ShakePosition:
                 case DOTweenAnimationType.ShakeRotation:
                 case DOTweenAnimationType.ShakeScale:
-                    GUIValue_V3();
+                    if (type is DOTweenAnimationType.ShakeRotation) GUIValue_Z();
+                    else GUIValue_V2();
                     _src.optionalInt0 = EditorGUILayout.IntSlider(new GUIContent("Vibrato"), _src.optionalInt0, 1, 50);
                     _src.optionalFloat0 = EditorGUILayout.Slider(new GUIContent("Randomness"), _src.optionalFloat0, 0, 90);
                     _src.optionalBool1 = EditorGUILayout.Toggle(new GUIContent("FadeOut"), _src.optionalBool1);
@@ -177,9 +168,11 @@ namespace DG.DOTweenEditor
             }
 
             GUILayout.Space(4);
-            GUIFromTo(width: 40);
+            if (type is DOTweenAnimationType.Scale)
+                _src.optionalBool0 = GUIPushToggle("Uni", _src.optionalBool0, width: 38);
+            GUIFromTo(width: 38);
             if (type is DOTweenAnimationType.Move or DOTweenAnimationType.Rotate or DOTweenAnimationType.Scale)
-                _src.isRelative = GUIPushToggle("Rel", _src.isRelative, width: 40);
+                _src.isRelative = GUIPushToggle("Rel", _src.isRelative, width: 38);
             EditorGUILayout.EndHorizontal();
 
 
@@ -219,40 +212,39 @@ namespace DG.DOTweenEditor
 
         #region Methods
 
-        private static void CollectMatchingTargets(GameObject targetGO, DOTweenAnimationType animType, List<Component> result)
+        private static readonly List<Component> _compBuf = new();
+
+        private static Component GUIComponentSelector(
+            string label, DOTweenAnimationType animType, GameObject go, Component cur)
         {
+            _compBuf.Clear();
+
+            // collect targets
             var types = _eligibleTargetTypes[animType];
             foreach (var t in types)
             {
-                if (targetGO.TryGetComponent(t, out var targetComp)
-                    && result.Contains(targetComp) is false)
-                {
-                    result.Add(targetComp);
-                }
+                if (go.TryGetComponent(t, out var targetComp))
+                    _compBuf.Add(targetComp);
             }
-        }
 
-        private static Component ComponentSelector(string label, Component cur, List<Component> components)
-        {
-            var count = components.Count;
+            // only one component found, return it directly
+            var count = _compBuf.Count;
+            if (count is 1) return _compBuf[0];
+
+            // multiple components found, show a popup
             var options = new string[count];
             for (var i = 0; i < count; i++)
-                options[i] = components[i].GetType().Name;
-            var index = Array.IndexOf(components.ToArray(), cur);
+                options[i] = _compBuf[i].GetType().Name;
+            var index = Array.IndexOf(_compBuf.ToArray(), cur);
             if (index is -1) index = 0;
             var newIndex = EditorGUILayout.Popup(label, index, options);
-            return components[newIndex];
+            return _compBuf[newIndex];
         }
 
-        #endregion
-
-        #region GUI Draw Methods
-
-        private void GUIValue_Float() => _src.endValueFloat = EditorGUILayout.FloatField("Value", _src.endValueFloat);
-        private void GUIValue_Color() => _src.endValueColor = EditorGUILayout.ColorField("Value", _src.endValueColor);
-        private void GUIValue_V2() => _src.endValueV3 = EditorGUILayout.Vector2Field("Value", _src.endValueV3, GUILayout.Height(16));
-        private void GUIValue_V3() => _src.endValueV3 = EditorGUILayout.Vector3Field("Value", _src.endValueV3, GUILayout.Height(16));
-        private void GUIValue_Z() => _src.endValueV3.z = EditorGUILayout.FloatField("Value", _src.endValueV3.z, GUILayout.Height(16));
+        private void GUIValue_Float() => _src.endValueFloat = EditorGUILayout.FloatField(_src.endValueFloat);
+        private void GUIValue_Color() => _src.endValueColor = EditorGUILayout.ColorField(_src.endValueColor);
+        private void GUIValue_V2() => _src.endValueV3 = EditorGUILayout.Vector2Field("", _src.endValueV3);
+        private void GUIValue_Z() => _src.endValueV3.z = EditorGUILayout.FloatField(_src.endValueV3.z);
 
         private void GUIFromTo(float width)
         {
