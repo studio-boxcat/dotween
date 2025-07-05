@@ -63,7 +63,7 @@ namespace DG.Tweening
         }
 
 #if UNITY_EDITOR
-        [Button]
+        [ContextMenu("Play Preview _p"), Button]
         private void PlayPreview()
         {
             GetComponents(_animBuf);
@@ -71,7 +71,7 @@ namespace DG.Tweening
             {
                 var previewId = anim.GetInstanceID();
                 DOTweenPreviewManager.TryStopPreview(previewId);
-                DOTweenPreviewManager.StartPreview(anim.CreateTween(play: true).SetId(previewId));
+                DOTweenPreviewManager.StartPreview(anim.CreateTween(play: false).SetId(previewId));
             }
         }
 
