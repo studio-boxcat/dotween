@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using DG.Tweening.Core;
 using UnityEditor;
-using UnityEditorInternal;
-using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace DG.Tweening
@@ -25,6 +23,7 @@ namespace DG.Tweening
 
             if (_tweens.Count is 0)
             {
+                AnimationMode.StartAnimationMode(); // for screen refresh.
                 _lastUpdateTime = (float) EditorApplication.timeSinceStartup;
                 EditorApplication.update += (_update ??= Update);
                 EditorApplication.playModeStateChanged += (_onPlayModeStateChanged ??= OnPlayModeStateChanged);
@@ -58,7 +57,10 @@ namespace DG.Tweening
         private static void Internal_StopPreview(Tweener t)
         {
             if (_tweens.Count is 0)
+            {
+                AnimationMode.StopAnimationMode();
                 EditorApplication.update -= _update;
+            }
 
             TweenManager.RestoreToOriginal(t);
             TweenManager.KillTween(t);
@@ -76,31 +78,19 @@ namespace DG.Tweening
             var tweenToKill = new List<Tweener>();
             foreach (var tween in _tweens.Values)
             {
-                var needKill = tween.ForceUpdate(elapsed);
-                if (needKill) tweenToKill.Add(tween);
+                tween.ForceUpdate(elapsed);
+                if (tween.isComplete) tweenToKill.Add(tween);
             }
 
             foreach (var tween in tweenToKill)
                 StopPreview(tween);
-
-            // Force visual refresh of UI objects
-            // (a simple SceneView.RepaintAll won't work with UI elements)
-            Canvas.ForceUpdateCanvases();
-            InternalEditorUtility.RepaintAllViews();
         }
 
         private static Action<PlayModeStateChange> _onPlayModeStateChanged;
         private static void OnPlayModeStateChanged(PlayModeStateChange state)
         {
-            EditorApplication.playModeStateChanged -= _onPlayModeStateChanged;
-
-            if (_tweens.Count is not 0)
-            {
-                foreach (var t in _tweens.Values)
-                    Internal_StopPreview(t);
-                _tweens.Clear();
-                EditorApplication.update -= _update;
-            }
+            while (_tweens.Count is not 0)
+                StopPreview(_tweens[0]);
         }
     }
 }

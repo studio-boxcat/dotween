@@ -1,3 +1,6 @@
+// ReSharper disable InconsistentNaming
+
+#nullable enable
 using System;
 using JetBrains.Annotations;
 using Sirenix.OdinInspector;
@@ -6,14 +9,13 @@ using UnityEngine.Assertions;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-#pragma warning disable 1591
 namespace DG.Tweening
 {
     public enum DOTweenAnimationType : byte
     {
         None = 0,
-        LocalMove = 2,
-        LocalRotateZ = 4,
+        Move = 2,
+        Rotate = 4,
         Scale = 5,
         Color = 6,
         Fade = 7,
@@ -29,14 +31,13 @@ namespace DG.Tweening
     /// <summary>
     /// Attach this to a GameObject to create a tween
     /// </summary>
-    [AddComponentMenu("DOTween/DOTween Animation")]
     public sealed class DOTweenAnimation : MonoBehaviour
 #if UNITY_EDITOR
         , ISelfValidator
 #endif
     {
         [NonSerialized]
-        public Tweener tween;
+        public Tweener? tween;
 
         public float delay;
         public float duration = 1;
@@ -44,13 +45,13 @@ namespace DG.Tweening
         public AnimationCurve easeCurve = new(new Keyframe(0, 0), new Keyframe(1, 1));
         public LoopType loopType = LoopType.Restart;
         public int loops = 1;
-        public bool isRelative;
+        public bool isRelative = true;
         public bool isFrom;
         public bool autoKill = true;
         public bool autoGenerate = true; // If TRUE automatically creates the tween at startup
 
         [Required, ChildGameObjectsOnly]
-        public Component target;
+        public Component target = null!;
         public DOTweenAnimationType animationType;
         public bool autoPlay = true;
 
@@ -149,7 +150,6 @@ namespace DG.Tweening
 
         #endregion
 
-        [NotNull]
         private static Tweener CreateTween(
             Object target, Transform transform,
             DOTweenAnimationType animationType,
@@ -164,8 +164,8 @@ namespace DG.Tweening
         {
             return animationType switch
             {
-                DOTweenAnimationType.LocalMove => transform.DOLocalMove(endValueV3, duration),
-                DOTweenAnimationType.LocalRotateZ => transform.DOLocalRotateZ(endValueV3.z, duration),
+                DOTweenAnimationType.Move => transform.DOLocalMove(endValueV3, duration),
+                DOTweenAnimationType.Rotate => transform.DOLocalRotateZ(endValueV3.z, duration),
                 DOTweenAnimationType.Scale => transform.DOScale(optionalBool0 ? new Vector3(endValueFloat, endValueFloat, endValueFloat) : endValueV3, duration),
                 DOTweenAnimationType.Color => target switch
                 {
@@ -210,7 +210,7 @@ namespace DG.Tweening
                 result.AddError("AnimationType must be set to a valid value");
 
             if (animationType
-                is DOTweenAnimationType.LocalMove
+                is DOTweenAnimationType.Move
                 or DOTweenAnimationType.PunchPosition
                 or DOTweenAnimationType.ShakePosition)
             {
@@ -218,12 +218,12 @@ namespace DG.Tweening
                     result.AddError("Snapping is not supported anymore.");
             }
 
-            if (animationType is DOTweenAnimationType.LocalRotateZ)
+            if (animationType is DOTweenAnimationType.Rotate)
             {
                 if (endValueV3.x != 0 || endValueV3.y != 0)
-                    result.AddError("LocalRotateZ can only rotate on the Z axis");
+                    result.AddError("Rotate can only rotate on the Z axis");
                 if (isRelative is false)
-                    result.AddError("LocalRotateZ must be relative. Otherwise, it would result unexpected rotation.");
+                    result.AddError("Rotate must be relative. Otherwise, it would result unexpected rotation.");
             }
 
             if (animationType
