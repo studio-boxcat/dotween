@@ -11,20 +11,20 @@ namespace DG.Tweening
         , ISelfValidator
 #endif
     {
-        private List<Tweener>? _tweenList;
+        private List<Tweener>? _tweens;
 
         private static readonly List<DOTweenAnim> _animBuf = new();
-        private static readonly Stack<List<Tweener>> _tweenListPool = new();
+        private static readonly Stack<List<Tweener>> _tweenPool = new();
 
         private void OnEnable()
         {
-            if (_tweenList is null)
+            if (_tweens is null)
             {
-                _tweenList = _tweenListPool.Count > 0 ? _tweenListPool.Pop() : new List<Tweener>();
+                _tweens = _tweenPool.Count > 0 ? _tweenPool.Pop() : new List<Tweener>();
             }
             else
             {
-                Assert.AreEqual(0, _tweenList!.Count);
+                Assert.AreEqual(0, _tweens!.Count);
             }
 
             var id = GetInstanceID();
@@ -33,7 +33,7 @@ namespace DG.Tweening
             {
                 var tween = anim.CreateTween(play: true);
                 tween.id = id;
-                _tweenList!.Add(tween);
+                _tweens!.Add(tween);
             }
         }
 
@@ -41,29 +41,28 @@ namespace DG.Tweening
         {
             var id = GetInstanceID();
 
-            foreach (var tween in _tweenList!)
+            foreach (var tween in _tweens!)
             {
                 // XXX: Even if AutoKill is set to false, tween can be killed accidentally, like transform.DOKill().
-                if (tween is null || tween.id != id)
-                    continue;
-                tween.KillRewind();
+                if (tween.id == id)
+                    tween.KillRewind();
             }
 
-            _tweenList.Clear();
+            _tweens.Clear();
         }
 
         private void OnDestroy()
         {
-            if (_tweenList is not null)
+            if (_tweens is not null)
             {
-                Assert.AreEqual(0, _tweenList.Count);
-                _tweenListPool.Push(_tweenList);
-                _tweenList = null;
+                Assert.AreEqual(0, _tweens.Count, "Should be cleared from OnDisable()");
+                _tweenPool.Push(_tweens);
+                _tweens = null;
             }
         }
 
 #if UNITY_EDITOR
-        [ContextMenu("Play Preview _p"), Button]
+        [ContextMenu("Play Preview _p"), Button(DirtyOnClick = false)]
         private void PlayPreview()
         {
             GetComponents(_animBuf);
