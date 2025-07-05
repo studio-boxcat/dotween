@@ -72,7 +72,7 @@ namespace DG.Tweening
         {
             if (!autoGenerate) return;
 
-            PopulateTween(autoPlay);
+            PopulateTween(play: autoPlay);
             _tweenAutoGenerationCalled = true;
         }
 
@@ -80,7 +80,7 @@ namespace DG.Tweening
         {
             if (_tweenAutoGenerationCalled || !autoGenerate) return;
 
-            PopulateTween(autoPlay);
+            PopulateTween(play: autoPlay);
             _tweenAutoGenerationCalled = true;
         }
 
@@ -100,19 +100,18 @@ namespace DG.Tweening
         /// from its target's current value.
         /// </summary>
         /// <param name="play">If TRUE also plays the tween, otherwise only creates it</param>
-        public void PopulateTween(bool play)
+        public Tweener PopulateTween(bool play)
         {
             Assert.AreNotEqual(DOTweenAnimType.None, animationType, "AnimationType is None");
             Assert.IsNotNull(target, "Target is null");
 
-            if (tween != null)
+            if (tween is not { active: true })
             {
-                if (tween.active) return;
-                tween = null;
+                tween = CreateTween(play: play);
+                tween.OnKill(() => tween = null);
             }
 
-            tween = CreateTween(play: play);
-            tween.OnKill(() => tween = null);
+            return tween;
         }
 
         [MustUseReturnValue]
