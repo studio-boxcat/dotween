@@ -258,7 +258,7 @@ namespace DG.DOTweenEditor
                     _src.endValueColor = EditorGUILayout.ColorField(_src.endValueColor);
                     break;
                 case ValueType.XY:
-                    _src.endValueV3 = EditorGUILayout.Vector2Field("", _src.endValueV3);
+                    _src.endValueV3.AssignXY(EditorGUILayout.Vector2Field("", _src.endValueV3));
                     break;
                 case ValueType.Y:
                     _src.endValueV3.y = EditorGUILayout.FloatField(_src.endValueV3.y);
