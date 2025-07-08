@@ -31,7 +31,7 @@ namespace DG.Tweening
 
             _tweens.Add(t.id, t);
 
-            TweenManager.DetachTween(t);
+            TweenManager.DetachTween(t); // detach from update loop.
             t.SetAutoKill(false);
             t.OnStart(null).OnUpdate(null)
                 .OnComplete(null).OnKill(null);
@@ -56,14 +56,14 @@ namespace DG.Tweening
 
         private static void Internal_StopPreview(Tweener t)
         {
+            TweenManager.RestoreToOriginal(t);
+            TweenManager.KillTween(t);
+
             if (_tweens.Count is 0)
             {
                 AnimationMode.StopAnimationMode();
                 EditorApplication.update -= _update;
             }
-
-            TweenManager.RestoreToOriginal(t);
-            TweenManager.KillTween(t);
         }
 
         private static EditorApplication.CallbackFunction _update;
