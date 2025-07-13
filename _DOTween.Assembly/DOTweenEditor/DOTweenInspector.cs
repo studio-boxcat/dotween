@@ -1,14 +1,14 @@
 ﻿using System.Text;
 using DG.Tweening;
 using DG.Tweening.Core;
-using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Object = UnityEngine.Object;
 
 namespace DG.DOTweenEditor.UI
 {
-    public class DOTweenInspector : OdinEditorWindow
+    public class DOTweenInspector : CustomOdinEditorWindow
     {
         private static readonly StringBuilder _sb = new();
 
@@ -18,21 +18,40 @@ namespace DG.DOTweenEditor.UI
             GetWindow<DOTweenInspector>().Show();
         }
 
-        protected override void OnImGUI()
+        protected override void Initialize()
         {
+            base.Initialize();
+
+            OnBeginGUI += () =>
+            {
+                GUILayout.Label(
+                    "Pool State: " +
+                    $"Tweeners={TweenPool.SumPooledTweeners()} " +
+                    $"Sequences={TweenPool.SumPooledSequences()}");
+            };
+        }
+
+        protected override void DrawEditors()
+        {
+            base.DrawEditors();
+
             if (EditorApplication.isPlaying is false)
                 return;
 
-            GUILayout.Label("Pooled tweens");
-            GUILayout.Label("    Tweeners: " + TweenPool.SumPooledTweeners());
-            GUILayout.Label("    Sequences: " + TweenPool.SumPooledSequences());
-
-            base.OnImGUI();
-
             // Draw playing tweens.
             var tweens = TweenManager.Tweens.StartIterate();
-            foreach (var t in tweens) DrawTweenButton(t);
-            TweenManager.Tweens.EndIterate();
+            try
+            {
+                foreach (var t in tweens) DrawTweenButton(t);
+            }
+            catch (ExitGUIException)
+            {
+                // ExitGUIException is thrown when the user interacts with the GUI.
+            }
+            finally
+            {
+                TweenManager.Tweens.EndIterate();
+            }
         }
 
         private static void DrawTweenButton(Tween tween, bool isSequenced = false)
