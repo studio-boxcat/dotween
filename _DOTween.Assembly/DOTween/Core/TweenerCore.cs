@@ -4,6 +4,10 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
+// ReSharper disable InconsistentNaming
+// ReSharper disable ParameterHidesMember
+
+#nullable enable
 using System;
 using DG.Tweening.Plugins.Core;
 using UnityEngine;
@@ -17,15 +21,15 @@ namespace DG.Tweening.Core
     // T: type of value to tween
     // T: format in which value is stored while tweening
     // TPlugOptions: options type
-    public class TweenerCore<T> : Tweener
+    public class TweenerCore<T> : Tweener where T : struct
     {
         // SETUP DATA ////////////////////////////////////////////////
 
         public T startValue, endValue, changeValue;
-        public DOGetter<T> getter;
-        public DOSetter<T> setter;
-        internal TweenPlugin<T> plugin;
-        public object plugOptions;
+        public DOGetter<T>? getter;
+        public DOSetter<T>? setter;
+        internal TweenPlugin<T>? plugin;
+        public object? plugOptions;
 
         #region Constructor
 
@@ -75,7 +79,7 @@ namespace DG.Tweening.Core
         // - Pro > PathPlugin, SpiralPlugin
         internal override Tweener SetFrom(bool relative)
         {
-            plugin.SetFrom(this, relative);
+            plugin!.SetFrom(this, relative);
             hasManuallySetStartValue = true;
             return this;
         }
@@ -86,7 +90,7 @@ namespace DG.Tweening.Core
         // - Pro > PathPlugin, SpiralPlugin
         internal Tweener SetFrom(T fromValue, bool setImmediately, bool relative)
         {
-            plugin.SetFrom(this, fromValue, setImmediately, relative);
+            plugin!.SetFrom(this, fromValue, setImmediately, relative);
             hasManuallySetStartValue = true;
             return this;
         }
@@ -101,34 +105,25 @@ namespace DG.Tweening.Core
 
             if (!hasManuallySetStartValue) {
                 // Take start value from current target value
-                if (Config.useSafeMode) {
-                    try {
-                        if (isFrom) {
-                            // From tween without forced From value and where setImmediately was FALSE
-                            // (contrary to other forms of From tweens its values will be set at startup)
-                            SetFrom(isRelative);
-                            isRelative = false;
-                        } else startValue = getter();
-                    } catch (Exception e) {
-                        Debugger.LogSafeModeCapturedError(e, this);
-                        return false; // Target/field doesn't exist: kill tween
-                    }
-                } else {
+                try {
                     if (isFrom) {
                         // From tween without forced From value and where setImmediately was FALSE
                         // (contrary to other forms of From tweens its values will be set at startup)
                         SetFrom(isRelative);
                         isRelative = false;
-                    }
-                    else startValue = getter();
+                    } else startValue = getter!();
+                } catch (Exception e) {
+                    Debugger.LogSafeModeCapturedError(e, this);
+                    return false; // Target/field doesn't exist: kill tween
                 }
             }
 
-            if (isRelative) plugin.SetRelativeEndValue(this);
+            if (isRelative) plugin!.SetRelativeEndValue(this);
 
-            plugin.SetChangeValue(this);
+            plugin!.SetChangeValue(this);
 
             // Duration based startup operations
+            Assert.IsTrue(loops is not 0, "Loops must be different from 0");
             fullDuration = loops > -1 ? duration * loops : Mathf.Infinity;
 
             // Applied here so that the eventual duration derived from a speedBased tween has been set
@@ -140,7 +135,7 @@ namespace DG.Tweening.Core
 
         public override void ApplyOriginal()
         {
-            setter(isFrom ? endValue : startValue);
+            setter!(isFrom ? endValue : startValue);
         }
 
         // Applies the tween set by DoGoto.
@@ -148,16 +143,12 @@ namespace DG.Tweening.Core
         internal override bool ApplyTween(float prevPosition, int prevCompletedLoops, int newCompletedSteps, bool useInversePosition, UpdateMode updateMode)
         {
             var elapsed = useInversePosition ? duration - position : position;
-            if (Config.useSafeMode) {
-                try {
-                    plugin.EvaluateAndApply(this, elapsed);
-                } catch (Exception e) {
-                    // Target/field doesn't exist anymore: kill tween
-                    Debugger.LogSafeModeCapturedError(e, this);
-                    return true;
-                }
-            } else {
-                plugin.EvaluateAndApply(this, elapsed);
+            try {
+                plugin!.EvaluateAndApply(this, elapsed);
+            } catch (Exception e) {
+                // Target/field doesn't exist anymore: kill tween
+                Debugger.LogSafeModeCapturedError(e, this);
+                return true;
             }
             return false;
         }

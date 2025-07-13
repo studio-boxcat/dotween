@@ -4,8 +4,8 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
+#nullable enable
 using DG.Tweening.Core;
-using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -45,21 +45,6 @@ namespace DG.Tweening
             t.SetTarget(target);
             return t;
         }
-        /// <summary>Tweens a Material's named color property to the given value.
-        /// Also stores the material as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param>
-        /// <param name="property">The name of the material property to tween (like _Tint or _SpecColor)</param>
-        /// <param name="duration">The duration of the tween</param>
-        public static TweenerCore<Color> DOColor(this Material target, Color endValue, string property, float duration)
-        {
-            if (!target.HasProperty(property)) {
-                Debugger.LogMissingMaterialProperty(property);
-                return null;
-            }
-            var t = DOTween.To(() => target.GetColor(property), x => target.SetColor(property, x), endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
         /// <summary>Tweens a Material's named color property with the given ID to the given value.
         /// Also stores the material as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param>
@@ -67,10 +52,7 @@ namespace DG.Tweening
         /// <param name="duration">The duration of the tween</param>
         public static TweenerCore<Color> DOColor(this Material target, Color endValue, int propertyID, float duration)
         {
-            if (!target.HasProperty(propertyID)) {
-                Debugger.LogMissingMaterialProperty(propertyID);
-                return null;
-            }
+            if (!target.HasProperty(propertyID)) Debugger.LogMissingMaterialProperty(propertyID);
             var t = DOTween.To(() => target.GetColor(propertyID), x => target.SetColor(propertyID, x), endValue, duration);
             t.SetTarget(target);
             return t;
@@ -86,22 +68,6 @@ namespace DG.Tweening
             t.SetTarget(target);
             return t;
         }
-        /// <summary>Tweens a Material's alpha color to the given value
-        /// (will have no effect unless your material supports transparency).
-        /// Also stores the material as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param>
-        /// <param name="property">The name of the material property to tween (like _Tint or _SpecColor)</param>
-        /// <param name="duration">The duration of the tween</param>
-        public static TweenerCore<float> DOFade(this Material target, float endValue, string property, float duration)
-        {
-            if (!target.HasProperty(property)) {
-                Debugger.LogMissingMaterialProperty(property);
-                return null;
-            }
-            var t = DOTween.ToAlpha(() => target.GetColor(property), x => target.SetColor(property, x), endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
         /// <summary>Tweens a Material's alpha color with the given ID to the given value
         /// (will have no effect unless your material supports transparency).
         /// Also stores the material as the tween's target so it can be used for filtered operations</summary>
@@ -110,30 +76,12 @@ namespace DG.Tweening
         /// <param name="duration">The duration of the tween</param>
         public static TweenerCore<float> DOFade(this Material target, float endValue, int propertyID, float duration)
         {
-            if (!target.HasProperty(propertyID)) {
-                Debugger.LogMissingMaterialProperty(propertyID);
-                return null;
-            }
+            if (!target.HasProperty(propertyID)) Debugger.LogMissingMaterialProperty(propertyID);
             var t = DOTween.ToAlpha(() => target.GetColor(propertyID), x => target.SetColor(propertyID, x), endValue, duration);
             t.SetTarget(target);
             return t;
         }
 
-        /// <summary>Tweens a Material's named float property to the given value.
-        /// Also stores the material as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param>
-        /// <param name="property">The name of the material property to tween</param>
-        /// <param name="duration">The duration of the tween</param>
-        public static TweenerCore<float> DOFloat(this Material target, float endValue, string property, float duration)
-        {
-            if (!target.HasProperty(property)) {
-                Debugger.LogMissingMaterialProperty(property);
-                return null;
-            }
-            var t = DOTween.To(() => target.GetFloat(property), x => target.SetFloat(property, x), endValue, duration);
-            t.SetTarget(target);
-            return t;
-        }
         /// <summary>Tweens a Material's named float property with the given ID to the given value.
         /// Also stores the material as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param>
@@ -141,10 +89,7 @@ namespace DG.Tweening
         /// <param name="duration">The duration of the tween</param>
         public static TweenerCore<float> DOFloat(this Material target, float endValue, int propertyID, float duration)
         {
-            if (!target.HasProperty(propertyID)) {
-                Debugger.LogMissingMaterialProperty(propertyID);
-                return null;
-            }
+            if (!target.HasProperty(propertyID)) Debugger.LogMissingMaterialProperty(propertyID);
             var t = DOTween.To(() => target.GetFloat(propertyID), x => target.SetFloat(propertyID, x), endValue, duration);
             t.SetTarget(target);
             return t;
@@ -163,15 +108,12 @@ namespace DG.Tweening
         /// <summary>Tweens a Material's named texture offset property to the given value.
         /// Also stores the material as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param>
-        /// <param name="property">The name of the material property to tween</param>
+        /// <param name="propertyID">The name of the material property to tween</param>
         /// <param name="duration">The duration of the tween</param>
-        public static TweenerCore<Vector2> DOOffset(this Material target, Vector2 endValue, string property, float duration)
+        public static TweenerCore<Vector2> DOOffset(this Material target, Vector2 endValue, int propertyID, float duration)
         {
-            if (!target.HasProperty(property)) {
-                Debugger.LogMissingMaterialProperty(property);
-                return null;
-            }
-            var t = DOTween.To(() => target.GetTextureOffset(property), x => target.SetTextureOffset(property, x), endValue, duration);
+            if (!target.HasProperty(propertyID)) Debugger.LogMissingMaterialProperty(propertyID);
+            var t = DOTween.To(() => target.GetTextureOffset(propertyID), x => target.SetTextureOffset(propertyID, x), endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -307,13 +249,11 @@ namespace DG.Tweening
         /// while 0 oscillates only between the punch and the start position</param>
         public static Tweener DOPunchPosition(this Transform target, Vector3 punch, float duration, int vibrato = 10, float elasticity = 1)
         {
-            if (duration <= 0) {
-                Debug.LogWarning("DOPunchPosition: duration can't be 0, returning NULL without creating a tween");
-                return null;
-            }
+            if (duration <= 0) Debugger.LogLE0Duration();
             return DOTween.Punch(() => target.localPosition, x => target.localPosition = x, punch, duration, vibrato, elasticity)
                 .SetTarget(target);
         }
+
         /// <summary>Punches a Transform's localScale towards the given size and then back to the starting one
         /// as if it was connected to the starting scale via an elastic.</summary>
         /// <param name="punch">The punch strength (added to the Transform's current scale)</param>
@@ -324,10 +264,7 @@ namespace DG.Tweening
         /// while 0 oscillates only between the punch scale and the start scale</param>
         public static Tweener DOPunchScale(this Transform target, Vector3 punch, float duration, int vibrato = 10, float elasticity = 1)
         {
-            if (duration <= 0) {
-                Debug.LogWarning("DOPunchScale: duration can't be 0, returning NULL without creating a tween");
-                return null;
-            }
+            if (duration <= 0) Debugger.LogLE0Duration();
             return DOTween.Punch(() => target.localScale, x => target.localScale = x, punch, duration, vibrato, elasticity)
                 .SetTarget(target);
         }
@@ -341,10 +278,7 @@ namespace DG.Tweening
         /// while 0 oscillates only between the punch and the start rotation</param>
         public static Tweener DOPunchRotation(this Transform target, Vector3 punch, float duration, int vibrato = 10, float elasticity = 1)
         {
-            if (duration <= 0) {
-                Debug.LogWarning("DOPunchRotation: duration can't be 0, returning NULL without creating a tween");
-                return null;
-            }
+            if (duration <= 0) Debugger.LogLE0Duration();
             return DOTween.Punch(() => target.localEulerAngles, x => target.localRotation = Quaternion.Euler(x), punch, duration, vibrato, elasticity)
                 .SetTarget(target);
         }
@@ -359,10 +293,7 @@ namespace DG.Tweening
         /// <param name="randomnessMode">Randomness mode</param>
         public static Tweener DOShakePosition(this Transform target, float duration, float strength = 1, int vibrato = 10, float randomness = 90, bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full)
         {
-            if (duration <= 0) {
-                Debug.LogWarning("DOShakePosition: duration can't be 0, returning NULL without creating a tween");
-                return null;
-            }
+            if (duration <= 0) Debugger.LogLE0Duration();
             return DOTween.Shake(() => target.localPosition, x => target.localPosition = x, duration, strength, vibrato, randomness, false, fadeOut, randomnessMode)
                 .SetTarget(target);
         }
@@ -376,10 +307,7 @@ namespace DG.Tweening
         /// <param name="randomnessMode">Randomness mode</param>
         public static Tweener DOShakePosition(this Transform target, float duration, Vector3 strength, int vibrato = 10, float randomness = 90, bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full)
         {
-            if (duration <= 0) {
-                Debug.LogWarning("DOShakePosition: duration can't be 0, returning NULL without creating a tween");
-                return null;
-            }
+            if (duration <= 0) Debugger.LogLE0Duration();
             return DOTween.Shake(() => target.localPosition, x => target.localPosition = x, duration, strength, vibrato, randomness, fadeOut, randomnessMode)
                 .SetTarget(target);
         }
@@ -393,10 +321,7 @@ namespace DG.Tweening
         /// <param name="randomnessMode">Randomness mode</param>
         public static Tweener DOShakeRotation(this Transform target, float duration, float strength = 90, int vibrato = 10, float randomness = 90, bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full)
         {
-            if (duration <= 0) {
-                Debug.LogWarning("DOShakeRotation: duration can't be 0, returning NULL without creating a tween");
-                return null;
-            }
+            if (duration <= 0) Debugger.LogLE0Duration();
             return DOTween.Shake(() => target.localEulerAngles, x => target.localRotation = Quaternion.Euler(x), duration, strength, vibrato, randomness, false, fadeOut, randomnessMode)
                 .SetTarget(target);
         }
@@ -410,10 +335,7 @@ namespace DG.Tweening
         /// <param name="randomnessMode">Randomness mode</param>
         public static Tweener DOShakeRotation(this Transform target, float duration, Vector3 strength, int vibrato = 10, float randomness = 90, bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full)
         {
-            if (duration <= 0) {
-                Debug.LogWarning("DOShakeRotation: duration can't be 0, returning NULL without creating a tween");
-                return null;
-            }
+            if (duration <= 0) Debugger.LogLE0Duration();
             return DOTween.Shake(() => target.localEulerAngles, x => target.localRotation = Quaternion.Euler(x), duration, strength, vibrato, randomness, fadeOut, randomnessMode)
                 .SetTarget(target);
         }
@@ -427,10 +349,7 @@ namespace DG.Tweening
         /// <param name="randomnessMode">Randomness mode</param>
         public static Tweener DOShakeScale(this Transform target, float duration, float strength = 1, int vibrato = 10, float randomness = 90, bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full)
         {
-            if (duration <= 0) {
-                Debug.LogWarning("DOShakeScale: duration can't be 0, returning NULL without creating a tween");
-                return null;
-            }
+            if (duration <= 0) Debugger.LogLE0Duration();
             return DOTween.Shake(() => target.localScale, x => target.localScale = x, duration, strength, vibrato, randomness, false, fadeOut, randomnessMode)
                 .SetTarget(target);
         }
@@ -444,10 +363,7 @@ namespace DG.Tweening
         /// <param name="randomnessMode">Randomness mode</param>
         public static Tweener DOShakeScale(this Transform target, float duration, Vector3 strength, int vibrato = 10, float randomness = 90, bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full)
         {
-            if (duration <= 0) {
-                Debug.LogWarning("DOShakeScale: duration can't be 0, returning NULL without creating a tween");
-                return null;
-            }
+            if (duration <= 0) Debugger.LogLE0Duration();
             return DOTween.Shake(() => target.localScale, x => target.localScale = x, duration, strength, vibrato, randomness, fadeOut, randomnessMode)
                 .SetTarget(target);
         }
@@ -555,10 +471,7 @@ namespace DG.Tweening
         /// while 0 oscillates only between the punch and the start rotation</param>
         public static Tweener DOBlendablePunchRotationZ(this Transform target, float punch, float duration, int vibrato = 10, float elasticity = 1)
         {
-            if (duration <= 0) {
-                Debug.LogWarning("DOBlendablePunchRotation: duration can't be 0, returning NULL without creating a tween");
-                return null;
-            }
+            if (duration <= 0) Debugger.LogLE0Duration();
             var to = Vector3.zero;
             var t = DOTween.Punch(() => to, v => {
                 var qto = Quaternion.Euler(0, 0, to.z);
@@ -589,7 +502,7 @@ namespace DG.Tweening
         /// </summary>
         /// <param name="withCallbacks">For Sequences only: if TRUE also internal Sequence callbacks will be fired,
         /// otherwise they will be ignored</param>
-        public static void DOComplete([NotNull] this Object target, bool withCallbacks = false)
+        public static void DOComplete(this Object target, bool withCallbacks = false)
             => TweenManager.ExecuteOperation(OperationType.Complete, target, false, withCallbacks ? 1 : 0);
 
         /// <summary>
@@ -598,15 +511,8 @@ namespace DG.Tweening
         /// and returns the total number of tweens killed.
         /// </summary>
         /// <param name="complete">If TRUE completes the tween before killing it</param>
-        public static void DOKill([NotNull] this object target, bool complete = false)
+        public static void DOKill(this object target, bool complete = false)
         {
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (target is null)
-            {
-                L.W("[DOTween] Object target is NULL");
-                return;
-            }
-
             if (complete) TweenManager.ExecuteOperation(OperationType.Complete, target, true, 0);
             TweenManager.ExecuteOperation(OperationType.Despawn, target, false, 0);
         }
@@ -616,7 +522,7 @@ namespace DG.Tweening
         /// (meaning tweens that were started from this target, or that had this target added as an Id)
         /// and returns the total number of tweens flipped.
         /// </summary>
-        public static void DOFlip([NotNull] this Object target)
+        public static void DOFlip(this Object target)
             => TweenManager.ExecuteOperation(OperationType.Flip, target, false, 0);
 
         /// <summary>
@@ -627,7 +533,7 @@ namespace DG.Tweening
         /// <param name="to">Time position to reach
         /// (if higher than the whole tween duration the tween will simply reach its end)</param>
         /// <param name="andPlay">If TRUE will play the tween after reaching the given position, otherwise it will pause it</param>
-        public static void DOGoto([NotNull] this Object target, float to, bool andPlay = false)
+        public static void DOGoto(this Object target, float to, bool andPlay = false)
             => TweenManager.ExecuteOperation(OperationType.Goto, target, andPlay, to);
 
         /// <summary>
@@ -635,7 +541,7 @@ namespace DG.Tweening
         /// (meaning tweens that were started from this target, or that had this target added as an Id)
         /// and returns the total number of tweens paused.
         /// </summary>
-        public static void DOPause([NotNull] this Object target)
+        public static void DOPause(this Object target)
             => TweenManager.ExecuteOperation(OperationType.Pause, target, false, 0);
 
         /// <summary>
@@ -643,7 +549,7 @@ namespace DG.Tweening
         /// (meaning tweens that were started from this target, or that had this target added as an Id)
         /// and returns the total number of tweens played.
         /// </summary>
-        public static void DOPlay([NotNull] this Object target)
+        public static void DOPlay(this Object target)
             => TweenManager.ExecuteOperation(OperationType.Play, target, false, 0);
 
         /// <summary>
@@ -651,7 +557,7 @@ namespace DG.Tweening
         /// (meaning tweens that were started from this target, or that had this target added as an Id)
         /// and returns the total number of tweens played.
         /// </summary>
-        public static void DOPlayBackwards([NotNull] this Object target)
+        public static void DOPlayBackwards(this Object target)
             => TweenManager.ExecuteOperation(OperationType.PlayBackwards, target, false, 0);
 
         /// <summary>
@@ -659,7 +565,7 @@ namespace DG.Tweening
         /// (meaning tweens that were started from this target, or that had this target added as an Id)
         /// and returns the total number of tweens played.
         /// </summary>
-        public static void DOPlayForward([NotNull] this Object target)
+        public static void DOPlayForward(this Object target)
             => TweenManager.ExecuteOperation(OperationType.PlayForward, target, false, 0);
 
         /// <summary>
@@ -667,7 +573,7 @@ namespace DG.Tweening
         /// (meaning tweens that were started from this target, or that had this target added as an Id)
         /// and returns the total number of tweens restarted.
         /// </summary>
-        public static void DORestart([NotNull] this Object target, bool includeDelay = true)
+        public static void DORestart(this Object target, bool includeDelay = true)
             => TweenManager.ExecuteOperation(OperationType.Restart, target, includeDelay, -1);
 
         /// <summary>
@@ -675,7 +581,7 @@ namespace DG.Tweening
         /// (meaning tweens that were started from this target, or that had this target added as an Id)
         /// and returns the total number of tweens rewinded.
         /// </summary>
-        public static void DORewind([NotNull] this Object target, bool includeDelay = true)
+        public static void DORewind(this Object target, bool includeDelay = true)
             => TweenManager.ExecuteOperation(OperationType.Rewind, target, includeDelay, 0);
 
         /// <summary>
@@ -683,7 +589,7 @@ namespace DG.Tweening
         /// (meaning tweens that were started from this target, or that had this target added as an Id)
         /// and returns the total number of tweens involved.
         /// </summary>
-        public static void DOTogglePause([NotNull] this Object target)
+        public static void DOTogglePause(this Object target)
             => TweenManager.ExecuteOperation(OperationType.TogglePause, target, false, 0);
 
         #endregion

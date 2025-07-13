@@ -5,6 +5,8 @@
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
 #pragma warning disable 1591
+#nullable enable
+
 namespace DG.Tweening.Core
 {
     public abstract class ABSSequentiable
@@ -13,6 +15,6 @@ namespace DG.Tweening.Core
         internal float sequencedEndPosition; // end position in Sequence
 
         /// <summary>Called the first time the tween is set in a playing state, after any eventual delay</summary>
-        internal TweenCallback onStart; // Used also by SequenceCallback as main callback
+        internal TweenCallback? onStart; // Used also by SequenceCallback as main callback
     }
 }

@@ -9,7 +9,7 @@ namespace DG.Tweening
     /// <summary>
     /// Public so it can be used by lose scripts related to DOTween (like DOTweenAnimation)
     /// </summary>
-    public static class Debugger
+    internal static class Debugger
     {
         private const string _prefix = "[DOTween] ";
 
@@ -44,15 +44,9 @@ namespace DG.Tweening
             LogWarning("This Tween was added to a Sequence and can't be controlled directly", t);
         }
 
-        [Conditional("DEBUG")]
-        public static void LogNullTween(Tween t)
+        public static void LogLE0Duration()
         {
-            LogWarning("Null Tween");
-        }
-
-        public static void LogMissingMaterialProperty(string propertyName)
-        {
-            LogError($"This material doesn't have a {propertyName} property");
+            LogError("Tween duration must be greater than 0");
         }
 
         public static void LogMissingMaterialProperty(int propertyId)

@@ -4,6 +4,8 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
+#nullable enable
+
 namespace DG.Tweening.Core
 {
     internal class SequenceCallback : ABSSequentiable
@@ -12,6 +14,11 @@ namespace DG.Tweening.Core
         {
             this.sequencedPosition = sequencedPosition;
             onStart = callback;
+        }
+
+        public void InvokeOnStart(Sequence sequence)
+        {
+            onStart!.OnTweenCallback(sequence); // onStart is guaranteed to be not null here
         }
     }
 }

@@ -5,12 +5,11 @@
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
 
+#nullable enable
 using System;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins;
 using DG.Tweening.Plugins.Core;
-using DG.Tweening.Plugins.Options;
-using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.LowLevel;
 using Object = UnityEngine.Object;
@@ -80,7 +79,7 @@ namespace DG.Tweening
 
         #region Tween TO
 
-        private static TweenerCore<T> To<T>(DOGetter<T> getter, DOSetter<T> setter, T endValue, float duration, TweenPlugin<T> plugin)
+        private static TweenerCore<T> To<T>(DOGetter<T> getter, DOSetter<T> setter, T endValue, float duration, TweenPlugin<T> plugin) where T : struct
         {
             var t = TweenManager.GetTweener<T>();
             t.Setup(getter, setter, endValue, duration, plugin);
@@ -238,16 +237,7 @@ namespace DG.Tweening
 
         #region Global Info Getters
 
-        /// <summary>
-        /// Returns TRUE if a tween with the given ID or target is active.
-        /// <para>You can also use this to know if a shortcut tween is active for a given target.</para>
-        /// <para>Example:</para>
-        /// <para><code>transform.DOMoveX(45, 1); // transform is automatically added as the tween target</code></para>
-        /// <para><code>DOTween.IsTweening(transform); // Returns true</code></para>
-        /// </summary>
-        /// <param name="target">The target or ID to look for</param>
-        /// otherwise also requires it to be playing</param>
-        public static bool IsTweening([NotNull] Object target)
+        public static bool IsTweening(Object target)
         {
             return TweenManager.IsTweening(target);
         }

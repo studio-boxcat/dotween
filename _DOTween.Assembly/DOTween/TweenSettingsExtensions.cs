@@ -4,6 +4,7 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
+#nullable enable
 using System.Diagnostics;
 using DOVector2 = UnityEngine.Vector2;
 using DOVector3 = UnityEngine.Vector3;
@@ -11,7 +12,6 @@ using DG.Tweening.Core;
 using DG.Tweening.Core.Easing;
 using DG.Tweening.Plugins;
 using DG.Tweening.Plugins.Options;
-using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -67,7 +67,7 @@ namespace DG.Tweening
 
 #if DEBUG
             var obj = target as Object;
-            t.debugHint = obj != null ? obj.name : target.ToString();
+            t.debugHint = obj ? obj!.name : target.ToString();
 #endif
 
             t.target = target;
@@ -144,7 +144,7 @@ namespace DG.Tweening
         }
         /// <summary>Sets the ease of the tween using an AnimationCurve.
         /// <para>If applied to Sequences eases the whole sequence animation</para></summary>
-        public static T SetEase<T>([NotNull] this T t, AnimationCurve animCurve) where T : Tween
+        public static T SetEase<T>(this T t, AnimationCurve animCurve) where T : Tween
         {
             if (!t.active)
             {
@@ -159,7 +159,7 @@ namespace DG.Tweening
         }
         /// <summary>Sets the ease of the tween using a custom ease function (which must return a value between 0 and 1).
         /// <para>If applied to Sequences eases the whole sequence animation</para></summary>
-        public static T SetEase<T>([NotNull] this T t, EaseFunction customEase) where T : Tween
+        public static T SetEase<T>(this T t, EaseFunction customEase) where T : Tween
         {
             if (!t.active)
             {
@@ -230,7 +230,7 @@ namespace DG.Tweening
         /// <summary>Adds the given tween to the end of the Sequence.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="t">The tween to append</param>
-        public static Sequence Append([NotNull] this Sequence s, [NotNull] Tween t)
+        public static Sequence Append(this Sequence s, Tween t)
         {
             if (!ValidateAddToSequence(s) || !ValidateAddToSequence(t)) return s;
             Sequence.DoInsert(s, t, s.duration);
@@ -240,7 +240,7 @@ namespace DG.Tweening
         /// <summary>Adds the given interval to the end of the Sequence.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="interval">The interval duration</param>
-        public static Sequence AppendInterval([NotNull] this Sequence s, float interval)
+        public static Sequence AppendInterval(this Sequence s, float interval)
         {
             if (!ValidateAddToSequence(s)) return s;
             Sequence.DoAppendInterval(s, interval);
@@ -249,7 +249,7 @@ namespace DG.Tweening
         /// <summary>Adds the given interval to the beginning of the Sequence, pushing forward the other nested content.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="interval">The interval duration</param>
-        public static Sequence PrependInterval([NotNull] this Sequence s, float interval)
+        public static Sequence PrependInterval(this Sequence s, float interval)
         {
             if (!ValidateAddToSequence(s)) return s;
             Sequence.DoPrependInterval(s, interval);
@@ -259,16 +259,15 @@ namespace DG.Tweening
         /// <summary>Adds the given callback to the end of the Sequence.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="callback">The callback to append</param>
-        public static Sequence AppendCallback([NotNull] this Sequence s, TweenCallback callback)
+        public static Sequence AppendCallback(this Sequence s, TweenCallback callback)
         {
             if (!ValidateAddToSequence(s)) return s;
-            if (callback == null) return s;
 
             Sequence.DoInsertCallback(s, callback, s.duration);
             return s;
         }
 
-        private static bool ValidateAddToSequence([NotNull] Sequence s)
+        private static bool ValidateAddToSequence(Sequence s)
         {
             if (!s.active) {
                 L.W("You can't add elements to an inactive/killed Sequence");
@@ -281,7 +280,7 @@ namespace DG.Tweening
             return true;
         }
 
-        private static bool ValidateAddToSequence([NotNull] Tween t)
+        private static bool ValidateAddToSequence(Tween t)
         {
             if (!t.active) {
                 L.W("You can't add an inactive/killed tween to a Sequence", t);
@@ -319,7 +318,7 @@ namespace DG.Tweening
         /// <param name="isRelative">If TRUE the FROM/TO values will be calculated as relative to the current ones</param>
         public static TweenerCore<T> From<T>(
             this TweenerCore<T> t, T fromValue, bool setImmediately = true, bool isRelative = false
-        )
+        ) where T : struct
         {
             if (t is not { active: true } || t.creationLocked || !t.isFromAllowed) return t;
 

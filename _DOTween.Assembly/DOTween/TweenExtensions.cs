@@ -20,9 +20,7 @@ namespace DG.Tweening
         /// otherwise they will be ignored</param>
         public static void Complete(this Tween t, bool withCallbacks)
         {
-            if (t == null) {
-                Debugger.LogNullTween(t); return;
-            } else if (!t.active) {
+            if (!t.active) {
                 Debugger.LogInvalidTween(t); return;
             } else if (t.isSequenced) {
                 Debugger.LogNestedTween(t); return;
@@ -34,9 +32,7 @@ namespace DG.Tweening
         /// <summary>Flips the direction of this tween (backwards if it was going forward or viceversa)</summary>
         public static void Flip(this Tween t)
         {
-            if (t == null) {
-                Debugger.LogNullTween(t); return;
-            } else if (!t.active) {
+            if (!t.active) {
                 Debugger.LogInvalidTween(t); return;
             } else if (t.isSequenced) {
                 Debugger.LogNestedTween(t); return;
@@ -59,9 +55,7 @@ namespace DG.Tweening
         { DoGoto(t, to, andPlay, true); }
         private static void DoGoto(Tween t, float to, bool andPlay, bool withCallbacks)
         {
-            if (t == null) {
-                Debugger.LogNullTween(t); return;
-            } else if (!t.active) {
+            if (!t.active) {
                 Debugger.LogInvalidTween(t); return;
             } else if (t.isSequenced) {
                 Debugger.LogNestedTween(t); return;
@@ -106,9 +100,7 @@ namespace DG.Tweening
         /// <summary>Pauses the tween</summary>
         public static T Pause<T>(this T t) where T : Tween
         {
-            if (t == null) {
-                Debugger.LogNullTween(t); return t;
-            } else if (!t.active) {
+            if (!t.active) {
                 Debugger.LogInvalidTween(t); return t;
             } else if (t.isSequenced) {
                 Debugger.LogNestedTween(t); return t;
@@ -121,9 +113,7 @@ namespace DG.Tweening
         /// <summary>Plays the tween</summary>
         public static T Play<T>(this T t) where T : Tween
         {
-            if (t == null) {
-                Debugger.LogNullTween(t); return t;
-            } else if (!t.active) {
+            if (!t.active) {
                 Debugger.LogInvalidTween(t); return t;
             } else if (t.isSequenced) {
                 Debugger.LogNestedTween(t); return t;
@@ -136,9 +126,7 @@ namespace DG.Tweening
         /// <summary>Sets the tween in a backwards direction and plays it</summary>
         public static void PlayBackwards(this Tween t)
         {
-            if (t == null) {
-                Debugger.LogNullTween(t); return;
-            } else if (!t.active) {
+            if (!t.active) {
                 Debugger.LogInvalidTween(t); return;
             } else if (t.isSequenced) {
                 Debugger.LogNestedTween(t); return;
@@ -150,9 +138,7 @@ namespace DG.Tweening
         /// <summary>Sets the tween in a forward direction and plays it</summary>
         public static void PlayForward(this Tween t)
         {
-            if (t == null) {
-                Debugger.LogNullTween(t); return;
-            } else if (!t.active) {
+            if (!t.active) {
                 Debugger.LogInvalidTween(t); return;
             } else if (t.isSequenced) {
                 Debugger.LogNestedTween(t); return;
@@ -166,9 +152,7 @@ namespace DG.Tweening
         /// <param name="changeDelayTo">Ignored in case of Sequences. If >= 0 changes the startup delay to this value, otherwise doesn't touch it</param>
         public static void Restart(this Tween t, bool includeDelay = true, float changeDelayTo = -1)
         {
-            if (t == null) {
-                Debugger.LogNullTween(t); return;
-            } else if (!t.active) {
+            if (!t.active) {
                 Debugger.LogInvalidTween(t); return;
             } else if (t.isSequenced) {
                 Debugger.LogNestedTween(t); return;
@@ -181,9 +165,7 @@ namespace DG.Tweening
         /// <param name="includeDelay">Ignored in case of Sequences. If TRUE includes the eventual tween delay, otherwise skips it</param>
         public static void Rewind(this Tween t, bool includeDelay = true)
         {
-            if (t == null) {
-                Debugger.LogNullTween(t); return;
-            } else if (!t.active) {
+            if (!t.active) {
                 Debugger.LogInvalidTween(t); return;
             } else if (t.isSequenced) {
                 Debugger.LogNestedTween(t); return;
@@ -195,9 +177,7 @@ namespace DG.Tweening
         /// <summary>Plays the tween if it was paused, pauses it if it was playing</summary>
         public static void TogglePause(this Tween t)
         {
-            if (t == null) {
-                Debugger.LogNullTween(t); return;
-            } else if (!t.active) {
+            if (!t.active) {
                 Debugger.LogInvalidTween(t); return;
             } else if (t.isSequenced) {
                 Debugger.LogNestedTween(t); return;
@@ -299,7 +279,7 @@ namespace DG.Tweening
         /// <para><code>.OnKill(()=> myTweenReference = null)</code></para></summary>
         public static bool IsActive(this Tween t)
         {
-            return t != null && t.active;
+            return t.active;
         }
 
         /// <summary>Returns TRUE if this tween was reversed and is set to go backwards</summary>

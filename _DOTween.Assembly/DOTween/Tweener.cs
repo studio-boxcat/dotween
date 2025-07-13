@@ -5,6 +5,9 @@
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
 
+// ReSharper disable InconsistentNaming
+#nullable enable
+
 namespace DG.Tweening
 {
     /// <summary>

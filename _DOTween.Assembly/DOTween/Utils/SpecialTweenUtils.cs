@@ -1,5 +1,5 @@
 ﻿using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
+using DG.Tweening.Plugins;
 using UnityEngine;
 
 namespace DG.Tweening
@@ -28,7 +28,7 @@ namespace DG.Tweening
             var startTimes = new float[segmentCount - 1]; // Start time for the first segment is omitted.
             var segmentDuration = 1f / segmentCount;
             for (var i = 0; i < segmentCount - 1; ++i)
-                startTimes[i] = segmentDuration * (i + 1);
+                startTimes[i] = segmentDuration * (i + 1); // normalized time values (0-1)
 
             // Create the tween
             var startValues = new Vector3[segmentCount - 1]; // Start value for the first segment is omitted.

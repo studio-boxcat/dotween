@@ -41,6 +41,7 @@ namespace DG.Tweening
         public Tweener? tween;
 
         public float delay;
+        [MinValue(0.0001f)]
         public float duration = 1;
         public Ease easeType = Ease.OutQuad;
         public AnimationCurve easeCurve = new(new Keyframe(0, 0), new Keyframe(1, 1));
@@ -155,6 +156,8 @@ namespace DG.Tweening
             float optionalFloat0,
             int optionalInt0)
         {
+            Assert.IsTrue(duration > 0, "Duration must be greater than 0");
+
             return animType switch
             {
                 DOTweenAnimType.MoveY => transform.DOLocalMoveY(endValueV3.y, duration),

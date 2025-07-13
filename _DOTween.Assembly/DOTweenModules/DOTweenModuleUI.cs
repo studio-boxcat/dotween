@@ -3,6 +3,8 @@
 
 #if true && (UNITY_4_6 || UNITY_5 || UNITY_2017_1_OR_NEWER) // MODULE_MARKER
 
+// ReSharper disable InvalidXmlDocComment
+#nullable enable
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening.Core;
@@ -69,7 +71,7 @@ namespace DG.Tweening
         {
             if (endValue > 1) endValue = 1;
             else if (endValue < 0) endValue = 0;
-            TweenerCore<float> t = DOTween.To(() => target.fillAmount, x => target.fillAmount = x, endValue, duration);
+            var t = DOTween.To(() => target.fillAmount, x => target.fillAmount = x, endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -83,7 +85,7 @@ namespace DG.Tweening
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         public static TweenerCore<Color> DOColor(this Shadow target, Color endValue, float duration)
         {
-            TweenerCore<Color> t = DOTween.To(() => target.effectColor, x => target.effectColor = x, endValue, duration);
+            var t = DOTween.To(() => target.effectColor, x => target.effectColor = x, endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -107,7 +109,7 @@ namespace DG.Tweening
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         public static TweenerCore<Vector2> DOAnchorPos(this RectTransform target, Vector2 endValue, float duration)
         {
-            TweenerCore<Vector2> t = DOTween.To(() => target.anchoredPosition, x => target.anchoredPosition = x, endValue, duration);
+            var t = DOTween.To(() => target.anchoredPosition, x => target.anchoredPosition = x, endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -116,7 +118,7 @@ namespace DG.Tweening
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         public static TweenerCore<Vector2> DOAnchorPosX(this RectTransform target, float endValue, float duration)
         {
-            TweenerCore<Vector2> t = DOTween.To(() => target.anchoredPosition, x => target.anchoredPosition = x, new Vector2(endValue, 0), duration);
+            var t = DOTween.To(() => target.anchoredPosition, x => target.anchoredPosition = x, new Vector2(endValue, 0), duration);
             t.SetOptions(AxisConstraint.X).SetTarget(target);
             return t;
         }
@@ -125,7 +127,7 @@ namespace DG.Tweening
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         public static TweenerCore<Vector2> DOAnchorPosY(this RectTransform target, float endValue, float duration)
         {
-            TweenerCore<Vector2> t = DOTween.To(() => target.anchoredPosition, x => target.anchoredPosition = x, new Vector2(0, endValue), duration);
+            var t = DOTween.To(() => target.anchoredPosition, x => target.anchoredPosition = x, new Vector2(0, endValue), duration);
             t.SetOptions(AxisConstraint.Y).SetTarget(target);
             return t;
         }
@@ -135,7 +137,7 @@ namespace DG.Tweening
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         public static TweenerCore<Vector2> DOAnchorMax(this RectTransform target, Vector2 endValue, float duration)
         {
-            TweenerCore<Vector2> t = DOTween.To(() => target.anchorMax, x => target.anchorMax = x, endValue, duration);
+            var t = DOTween.To(() => target.anchorMax, x => target.anchorMax = x, endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -145,7 +147,7 @@ namespace DG.Tweening
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         public static TweenerCore<Vector2> DOAnchorMin(this RectTransform target, Vector2 endValue, float duration)
         {
-            TweenerCore<Vector2> t = DOTween.To(() => target.anchorMin, x => target.anchorMin = x, endValue, duration);
+            var t = DOTween.To(() => target.anchorMin, x => target.anchorMin = x, endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -155,7 +157,7 @@ namespace DG.Tweening
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         public static TweenerCore<Vector2> DOSizeDelta(this RectTransform target, Vector2 endValue, float duration)
         {
-            TweenerCore<Vector2> t = DOTween.To(() => target.sizeDelta, x => target.sizeDelta = x, endValue, duration);
+            var t = DOTween.To(() => target.sizeDelta, x => target.sizeDelta = x, endValue, duration);
             t.SetTarget(target);
             return t;
         }
@@ -246,7 +248,7 @@ namespace DG.Tweening
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         public static TweenerCore<float> DOValue(this Slider target, float endValue, float duration)
         {
-            TweenerCore<float> t = DOTween.To(() => target.value, x => target.value = x, endValue, duration);
+            var t = DOTween.To(() => target.value, x => target.value = x, endValue, duration);
             t.SetTarget(target);
             return t;
         }

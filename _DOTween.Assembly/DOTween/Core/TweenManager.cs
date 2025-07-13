@@ -4,7 +4,7 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
-using JetBrains.Annotations;
+#nullable enable
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -18,8 +18,7 @@ namespace DG.Tweening.Core
 
         // Returns a new Tweener, from the pool if there's one available,
         // otherwise by instantiating a new one
-        [NotNull]
-        internal static TweenerCore<T> GetTweener<T>()
+        internal static TweenerCore<T> GetTweener<T>() where T : struct
         {
             var t = TweenPool.RentTweener<T>();
             AttachTween(t);
@@ -28,7 +27,6 @@ namespace DG.Tweening.Core
 
         // Returns a new Sequence, from the pool if there's one available,
         // otherwise by instantiating a new one
-        [NotNull]
         internal static Sequence GetSequence()
         {
             var s = TweenPool.RentSequence();
@@ -49,7 +47,7 @@ namespace DG.Tweening.Core
 
             if (t.onKill != null)
             {
-                Tween.OnTweenCallback(t.onKill, t);
+                t.onKill.OnTweenCallback(t);
                 t.onKill = null;
             }
 
@@ -82,17 +80,17 @@ namespace DG.Tweening.Core
             Tweens.EndIterate();
         }
 
-        internal static bool IsTweening([NotNull] Object target)
+        internal static bool IsTweening(Object target)
         {
             var tweens = Tweens.StartIterate();
             foreach (var t in tweens)
             {
                 if (ReferenceEquals(target, t.target) is false)
                     continue;
-                if (t.isComplete && t.autoKill)
+                if (t is { isComplete: true, autoKill: true })
                     continue;
 
-                Tweens.EndIterate();
+                Tweens.EndIterate(); // exit early.
                 return true;
             }
 
@@ -100,8 +98,10 @@ namespace DG.Tweening.Core
             return false;
         }
 
-        internal static void ExecuteOperation(OperationType operationType, [NotNull] object targetOrId, bool optionalBool, float optionalFloat)
+        internal static void ExecuteOperation(OperationType operationType, object targetOrId, bool optionalBool, float optionalFloat)
         {
+            Assert.IsNotNull(targetOrId, "Target cannot be null");
+
             // Determine if ID is required.
             bool useId = false;
             int id = 0;
@@ -110,10 +110,6 @@ namespace DG.Tweening.Core
                 useId = true;
                 id = (int) targetOrId;
                 Assert.AreNotEqual(Tween.invalidId, id, "Cannot filter by invalid id");
-            }
-            else
-            {
-                Assert.IsTrue(targetOrId is not null, "Target cannot be null");
             }
 
             var tweens = Tweens.StartIterate();
@@ -175,7 +171,7 @@ namespace DG.Tweening.Core
             Tweens.EndIterate();
             return;
 
-            static bool IsTargetsFilterCompliant([NotNull] object a, [CanBeNull] object b)
+            static bool IsTargetsFilterCompliant(object a, object? b)
             {
                 if (b is null) return false; // Any of the two is null, consider them different.
                 if (a is Object) return ReferenceEquals(a, b); // a is a UnityObject, so compare references.

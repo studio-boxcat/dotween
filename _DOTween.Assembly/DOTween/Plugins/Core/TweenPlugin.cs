@@ -10,7 +10,7 @@ using DG.Tweening.Core;
 namespace DG.Tweening.Plugins.Core
 {
     // Public so it can be extended by custom plugins
-    public abstract class TweenPlugin<T> : ITweenPlugin
+    public abstract class TweenPlugin<T> : ITweenPlugin where T : struct
     {
         public abstract void SetFrom(TweenerCore<T> t, bool isRelative);
         public abstract void SetFrom(TweenerCore<T> t, T fromValue, bool setImmediately, bool isRelative);

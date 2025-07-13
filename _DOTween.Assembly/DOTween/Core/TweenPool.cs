@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,11 +25,11 @@ namespace DG.Tweening.Core
         private static readonly Dictionary<Type, int> _debugCreateCount = new();
 #endif
 
-        public static TweenerCore<T> RentTweener<T>()
+        public static TweenerCore<T> RentTweener<T>() where T : struct
         {
             var list = GetTweenerList(typeof(TweenerCore<T>));
 
-            Tweener tweener = null;
+            Tweener tweener;
 
             var count = list.Count;
             if (count is 0)
@@ -59,7 +60,7 @@ namespace DG.Tweening.Core
 
         public static Sequence RentSequence()
         {
-            Sequence sequence = null;
+            Sequence sequence;
 
             var count = _sequence.Count;
             if (count is 0)

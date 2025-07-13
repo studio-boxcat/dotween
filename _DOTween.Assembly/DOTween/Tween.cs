@@ -4,7 +4,9 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
-using System;
+// ReSharper disable InconsistentNaming
+
+#nullable enable
 using DG.Tweening.Core;
 using UnityEngine.Assertions;
 
@@ -26,13 +28,13 @@ namespace DG.Tweening
         /// Default is -999 so avoid using an ID like that or it will capture all unset intIds</summary>
         public int id = invalidId;
         /// <summary>Tween target (usable for filtering with DOTween static methods). Automatically set by tween creation shortcuts</summary>
-        public object target; // Automatically set by DO shortcuts using SetTarget extension. Also used during Tweener.DoStartup in some special cases
+        public object? target; // Automatically set by DO shortcuts using SetTarget extension. Also used during Tweener.DoStartup in some special cases
         /// <summary>Called each time the tween updates</summary>
-        public TweenCallback onUpdate;
+        public TweenCallback? onUpdate;
         /// <summary>Called the moment the tween reaches completion (loops included)</summary>
-        public TweenCallback onComplete;
+        public TweenCallback? onComplete;
         /// <summary>Called the moment the tween is killed</summary>
-        public TweenCallback onKill;
+        public TweenCallback? onKill;
 
         // Fixed after creation
         internal bool isFrom; // Used to prevent settings like isRelative from being applied on From tweens
@@ -45,14 +47,14 @@ namespace DG.Tweening
         /// <summary>Tweeners-only (ignored by Sequences), returns TRUE if the tween was set as relative</summary>
         public bool isRelative { get; internal set; } // Required by Modules
         internal Ease easeType;
-        internal EaseFunction customEase; // Used both for AnimationCurve and custom eases
+        internal EaseFunction? customEase; // Used both for AnimationCurve and custom eases
 #pragma warning disable 1591
         public float easeOvershootOrAmplitude; // Public so it can be used with custom plugins
         public float easePeriod; // Public so it can be used with custom plugins
 #pragma warning restore 1591
 
 #if DEBUG
-        public string debugHint;
+        public string? debugHint;
 #endif
 
         // SETUP DATA ////////////////////////////////////////////////
@@ -149,7 +151,7 @@ namespace DG.Tweening
             if (!playedOnce && updateMode == UpdateMode.Update) {
                 playedOnce = true;
                 if (onStart != null) {
-                    OnTweenCallback(onStart, this);
+                    onStart.OnTweenCallback(this);
                     if (!active) return true; // Tween might have been killed by onStart callback
                 }
             }
@@ -194,11 +196,9 @@ namespace DG.Tweening
             if (ApplyTween(prevPosition, prevCompletedLoops, newCompletedSteps, useInversePosition, updateMode)) return true;
 
             // Additional callbacks
-            if (onUpdate != null) {
-                OnTweenCallback(onUpdate, this);
-            }
-            if (isComplete && !wasComplete && onComplete != null) {
-                OnTweenCallback(onComplete, this);
+            onUpdate?.OnTweenCallback(this);
+            if (isComplete && !wasComplete) {
+                onComplete?.OnTweenCallback(this);
             }
 
             // Return
@@ -274,21 +274,6 @@ namespace DG.Tweening
 
             // Goto
             return ForceGoto(toPosition, toCompletedLoops, UpdateMode.Update);
-        }
-
-        // Assumes that the callback exists (because it was previously checked).
-        // Returns TRUE in case of success, FALSE in case of error (if safeMode is on)
-        internal static bool OnTweenCallback(TweenCallback callback, Tween t)
-        {
-            if (Config.useSafeMode) {
-                try {
-                    callback();
-                } catch (Exception e) {
-                    Debugger.LogSafeModeCapturedError(e, t);
-                    return false; // Callback error
-                }
-            } else callback();
-            return true;
         }
 
         #endregion

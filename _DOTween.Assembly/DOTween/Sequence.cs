@@ -252,9 +252,9 @@ namespace DG.Tweening
                     if (!s.isPlaying && wasPlaying) return false; // Paused by internal callback
                     ABSSequentiable sequentiable = s._sequencedObjs[i];
                     if (sequentiable.sequencedEndPosition < toPos || sequentiable.sequencedPosition > fromPos) continue;
-                    if (sequentiable is SequenceCallback) {
+                    if (sequentiable is SequenceCallback c) {
                         if (updateMode == UpdateMode.Update && prevPosIsInverse) {
-                            OnTweenCallback(sequentiable.onStart, s);
+                            c.InvokeOnStart(s);
                         }
                     } else {
                         // Nested Tweener/Sequence
@@ -295,11 +295,11 @@ namespace DG.Tweening
                         || sequentiable.sequencedPosition > 0 && sequentiable.sequencedEndPosition <= fromPos
                         || sequentiable.sequencedPosition <= 0 && sequentiable.sequencedEndPosition < fromPos
                     ) continue;
-                    if (sequentiable is SequenceCallback) {
+                    if (sequentiable is SequenceCallback c) {
                         if (updateMode == UpdateMode.Update) {
                             bool fire = !s.isBackwards && !useInverse && !prevPosIsInverse
                                 || s.isBackwards && useInverse && !prevPosIsInverse;
-                            if (fire) OnTweenCallback(sequentiable.onStart, s);
+                            if (fire) c.InvokeOnStart(s);
                         }
                     } else {
                         // Nested Tweener/Sequence
