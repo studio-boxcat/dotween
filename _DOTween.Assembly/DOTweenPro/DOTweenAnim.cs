@@ -165,21 +165,24 @@ namespace DG.Tweening
                 },
                 DOTweenAnimType.PunchPos => target switch
                 {
-                    RectTransform t => t.DOPunchAnchorPos(endValueV3, duration, optionalInt0, optionalFloat0),
-                    Transform t => t.DOPunchPosition(endValueV3, duration, optionalInt0, optionalFloat0),
+                    RectTransform t => t.DOPunchAnchorPos(endValueV3, duration, vibrato: optionalInt0, elasticity: optionalFloat0),
+                    Transform t => t.DOPunchPosition(endValueV3, duration, vibrato: optionalInt0, elasticity: optionalFloat0),
                     _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)
                 },
-                DOTweenAnimType.PunchScale => transform.DOPunchScale(endValueV3, duration, optionalInt0, optionalFloat0),
-                DOTweenAnimType.PunchRot => transform.DOPunchRotation(endValueV3, duration, optionalInt0, optionalFloat0),
+                DOTweenAnimType.PunchScale => transform.DOPunchScale(endValueV3, duration, vibrato: optionalInt0, elasticity: optionalFloat0),
+                DOTweenAnimType.PunchRot => transform.DOPunchRotation(endValueV3, duration, vibrato: optionalInt0, elasticity: optionalFloat0),
                 DOTweenAnimType.ShakePos => target switch
                 {
-                    RectTransform t => t.DOShakeAnchorPos(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool1),
-                    Transform t => t.DOShakePosition(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool1),
+                    RectTransform t => t.DOShakeAnchorPos(duration, endValueV3, vibrato: optionalInt0, randomness: optionalFloat0, fadeOut: optionalBool1),
+                    Transform t => t.DOShakePosition(duration, endValueV3, vibrato: optionalInt0, randomness: optionalFloat0, fadeOut: optionalBool1),
                     _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)
                 },
-                DOTweenAnimType.ShakeScale => transform.DOShakeScale(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool1),
-                DOTweenAnimType.ShakeRot => transform.DOShakeRotation(duration, endValueV3, optionalInt0, optionalFloat0, optionalBool1),
-                DOTweenAnimType.UIAnchors => DOTween.To(() => ((RectTransform) target).anchorMin, x => ((RectTransform) target).anchorMin = ((RectTransform) target).anchorMax = x, (Vector2) endValueV3, duration),
+                DOTweenAnimType.ShakeScale => transform.DOShakeScale(duration, endValueV3, vibrato: optionalInt0, randomness: optionalFloat0, fadeOut: optionalBool1),
+                DOTweenAnimType.ShakeRot => transform.DOShakeRotation(duration, endValueV3, vibrato: optionalInt0, randomness: optionalFloat0, fadeOut: optionalBool1),
+                DOTweenAnimType.UIAnchors => DOTween.To(
+                    () => ((RectTransform) target).anchorMin,
+                    x => ((RectTransform) target).anchorMin = ((RectTransform) target).anchorMax = x,
+                    (Vector2) endValueV3, duration),
                 _ => throw new ArgumentOutOfRangeException(nameof(animType), animType, null)
             };
         }

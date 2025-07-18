@@ -209,13 +209,8 @@ namespace DG.Tweening
         /// <summary>Tweens a Transform's localScale uniformly to the given value.
         /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Vector3> DOScale(this Transform target, float endValue, float duration)
-        {
-            var endValueV3 = new Vector3(endValue, endValue, endValue);
-            var t = DOTween.To(() => target.localScale, x => target.localScale = x, endValueV3, duration);
-            t.SetTarget(target);
-            return t;
-        }
+        public static TweenerCore<Vector3> DOScale(this Transform target, float endValue, float duration) =>
+            DOScale(target, new Vector3(endValue, endValue, endValue), duration);
 
         /// <summary>Tweens a Transform's X localScale to the given value.
         /// Also stores the transform as the tween's target so it can be used for filtered operations</summary>
