@@ -29,8 +29,6 @@ namespace DG.Tweening
         public int id = invalidId;
         /// <summary>Tween target (usable for filtering with DOTween static methods). Automatically set by tween creation shortcuts</summary>
         public object? target; // Automatically set by DO shortcuts using SetTarget extension. Also used during Tweener.DoStartup in some special cases
-        /// <summary>Called each time the tween updates</summary>
-        public TweenCallback? onUpdate;
         /// <summary>Called the moment the tween reaches completion (loops included)</summary>
         public TweenCallback? onComplete;
         /// <summary>Called the moment the tween is killed</summary>
@@ -100,7 +98,7 @@ namespace DG.Tweening
         {
             isBackwards = false;
             id = invalidId;
-            onStart = onUpdate = onComplete = onKill = null;
+            onStart = onComplete = onKill = null;
 
 #if DEBUG
             debugHint = null;
@@ -196,7 +194,6 @@ namespace DG.Tweening
             if (ApplyTween(prevPosition, prevCompletedLoops, newCompletedSteps, useInversePosition, updateMode)) return true;
 
             // Additional callbacks
-            onUpdate?.OnTweenCallback(this);
             if (isComplete && !wasComplete) {
                 onComplete?.OnTweenCallback(this);
             }

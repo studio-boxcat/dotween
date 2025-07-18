@@ -338,8 +338,7 @@ namespace DG.Tweening
 
         private static bool IsAnyCallbackSet(Sequence s)
         {
-            return s.onComplete != null || s.onKill != null
-                   || s.onStart != null || s.onUpdate != null;
+            return s.onComplete != null || s.onKill != null || s.onStart != null;
         }
     }
 }

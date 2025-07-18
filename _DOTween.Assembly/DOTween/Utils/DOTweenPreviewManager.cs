@@ -33,8 +33,7 @@ namespace DG.Tweening
 
             TweenManager.DetachTween(t); // detach from update loop.
             t.SetAutoKill(false);
-            t.OnStart(null).OnUpdate(null)
-                .OnComplete(null).OnKill(null);
+            t.OnStart(null).OnComplete(null).OnKill(null);
             t.Play();
         }
 

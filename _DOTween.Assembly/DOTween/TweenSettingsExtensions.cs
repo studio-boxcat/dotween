@@ -185,7 +185,7 @@ namespace DG.Tweening
 
         /// <summary>Sets the <code>onStart</code> callback for the tween, clearing any previous <code>onStart</code> callback that was set.
         /// Called the first time the tween is set in a playing state, after any eventual delay</summary>
-        public static T OnStart<T>(this T t, TweenCallback action) where T : Tween
+        public static T OnStart<T>(this T t, TweenCallback? action) where T : Tween
         {
             if (t is not { active: true }) return t;
 
@@ -193,19 +193,9 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Sets the <code>onUpdate</code> callback for the tween, clearing any previous <code>onUpdate</code> callback that was set.
-        /// Called each time the tween updates</summary>
-        public static T OnUpdate<T>(this T t, TweenCallback action) where T : Tween
-        {
-            if (t is not { active: true }) return t;
-
-            t.onUpdate = action;
-            return t;
-        }
-
         /// <summary>Sets the <code>onComplete</code> callback for the tween, clearing any previous <code>onComplete</code> callback that was set.
         /// Called the moment the tween reaches its final forward position, loops included</summary>
-        public static T OnComplete<T>(this T t, TweenCallback action) where T : Tween
+        public static T OnComplete<T>(this T t, TweenCallback? action) where T : Tween
         {
             if (t is not { active: true }) return t;
 
@@ -215,7 +205,7 @@ namespace DG.Tweening
 
         /// <summary>Sets the <code>onKill</code> callback for the tween, clearing any previous <code>onKill</code> callback that was set.
         /// Called the moment the tween is killed</summary>
-        public static T OnKill<T>(this T t, TweenCallback action) where T : Tween
+        public static T OnKill<T>(this T t, TweenCallback? action) where T : Tween
         {
             if (t is not { active: true }) return t;
 
