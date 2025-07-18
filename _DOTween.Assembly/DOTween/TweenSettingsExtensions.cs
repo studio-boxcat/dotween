@@ -57,7 +57,7 @@ namespace DG.Tweening
         /// When using shorcuts the shortcut target is already assigned as the tween's target,
         /// so using this method will overwrite it and prevent shortcut-operations like myTarget.DOPause from working correctly.</summary>
         /// <param name="target">The target to assign to this tween. Can be an int, a string, an object or anything else.</param>
-        public static T SetTarget<T>(this T t, Object target) where T : Tween
+        public static T SetTarget<T>(this T t, Object? target) where T : Tween
         {
             if (t is not { active: true }) return t;
 

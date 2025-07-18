@@ -11,13 +11,13 @@ namespace DG.Tweening
         private static readonly Dictionary<int, Tweener> _tweens = new();
         private static float _lastUpdateTime;
 
-        public static bool IsPreviewing(int id, out Tweener t)
-        {
-            return _tweens.TryGetValue(id, out t);
-        }
+        public static bool IsPreviewing(int id, out Tweener t) => _tweens.TryGetValue(id, out t);
+        public static bool IsPreviewing(UnityEngine.Object obj, out Tweener t) => IsPreviewing(obj.GetInstanceID(), out t);
 
         public static void StartPreview(Tweener t)
         {
+            L.I("[DOTweenPreviewManager] Start previewing tween: " + t);
+
             Assert.AreNotEqual(Tween.invalidId, t.id, "Tween to preview must have a valid id");
 
             if (_tweens.Count is 0)
@@ -31,7 +31,7 @@ namespace DG.Tweening
             _tweens.Add(t.id, t);
 
             TweenManager.DetachTween(t); // detach from update loop.
-            t.SetAutoKill(false);
+            t.SetAutoKill(true); // to make ForceUpdate() return true when the tween needs to be killed.
             t.OnStart(null).OnComplete(null).OnKill(null);
             t.Play();
         }
@@ -76,8 +76,8 @@ namespace DG.Tweening
             var tweenToKill = new List<Tweener>();
             foreach (var tween in _tweens.Values)
             {
-                tween.ForceUpdate(elapsed);
-                if (tween.isComplete) tweenToKill.Add(tween);
+                if (tween.ForceUpdate(elapsed))
+                    tweenToKill.Add(tween);
             }
 
             foreach (var tween in tweenToKill)

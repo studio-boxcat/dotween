@@ -65,7 +65,7 @@ namespace DG.Tweening
         private void Awake()
         {
 #if UNITY_EDITOR
-            if (Editing.Yes(this)) return;
+            if (Editing.Yes(this)) return; // [ExecuteAlways] by DOTweenAnim.Editor.cs
 #endif
 
             if (autoGenerate)
@@ -75,7 +75,7 @@ namespace DG.Tweening
         private void OnDestroy()
         {
 #if UNITY_EDITOR
-            if (Editing.Yes(this)) return;
+            if (Editing.Yes(this)) return; // [ExecuteAlways] by DOTweenAnim.Editor.cs
 #endif
 
             if (tween != null)
@@ -122,8 +122,8 @@ namespace DG.Tweening
             else t.SetRelative(isRelative);
 
             // Set basic tween settings.
-            // XXX: Do not set target to prevent accidental tween kills.
-            t.SetDelay(delay).SetLoops(loops, loopType).SetAutoKill(autoKill);
+            t.SetTarget(null) // set target to null to prevent accidental tween kills by DOKill() (e.g. transform.DOKill())
+                .SetDelay(delay).SetLoops(loops, loopType).SetAutoKill(autoKill);
 
             // Set easeType.
             if (easeType is Ease.INTERNAL_Custom) t.SetEase(easeCurve);
