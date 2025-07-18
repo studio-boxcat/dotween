@@ -32,6 +32,7 @@ namespace DG.Tweening
     /// <summary>
     /// Attach this to a GameObject to create a tween
     /// </summary>
+    [ExecuteAlways]
     public sealed class DOTweenAnim : MonoBehaviour
 #if UNITY_EDITOR
         , ISelfValidator
@@ -67,12 +68,20 @@ namespace DG.Tweening
 
         private void Awake()
         {
+#if UNITY_EDITOR
+            if (Editing.Yes(this)) return;
+#endif
+
             if (autoGenerate)
                 PopulateTween(play: autoPlay);
         }
 
         private void OnDestroy()
         {
+#if UNITY_EDITOR
+            if (Editing.Yes(this)) return;
+#endif
+
             if (tween != null)
             {
                 if (tween.active)
@@ -81,7 +90,7 @@ namespace DG.Tweening
             }
         }
 
-        // Used also by DOTweenAnimationInspector when applying runtime changes and restarting
+        // Used also by DOTweenAnimInspector when applying runtime changes and restarting
         /// <summary>
         /// Creates the tween manually (called automatically if AutoGenerate is set in the Inspector)
         /// from its target's current value.
@@ -102,9 +111,9 @@ namespace DG.Tweening
         }
 
         [MustUseReturnValue]
-        public Tweener CreateTween(bool play)
+        internal Tweener CreateTween(bool play)
         {
-            L.I($"[DOTweenAnimation] CreateTween: {animationType} - {target}", this);
+            L.I($"[DOTweenAnim] CreateTween: {animationType} - {target}", this);
 
             // Create tween.
             var t = CreateTween(

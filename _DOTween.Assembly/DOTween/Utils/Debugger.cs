@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 namespace DG.Tweening
 {
     /// <summary>
-    /// Public so it can be used by lose scripts related to DOTween (like DOTweenAnimation)
+    /// Public so it can be used by lose scripts related to DOTween (like DOTweenAnim)
     /// </summary>
     internal static class Debugger
     {
