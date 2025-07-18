@@ -126,8 +126,8 @@ namespace DG.Tweening
             else t.SetRelative(isRelative);
 
             // Set basic tween settings.
-            t.SetTarget(this)
-                .SetDelay(delay).SetLoops(loops, loopType).SetAutoKill(autoKill);
+            // XXX: Do not set target to prevent accidental tween kills.
+            t.SetDelay(delay).SetLoops(loops, loopType).SetAutoKill(autoKill);
 
             // Set easeType.
             if (easeType is Ease.INTERNAL_Custom) t.SetEase(easeCurve);

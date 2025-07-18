@@ -12,7 +12,12 @@ using Sirenix.OdinInspector.Editor.Validation;
 namespace DG.Tweening
 {
     [AttributeUsage(AttributeTargets.Field)]
-    public sealed class DOTweenAnimManualAttribute : Attribute { }
+    public sealed class DOTweenAnimManualAttribute : Attribute
+    {
+        public readonly bool AutoGen;
+
+        public DOTweenAnimManualAttribute(bool autoGen = false) => AutoGen = autoGen;
+    }
 
 #if UNITY_EDITOR
     public class DOTweenAnimManualValidator : AttributeValidator<DOTweenAnimManualAttribute, DOTweenAnim>
@@ -20,8 +25,14 @@ namespace DG.Tweening
         protected override void Validate(ValidationResult result)
         {
             var value = ValueEntry.SmartValue;
-            if ((value.autoGenerate && value.autoPlay) || value.autoKill)
-                result.AddError("DOTweenAnim should not be set to autoGenerate and autoPlay at the same time, or autoKill.");
+            if (!value) return;
+
+            if (value.autoGenerate != Attribute.AutoGen)
+                result.AddError($"autoGenerate value must be '{Attribute.AutoGen.Literal()}'.");
+            if (value.autoPlay)
+                result.AddError("autoPlay should be false.");
+            if (value.autoKill)
+                result.AddError("autoKill should be false.");
         }
     }
 #endif

@@ -98,68 +98,31 @@ namespace DG.Tweening
             return false;
         }
 
-        internal static void ExecuteOperation(OperationType operationType, Object target, bool optionalBool, float optionalFloat)
+        internal static void KillAllTweensWithTarget(Object? target, bool complete)
         {
-            Assert.IsNotNull(target, "Target cannot be null");
+            if (target is null)
+            {
+                L.E("[TweenManager] KillAllTweensWithTarget called with a null target. This is not allowed.");
+                return;
+            }
 
             var tweens = Tweens.StartIterate();
             foreach (var t in tweens)
             {
-                if (IsTargetsFilterCompliant(target, t.target) is false)
+                // skip if the target is not the same as the tween's target
+                if (target.RefNq(t.target))
                     continue;
 
-                switch (operationType)
+                if (complete)
                 {
-                    case OperationType.Despawn:
-                        KillTween(t);
-                        break;
-                    case OperationType.Complete:
-                        // Initialize the tween if it's not initialized already (required for speed-based)
-                        if (!t.startupDone) ForceInit(t);
-                        // If optionalFloat is > 0 completes with callbacks
-                        Complete(t, optionalFloat > 0 ? UpdateMode.Update : UpdateMode.Goto);
-                        break;
-                    case OperationType.Flip:
-                        Flip(t);
-                        break;
-                    case OperationType.Goto:
-                        // Initialize the tween if it's not initialized already (required for speed-based)
-                        if (!t.startupDone) ForceInit(t);
-                        Goto(t, optionalFloat, optionalBool);
-                        break;
-                    case OperationType.Pause:
-                        Pause(t);
-                        break;
-                    case OperationType.Play:
-                        Play(t);
-                        break;
-                    case OperationType.PlayBackwards:
-                        PlayBackwards(t);
-                        break;
-                    case OperationType.PlayForward:
-                        PlayForward(t);
-                        break;
-                    case OperationType.Restart:
-                        Restart(t, optionalBool, optionalFloat);
-                        break;
-                    case OperationType.Rewind:
-                        Rewind(t, optionalBool);
-                        break;
-                    case OperationType.TogglePause:
-                        TogglePause(t);
-                        break;
+                    if (!t.startupDone) ForceInit(t); // necessary?
+                    Complete(t, updateMode: UpdateMode.Goto);
                 }
-            }
-            Tweens.EndIterate();
-            return;
 
-            static bool IsTargetsFilterCompliant(object a, object? b)
-            {
-                if (b is null) return false; // Any of the two is null, consider them different.
-                if (a is Object) return ReferenceEquals(a, b); // a is a UnityObject, so compare references.
-                if (b is Object) return false; // a is not a UnityObject, so they can't be equal.
-                return a.Equals(b); // Neither is a UnityObject, so compare values.
+                KillTween(t);
             }
+
+            Tweens.EndIterate();
         }
 
         #endregion
