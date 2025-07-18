@@ -8,10 +8,6 @@
 using System.Diagnostics;
 using DOVector2 = UnityEngine.Vector2;
 using DOVector3 = UnityEngine.Vector3;
-using DG.Tweening.Core;
-using DG.Tweening.Core.Easing;
-using DG.Tweening.Plugins;
-using DG.Tweening.Plugins.Options;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -176,7 +172,7 @@ namespace DG.Tweening
         [Conditional("DEBUG")]
         private static void ValidateEase(Tween t)
         {
-            if (t is TweenerCore<DOVector3> { plugin: Vector3ArrayPlugin }
+            if (t is Tweener<DOVector3> { plugin: Vector3ArrayPlugin }
                 && t.easeType is not (Ease.Linear or Ease.OutQuad))
             {
                 L.W("Vector3ArrayPlugin only supports Linear and OutQuad ease types", t);
@@ -306,8 +302,8 @@ namespace DG.Tweening
         /// <param name="fromValue">Value to start from</param>
         /// <param name="setImmediately">If TRUE sets the target to from value immediately, otherwise waits for the tween to start</param>
         /// <param name="isRelative">If TRUE the FROM/TO values will be calculated as relative to the current ones</param>
-        public static TweenerCore<T> From<T>(
-            this TweenerCore<T> t, T fromValue, bool setImmediately = true, bool isRelative = false
+        public static Tweener<T> From<T>(
+            this Tweener<T> t, T fromValue, bool setImmediately = true, bool isRelative = false
         ) where T : struct
         {
             if (t is not { active: true } || t.creationLocked || !t.isFromAllowed) return t;
@@ -363,7 +359,7 @@ namespace DG.Tweening
 
         /// <summary>Options for Vector2 tweens</summary>
         /// <param name="axisConstraint">Selecting an axis will tween the vector only on that axis, leaving the others untouched</param>
-        public static Tweener SetOptions(this TweenerCore<DOVector2> t, AxisConstraint axisConstraint)
+        public static Tweener SetOptions(this Tweener<DOVector2> t, AxisConstraint axisConstraint)
         {
             if (t is not { active: true }) return t;
 
@@ -373,7 +369,7 @@ namespace DG.Tweening
 
         /// <summary>Options for Vector3 tweens</summary>
         /// <param name="axisConstraint">Selecting an axis will tween the vector only on that axis, leaving the others untouched</param>
-        public static Tweener SetOptions(this TweenerCore<DOVector3> t, AxisConstraint axisConstraint)
+        public static Tweener SetOptions(this Tweener<DOVector3> t, AxisConstraint axisConstraint)
         {
             if (t is not { active: true }) return t;
 

@@ -7,14 +7,11 @@
 // ReSharper disable InconsistentNaming
 
 using System;
-using DG.Tweening.Core;
-using DG.Tweening.Core.Easing;
-using DG.Tweening.Plugins.Core;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 #pragma warning disable 1591
-namespace DG.Tweening.Plugins
+namespace DG.Tweening
 {
     /// <summary>
     /// This plugin generates some GC allocations at startup
@@ -23,17 +20,17 @@ namespace DG.Tweening.Plugins
     {
         public static readonly Vector3ArrayPlugin Instance = new();
 
-        public override void SetFrom(TweenerCore<Vector3> t, bool isRelative)
+        public override void SetFrom(Tweener<Vector3> t, bool isRelative)
             => throw new NotSupportedException("Vector3ArrayPlugin does not support the SetFrom method");
-        public override void SetFrom(TweenerCore<Vector3> t, Vector3 fromValue, bool setImmediately, bool isRelative)
+        public override void SetFrom(Tweener<Vector3> t, Vector3 fromValue, bool setImmediately, bool isRelative)
             => throw new NotSupportedException("Vector3ArrayPlugin does not support the SetFrom method");
-        public override void SetRelativeEndValue(TweenerCore<Vector3> t)
+        public override void SetRelativeEndValue(Tweener<Vector3> t)
             => throw new NotSupportedException("Vector3ArrayPlugin does not support the relative endValue");
 
         // For Punch & Shake, the endValue must be same as startValue.
-        public override void SetChangeValue(TweenerCore<Vector3> t) => t.changeValue = default;
+        public override void SetChangeValue(Tweener<Vector3> t) => t.changeValue = default;
 
-        public override void EvaluateAndApply(TweenerCore<Vector3> t, float elapsed)
+        public override void EvaluateAndApply(Tweener<Vector3> t, float elapsed)
         {
             Assert.IsFalse(t.isRelative, "Vector3ArrayPlugin does not support relative values");
             Assert.IsFalse(t.isFrom, "Vector3ArrayPlugin does not support From values");

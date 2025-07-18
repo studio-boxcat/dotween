@@ -7,7 +7,7 @@
 using UnityEngine;
 
 #pragma warning disable 1591
-namespace DG.Tweening.Core.Easing
+namespace DG.Tweening
 {
     /// <summary>
     /// Used to interpret AnimationCurves as eases.

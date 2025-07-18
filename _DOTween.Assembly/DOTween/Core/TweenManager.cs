@@ -8,7 +8,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace DG.Tweening.Core
+namespace DG.Tweening
 {
     internal static class TweenManager
     {
@@ -18,7 +18,7 @@ namespace DG.Tweening.Core
 
         // Returns a new Tweener, from the pool if there's one available,
         // otherwise by instantiating a new one
-        internal static TweenerCore<T> GetTweener<T>() where T : struct
+        internal static Tweener<T> GetTweener<T>() where T : struct
         {
             var t = TweenPool.RentTweener<T>();
             AttachTween(t);

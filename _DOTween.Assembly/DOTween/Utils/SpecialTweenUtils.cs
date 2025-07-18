@@ -1,12 +1,21 @@
-﻿using DG.Tweening.Core;
-using DG.Tweening.Plugins;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace DG.Tweening
 {
+    /// <summary>
+    /// Type of randomness to apply to a shake tween
+    /// </summary>
+    public enum ShakeRandomnessMode
+    {
+        /// <summary>Default, full randomness</summary>
+        Full,
+        /// <summary>Creates a more balanced randomness that looks more harmonic</summary>
+        Harmonic,
+    }
+
     internal static class SpecialTweenUtils
     {
-        internal static void SetupPunch(TweenerCore<Vector3> t)
+        internal static void SetupPunch(Tweener<Vector3> t)
         {
             t.isRelative = false;
             t.easeType = Ease.OutQuad;
@@ -14,7 +23,7 @@ namespace DG.Tweening
             t.isFromAllowed = false;
         }
 
-        internal static void SetupShake(TweenerCore<Vector3> t)
+        internal static void SetupShake(Tweener<Vector3> t)
         {
             t.isRelative = false;
             t.easeType = Ease.Linear;

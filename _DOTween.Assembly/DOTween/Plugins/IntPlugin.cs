@@ -1,15 +1,13 @@
-﻿using DG.Tweening.Core;
-using DG.Tweening.Plugins.Core;
-using UnityEngine;
+﻿using UnityEngine;
 
 #pragma warning disable 1591
-namespace DG.Tweening.Plugins
+namespace DG.Tweening
 {
     public class IntPlugin : TweenPlugin<int>
     {
         public static readonly IntPlugin Instance = new();
 
-        public override void SetFrom(TweenerCore<int> t, bool isRelative)
+        public override void SetFrom(Tweener<int> t, bool isRelative)
         {
             var prevEndVal = t.endValue;
             t.endValue = t.getter();
@@ -17,7 +15,7 @@ namespace DG.Tweening.Plugins
             t.setter(t.startValue);
         }
 
-        public override void SetFrom(TweenerCore<int> t, int fromValue, bool setImmediately, bool isRelative)
+        public override void SetFrom(Tweener<int> t, int fromValue, bool setImmediately, bool isRelative)
         {
             if (isRelative)
             {
@@ -29,17 +27,17 @@ namespace DG.Tweening.Plugins
             if (setImmediately) t.setter(fromValue);
         }
 
-        public override void SetRelativeEndValue(TweenerCore<int> t)
+        public override void SetRelativeEndValue(Tweener<int> t)
         {
             t.endValue += t.startValue;
         }
 
-        public override void SetChangeValue(TweenerCore<int> t)
+        public override void SetChangeValue(Tweener<int> t)
         {
             t.changeValue = t.endValue - t.startValue;
         }
 
-        public override void EvaluateAndApply(TweenerCore<int> t, float elapsed)
+        public override void EvaluateAndApply(Tweener<int> t, float elapsed)
         {
             var pos = DOTweenUtils.Evaluate(t, elapsed);
             t.setter(Mathf.RoundToInt(t.startValue + t.changeValue * pos));

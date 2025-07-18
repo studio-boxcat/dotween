@@ -7,7 +7,6 @@
 #nullable enable
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening.Core;
 
 #pragma warning disable 1591
 namespace DG.Tweening
@@ -21,7 +20,7 @@ namespace DG.Tweening
         /// <summary>Tweens a CanvasGroup's alpha color to the given value.
         /// Also stores the canvasGroup as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float> DOFade(this CanvasGroup target, float endValue, float duration)
+        public static Tweener<float> DOFade(this CanvasGroup target, float endValue, float duration)
         {
             var t = DOTween.To(() => target.alpha, x => target.alpha = x, endValue, duration);
             t.SetTarget(target);
@@ -35,7 +34,7 @@ namespace DG.Tweening
         /// <summary>Tweens an Graphic's color to the given value.
         /// Also stores the image as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Color> DOColor(this Graphic target, Color endValue, float duration)
+        public static Tweener<Color> DOColor(this Graphic target, Color endValue, float duration)
         {
             var t = DOTween.To(() => target.color, x => target.color = x, endValue, duration);
             t.SetTarget(target);
@@ -45,7 +44,7 @@ namespace DG.Tweening
         /// <summary>Tweens an Graphic's alpha color to the given value.
         /// Also stores the image as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float> DOFade(this Graphic target, float endValue, float duration)
+        public static Tweener<float> DOFade(this Graphic target, float endValue, float duration)
         {
             var t = DOTween.To(
                 () => target.color.a,
@@ -67,7 +66,7 @@ namespace DG.Tweening
         /// <summary>Tweens an Image's fillAmount to the given value.
         /// Also stores the image as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach (0 to 1)</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float> DOFillAmount(this Image target, float endValue, float duration)
+        public static Tweener<float> DOFillAmount(this Image target, float endValue, float duration)
         {
             if (endValue > 1) endValue = 1;
             else if (endValue < 0) endValue = 0;
@@ -83,7 +82,7 @@ namespace DG.Tweening
         /// <summary>Tweens a Shadow's effectColor to the given value.
         /// Also stores the Shadow as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Color> DOColor(this Shadow target, Color endValue, float duration)
+        public static Tweener<Color> DOColor(this Shadow target, Color endValue, float duration)
         {
             var t = DOTween.To(() => target.effectColor, x => target.effectColor = x, endValue, duration);
             t.SetTarget(target);
@@ -93,7 +92,7 @@ namespace DG.Tweening
         /// <summary>Tweens a Shadow's effectColor alpha to the given value.
         /// Also stores the Shadow as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float> DOFade(this Shadow target, float endValue, float duration)
+        public static Tweener<float> DOFade(this Shadow target, float endValue, float duration)
         {
             var t = DOTween.ToAlpha(() => target.effectColor, x => target.effectColor = x, endValue, duration);
             t.SetTarget(target);
@@ -107,7 +106,7 @@ namespace DG.Tweening
         /// <summary>Tweens a RectTransform's anchoredPosition to the given value.
         /// Also stores the RectTransform as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Vector2> DOAnchorPos(this RectTransform target, Vector2 endValue, float duration)
+        public static Tweener<Vector2> DOAnchorPos(this RectTransform target, Vector2 endValue, float duration)
         {
             var t = DOTween.To(() => target.anchoredPosition, x => target.anchoredPosition = x, endValue, duration);
             t.SetTarget(target);
@@ -116,7 +115,7 @@ namespace DG.Tweening
         /// <summary>Tweens a RectTransform's anchoredPosition X to the given value.
         /// Also stores the RectTransform as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Vector2> DOAnchorPosX(this RectTransform target, float endValue, float duration)
+        public static Tweener<Vector2> DOAnchorPosX(this RectTransform target, float endValue, float duration)
         {
             var t = DOTween.To(() => target.anchoredPosition, x => target.anchoredPosition = x, new Vector2(endValue, 0), duration);
             t.SetOptions(AxisConstraint.X).SetTarget(target);
@@ -125,7 +124,7 @@ namespace DG.Tweening
         /// <summary>Tweens a RectTransform's anchoredPosition Y to the given value.
         /// Also stores the RectTransform as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Vector2> DOAnchorPosY(this RectTransform target, float endValue, float duration)
+        public static Tweener<Vector2> DOAnchorPosY(this RectTransform target, float endValue, float duration)
         {
             var t = DOTween.To(() => target.anchoredPosition, x => target.anchoredPosition = x, new Vector2(0, endValue), duration);
             t.SetOptions(AxisConstraint.Y).SetTarget(target);
@@ -135,7 +134,7 @@ namespace DG.Tweening
         /// <summary>Tweens a RectTransform's anchorMax to the given value.
         /// Also stores the RectTransform as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Vector2> DOAnchorMax(this RectTransform target, Vector2 endValue, float duration)
+        public static Tweener<Vector2> DOAnchorMax(this RectTransform target, Vector2 endValue, float duration)
         {
             var t = DOTween.To(() => target.anchorMax, x => target.anchorMax = x, endValue, duration);
             t.SetTarget(target);
@@ -145,7 +144,7 @@ namespace DG.Tweening
         /// <summary>Tweens a RectTransform's anchorMin to the given value.
         /// Also stores the RectTransform as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Vector2> DOAnchorMin(this RectTransform target, Vector2 endValue, float duration)
+        public static Tweener<Vector2> DOAnchorMin(this RectTransform target, Vector2 endValue, float duration)
         {
             var t = DOTween.To(() => target.anchorMin, x => target.anchorMin = x, endValue, duration);
             t.SetTarget(target);
@@ -155,7 +154,7 @@ namespace DG.Tweening
         /// <summary>Tweens a RectTransform's sizeDelta to the given value.
         /// Also stores the RectTransform as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<Vector2> DOSizeDelta(this RectTransform target, Vector2 endValue, float duration)
+        public static Tweener<Vector2> DOSizeDelta(this RectTransform target, Vector2 endValue, float duration)
         {
             var t = DOTween.To(() => target.sizeDelta, x => target.sizeDelta = x, endValue, duration);
             t.SetTarget(target);
@@ -246,7 +245,7 @@ namespace DG.Tweening
         /// <summary>Tweens a Slider's value to the given value.
         /// Also stores the Slider as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
-        public static TweenerCore<float> DOValue(this Slider target, float endValue, float duration)
+        public static Tweener<float> DOValue(this Slider target, float endValue, float duration)
         {
             var t = DOTween.To(() => target.value, x => target.value = x, endValue, duration);
             t.SetTarget(target);

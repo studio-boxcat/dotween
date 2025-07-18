@@ -5,19 +5,17 @@
 // License Copyright (c) Daniele Giardini.
 // This work is subject to the terms at http://dotween.demigiant.com/license.php
 
-using DG.Tweening.Core;
-using DG.Tweening.Plugins.Core;
-using DG.Tweening.Plugins.Options;
+#nullable enable
 using UnityEngine;
 
 #pragma warning disable 1591
-namespace DG.Tweening.Plugins
+namespace DG.Tweening
 {
     public class Vector2Plugin : TweenPlugin<Vector2>
     {
         public static readonly Vector2Plugin Instance = new();
 
-        public override void SetFrom(TweenerCore<Vector2> t, bool isRelative)
+        public override void SetFrom(Tweener<Vector2> t, bool isRelative)
         {
             var prevEndVal = t.endValue;
             t.endValue = t.getter();
@@ -35,7 +33,7 @@ namespace DG.Tweening.Plugins
             t.setter(to);
         }
 
-        public override void SetFrom(TweenerCore<Vector2> t, Vector2 fromValue, bool setImmediately, bool isRelative)
+        public override void SetFrom(Tweener<Vector2> t, Vector2 fromValue, bool setImmediately, bool isRelative)
         {
             if (isRelative)
             {
@@ -62,12 +60,12 @@ namespace DG.Tweening.Plugins
             }
         }
 
-        public override void SetRelativeEndValue(TweenerCore<Vector2> t)
+        public override void SetRelativeEndValue(Tweener<Vector2> t)
         {
             t.endValue += t.startValue;
         }
 
-        public override void SetChangeValue(TweenerCore<Vector2> t)
+        public override void SetChangeValue(Tweener<Vector2> t)
         {
             if (VectorOptions.GetAxisConstraints(t.plugOptions, out var x, out var y))
             {
@@ -80,7 +78,7 @@ namespace DG.Tweening.Plugins
             }
         }
 
-        public override void EvaluateAndApply(TweenerCore<Vector2> t, float elapsed)
+        public override void EvaluateAndApply(Tweener<Vector2> t, float elapsed)
         {
             var pos = DOTweenUtils.Evaluate(t, elapsed);
             if (VectorOptions.GetAxisConstraints(t.plugOptions, out var x, out var y))
@@ -94,6 +92,50 @@ namespace DG.Tweening.Plugins
             {
                 t.setter(t.startValue + t.changeValue * pos);
             }
+        }
+    }
+
+    public class VectorOptions
+    {
+        public AxisConstraint axisConstraint;
+
+        public static bool GetAxisConstraints(object? opts, out bool x, out bool y)
+        {
+            x = y = false;
+            if (opts is null) return false;
+
+            var constraint = ((VectorOptions) opts).axisConstraint;
+            if ((constraint & AxisConstraint.X) is AxisConstraint.X)
+                x = true;
+            if ((constraint & AxisConstraint.Y) is AxisConstraint.Y)
+                y = true;
+            return x || y;
+        }
+
+        public static void SetAxisConstraint(Tweener<Vector2> t, AxisConstraint axisConstraint)
+        {
+            var o = t.plugOptions;
+            if (o is null)
+            {
+                t.plugOptions = new VectorOptions { axisConstraint = axisConstraint };
+                return;
+            }
+
+            var opts = (VectorOptions) o;
+            opts.axisConstraint = axisConstraint;
+        }
+
+        public static void SetAxisConstraint(Tweener<Vector3> t, AxisConstraint axisConstraint)
+        {
+            var o = t.plugOptions;
+            if (o is null)
+            {
+                t.plugOptions = new VectorOptions { axisConstraint = axisConstraint };
+                return;
+            }
+
+            var opts = (VectorOptions) o;
+            opts.axisConstraint = axisConstraint;
         }
     }
 }

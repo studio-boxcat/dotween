@@ -65,7 +65,7 @@ namespace DG.Tweening
             }
         }
 
-        // Simplified version of DG.Tweening.Core.Easing.EaseManager.Evaluate
+        // Simplified version of DG.Tweening.EaseManager.Evaluate
         private static float Evaluate(Ease easeType, float p, float overshoot)
         {
             const float piOver2 = Mathf.PI * 0.5f;

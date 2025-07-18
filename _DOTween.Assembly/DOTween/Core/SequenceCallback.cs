@@ -6,7 +6,7 @@
 
 #nullable enable
 
-namespace DG.Tweening.Core
+namespace DG.Tweening
 {
     internal class SequenceCallback : ABSSequentiable
     {

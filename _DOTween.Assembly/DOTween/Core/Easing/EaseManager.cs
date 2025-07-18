@@ -40,7 +40,7 @@ using System;
 using UnityEngine;
 
 #pragma warning disable 1591
-namespace DG.Tweening.Core.Easing
+namespace DG.Tweening
 {
     public static class EaseManager
     {

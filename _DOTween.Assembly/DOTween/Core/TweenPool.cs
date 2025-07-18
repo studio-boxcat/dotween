@@ -5,7 +5,7 @@ using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace DG.Tweening.Core
+namespace DG.Tweening
 {
     internal static class TweenPool
     {
@@ -25,9 +25,9 @@ namespace DG.Tweening.Core
         private static readonly Dictionary<Type, int> _debugCreateCount = new();
 #endif
 
-        public static TweenerCore<T> RentTweener<T>() where T : struct
+        public static Tweener<T> RentTweener<T>() where T : struct
         {
-            var list = GetTweenerList(typeof(TweenerCore<T>));
+            var list = GetTweenerList(typeof(Tweener<T>));
 
             Tweener tweener;
 
@@ -35,7 +35,7 @@ namespace DG.Tweening.Core
             if (count is 0)
             {
                 RecordCreate(typeof(T));
-                tweener = new TweenerCore<T>();
+                tweener = new Tweener<T>();
             }
             else
             {
@@ -46,7 +46,7 @@ namespace DG.Tweening.Core
             Assert.IsFalse(tweener.active, "Polled tweener is still active");
             Assert.IsTrue(tweener.updateId.IsInvalid(), "Polled tweener has a valid updateId");
             tweener.active = true;
-            return (TweenerCore<T>) tweener;
+            return (Tweener<T>) tweener;
         }
 
         public static void ReturnTweener(Tweener tweener)
@@ -122,11 +122,11 @@ namespace DG.Tweening.Core
 
         private static List<Tweener> GetTweenerList(Type tweenerType)
         {
-            if (tweenerType == typeof(TweenerCore<float>)) return _float;
-            if (tweenerType == typeof(TweenerCore<int>)) return _int;
-            if (tweenerType == typeof(TweenerCore<Color>)) return _color;
-            if (tweenerType == typeof(TweenerCore<Vector2>)) return _vector2;
-            if (tweenerType == typeof(TweenerCore<Vector3>)) return _vector3;
+            if (tweenerType == typeof(Tweener<float>)) return _float;
+            if (tweenerType == typeof(Tweener<int>)) return _int;
+            if (tweenerType == typeof(Tweener<Color>)) return _color;
+            if (tweenerType == typeof(Tweener<Vector2>)) return _vector2;
+            if (tweenerType == typeof(Tweener<Vector3>)) return _vector3;
             throw new ArgumentException($"Unsupported tweener type: {tweenerType}");
         }
 

@@ -7,7 +7,7 @@
 #pragma warning disable 1591
 #nullable enable
 
-namespace DG.Tweening.Core
+namespace DG.Tweening
 {
     public abstract class ABSSequentiable
     {

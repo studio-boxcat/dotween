@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine.Assertions;
 
-namespace DG.Tweening.Core
+namespace DG.Tweening
 {
     public struct TweenUpdateList
     {

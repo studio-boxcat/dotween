@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using DG.Tweening.Core;
 using UnityEngine;
 
 #pragma warning disable 1573

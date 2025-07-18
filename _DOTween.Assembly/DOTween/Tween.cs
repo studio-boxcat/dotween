@@ -7,7 +7,6 @@
 // ReSharper disable InconsistentNaming
 
 #nullable enable
-using DG.Tweening.Core;
 using UnityEngine.Assertions;
 
 namespace DG.Tweening

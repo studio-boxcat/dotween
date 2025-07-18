@@ -9,19 +9,39 @@
 
 #nullable enable
 using System;
-using DG.Tweening.Plugins.Core;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-#pragma warning disable 1591
-namespace DG.Tweening.Core
+namespace DG.Tweening
 {
+    /// <summary>
+    /// Animates a single value
+    /// </summary>
+    public abstract class Tweener : Tween
+    {
+        // TRUE when start value has been changed via From or ChangeStart/Values (allows DoStartup to take it into account).
+        // Reset by Tweener<T>
+        internal bool hasManuallySetStartValue;
+        internal bool isFromAllowed = true; // if FALSE from tweens won't be allowed. Reset by Tweener<T>
+
+        internal override void Reset()
+        {
+            base.Reset();
+            hasManuallySetStartValue = false;
+            isFromAllowed = true;
+        }
+
+        internal abstract Tweener SetFrom(bool relative);
+
+        public abstract void ApplyOriginal();
+    }
+
     // Public so it can be used with SetOptions to show the correct overload
     // and also to allow custom plugins to change start/end/changeValue.
     // T: type of value to tween
     // T: format in which value is stored while tweening
     // TPlugOptions: options type
-    public class TweenerCore<T> : Tweener where T : struct
+    public class Tweener<T> : Tweener where T : struct
     {
         // SETUP DATA ////////////////////////////////////////////////
 
@@ -33,7 +53,7 @@ namespace DG.Tweening.Core
 
         #region Constructor
 
-        internal TweenerCore()
+        internal Tweener()
         {
             Reset();
         }
@@ -42,7 +62,7 @@ namespace DG.Tweening.Core
         {
             Assert.AreNotEqual(0, duration, "Given duration is 0");
 
-            // L.I($"[DOTween] Setup TweenerCore<{typeof(T).Name}>: endValue={endValue}, duration={duration}");
+            // L.I($"[DOTween] Setup Tweener<{typeof(T).Name}>: endValue={endValue}, duration={duration}");
 
             this.getter = getter;
             this.setter = setter;

@@ -1,7 +1,6 @@
 ﻿#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
-using DG.Tweening.Core;
 using UnityEditor;
 using UnityEngine.Assertions;
 

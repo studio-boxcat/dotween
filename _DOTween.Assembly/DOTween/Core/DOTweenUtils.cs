@@ -1,7 +1,6 @@
-﻿using DG.Tweening.Core.Easing;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
-namespace DG.Tweening.Core
+namespace DG.Tweening
 {
     /// <summary>
     /// Various utils

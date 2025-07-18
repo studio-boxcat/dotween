@@ -6,8 +6,6 @@
 
 using System;
 using System.Collections.Generic;
-using DG.Tweening.Core;
-using DG.Tweening.Core.Easing;
 using UnityEngine;
 using UnityEngine.Assertions;
 

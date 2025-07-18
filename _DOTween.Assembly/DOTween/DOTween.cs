@@ -7,9 +7,6 @@
 
 #nullable enable
 using System;
-using DG.Tweening.Core;
-using DG.Tweening.Plugins;
-using DG.Tweening.Plugins.Core;
 using UnityEngine;
 using UnityEngine.LowLevel;
 using Object = UnityEngine.Object;
@@ -79,22 +76,22 @@ namespace DG.Tweening
 
         #region Tween TO
 
-        private static TweenerCore<T> To<T>(DOGetter<T> getter, DOSetter<T> setter, T endValue, float duration, TweenPlugin<T> plugin) where T : struct
+        private static Tweener<T> To<T>(DOGetter<T> getter, DOSetter<T> setter, T endValue, float duration, TweenPlugin<T> plugin) where T : struct
         {
             var t = TweenManager.GetTweener<T>();
             t.Setup(getter, setter, endValue, duration, plugin);
             return t;
         }
 
-        public static TweenerCore<float> To(DOGetter<float> getter, DOSetter<float> setter, float endValue, float duration)
+        public static Tweener<float> To(DOGetter<float> getter, DOSetter<float> setter, float endValue, float duration)
             => To(getter, setter, endValue, duration, FloatPlugin.Instance);
-        public static TweenerCore<int> To(DOGetter<int> getter, DOSetter<int> setter, int endValue, float duration)
+        public static Tweener<int> To(DOGetter<int> getter, DOSetter<int> setter, int endValue, float duration)
             => To(getter, setter, endValue, duration, IntPlugin.Instance);
-        public static TweenerCore<Vector2> To(DOGetter<Vector2> getter, DOSetter<Vector2> setter, Vector2 endValue, float duration)
+        public static Tweener<Vector2> To(DOGetter<Vector2> getter, DOSetter<Vector2> setter, Vector2 endValue, float duration)
             => To(getter, setter, endValue, duration, Vector2Plugin.Instance);
-        public static TweenerCore<Vector3> To(DOGetter<Vector3> getter, DOSetter<Vector3> setter, Vector3 endValue, float duration)
+        public static Tweener<Vector3> To(DOGetter<Vector3> getter, DOSetter<Vector3> setter, Vector3 endValue, float duration)
             => To(getter, setter, endValue, duration, Vector3Plugin.Instance);
-        public static TweenerCore<Color> To(DOGetter<Color> getter, DOSetter<Color> setter, Color endValue, float duration)
+        public static Tweener<Color> To(DOGetter<Color> getter, DOSetter<Color> setter, Color endValue, float duration)
             => To(getter, setter, endValue, duration, ColorPlugin.Instance);
 
         /// <summary>Tweens only the alpha of a Color to the given value using default plugins</summary>
@@ -103,7 +100,7 @@ namespace DG.Tweening
         /// <param name="setter">A setter for the field or property to tween
         /// <para>Example usage with lambda:</para><code>x=> myProperty = x</code></param>
         /// <param name="endValue">The end value to reach</param><param name="duration">The tween's duration</param>
-        public static TweenerCore<float> ToAlpha(DOGetter<Color> getter, DOSetter<Color> setter, float endValue, float duration)
+        public static Tweener<float> ToAlpha(DOGetter<Color> getter, DOSetter<Color> setter, float endValue, float duration)
         {
             return To(
                 () => getter().a,
@@ -120,7 +117,7 @@ namespace DG.Tweening
 
         #region Special TOs (No FROMs)
 
-        private static TweenerCore<Vector3> To(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration, Vector3ArrayOptions opts)
+        private static Tweener<Vector3> To(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration, Vector3ArrayOptions opts)
         {
             var t = To(getter, setter, default, duration, Vector3ArrayPlugin.Instance);
             t.plugOptions = opts;
@@ -140,7 +137,7 @@ namespace DG.Tweening
         /// <param name="elasticity">Represents how much (0 to 1) the vector will go beyond the starting position when bouncing backwards.
         /// 1 creates a full oscillation between the direction and the opposite decaying direction,
         /// while 0 oscillates only between the starting position and the decaying direction</param>
-        public static TweenerCore<Vector3> Punch(DOGetter<Vector3> getter, DOSetter<Vector3> setter, Vector3 direction, float duration, int vibrato = 10, float elasticity = 1)
+        public static Tweener<Vector3> Punch(DOGetter<Vector3> getter, DOSetter<Vector3> setter, Vector3 direction, float duration, int vibrato = 10, float elasticity = 1)
         {
             var segmentCount = (int) (vibrato * duration);
             if (segmentCount < 2) segmentCount = 2;
@@ -163,7 +160,7 @@ namespace DG.Tweening
         /// <param name="ignoreZAxis">If TRUE only shakes on the X Y axis (looks better with things like cameras).</param>
         /// <param name="fadeOut">If TRUE the shake will automatically fadeOut smoothly within the tween's duration, otherwise it will not</param>
         /// <param name="randomnessMode">Randomness mode</param>
-        public static TweenerCore<Vector3> Shake(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration,
+        public static Tweener<Vector3> Shake(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration,
             float strength = 3, int vibrato = 10, float randomness = 90, bool ignoreZAxis = true,
             bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full
         )
@@ -182,14 +179,14 @@ namespace DG.Tweening
         /// Setting it to 0 will shake along a single direction and behave like a random punch.</param>
         /// <param name="fadeOut">If TRUE the shake will automatically fadeOut smoothly within the tween's duration, otherwise it will not</param>
         /// <param name="randomnessMode">Randomness mode</param>
-        public static TweenerCore<Vector3> Shake(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration,
+        public static Tweener<Vector3> Shake(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration,
             Vector3 strength, int vibrato = 10, float randomness = 90,
             bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full
         )
         {
             return Shake(getter, setter, duration, strength, vibrato, randomness, false, true, fadeOut, randomnessMode);
         }
-        private static TweenerCore<Vector3> Shake(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration,
+        private static Tweener<Vector3> Shake(DOGetter<Vector3> getter, DOSetter<Vector3> setter, float duration,
             Vector3 strength, int vibrato, float randomness, bool ignoreZAxis, bool vectorBased,
             bool fadeOut, ShakeRandomnessMode randomnessMode
         )

@@ -1,16 +1,13 @@
-﻿using DG.Tweening.Core;
-using DG.Tweening.Plugins.Core;
-using DG.Tweening.Plugins.Options;
-using UnityEngine;
+﻿using UnityEngine;
 
 #pragma warning disable 1591
-namespace DG.Tweening.Plugins
+namespace DG.Tweening
 {
     public class Vector3Plugin : TweenPlugin<Vector3>
     {
         public static readonly Vector3Plugin Instance = new();
 
-        public override void SetFrom(TweenerCore<Vector3> t, bool isRelative)
+        public override void SetFrom(Tweener<Vector3> t, bool isRelative)
         {
             var prevEndVal = t.endValue;
             t.endValue = t.getter();
@@ -28,7 +25,7 @@ namespace DG.Tweening.Plugins
             t.setter(to);
         }
 
-        public override void SetFrom(TweenerCore<Vector3> t, Vector3 fromValue, bool setImmediately, bool isRelative)
+        public override void SetFrom(Tweener<Vector3> t, Vector3 fromValue, bool setImmediately, bool isRelative)
         {
             if (isRelative)
             {
@@ -55,12 +52,12 @@ namespace DG.Tweening.Plugins
             }
         }
 
-        public override void SetRelativeEndValue(TweenerCore<Vector3> t)
+        public override void SetRelativeEndValue(Tweener<Vector3> t)
         {
             t.endValue += t.startValue;
         }
 
-        public override void SetChangeValue(TweenerCore<Vector3> t)
+        public override void SetChangeValue(Tweener<Vector3> t)
         {
             if (VectorOptions.GetAxisConstraints(t.plugOptions, out var x, out var y))
             {
@@ -74,7 +71,7 @@ namespace DG.Tweening.Plugins
             }
         }
 
-        public override void EvaluateAndApply(TweenerCore<Vector3> t, float elapsed)
+        public override void EvaluateAndApply(Tweener<Vector3> t, float elapsed)
         {
             var pos = DOTweenUtils.Evaluate(t, elapsed);
             if (VectorOptions.GetAxisConstraints(t.plugOptions, out var x, out var y))
