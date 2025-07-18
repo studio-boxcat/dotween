@@ -104,7 +104,7 @@ namespace DG.Tweening
             if (tween is not { active: true })
             {
                 tween = CreateTween(play: play);
-                tween.OnKill(() => tween = null);
+                tween.OnKill(() => tween = null); // automatically nullify tween when it is killed
             }
 
             return tween;
@@ -126,7 +126,7 @@ namespace DG.Tweening
             else t.SetRelative(isRelative);
 
             // Set basic tween settings.
-            t.SetTarget(gameObject)
+            t.SetTarget(this)
                 .SetDelay(delay).SetLoops(loops, loopType).SetAutoKill(autoKill);
 
             // Set easeType.
