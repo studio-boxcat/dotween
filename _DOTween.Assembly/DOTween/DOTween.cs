@@ -222,7 +222,7 @@ namespace DG.Tweening
         /// </summary>
         /// <param name="target">The target of the Sequence. Relevant only for static target-based methods like DOTween.Kill(target),
         /// useless otherwise</param>
-        public static Sequence Sequence(object target)
+        public static Sequence Sequence(Object target)
         {
             return Sequence().SetTarget(target);
         }

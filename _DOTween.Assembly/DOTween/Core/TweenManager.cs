@@ -98,33 +98,15 @@ namespace DG.Tweening
             return false;
         }
 
-        internal static void ExecuteOperation(OperationType operationType, object targetOrId, bool optionalBool, float optionalFloat)
+        internal static void ExecuteOperation(OperationType operationType, Object target, bool optionalBool, float optionalFloat)
         {
-            Assert.IsNotNull(targetOrId, "Target cannot be null");
-
-            // Determine if ID is required.
-            bool useId = false;
-            int id = 0;
-            if (targetOrId is int)
-            {
-                useId = true;
-                id = (int) targetOrId;
-                Assert.AreNotEqual(Tween.invalidId, id, "Cannot filter by invalid id");
-            }
+            Assert.IsNotNull(target, "Target cannot be null");
 
             var tweens = Tweens.StartIterate();
             foreach (var t in tweens)
             {
-                if (useId)
-                {
-                    if (t.id != id)
-                        continue;
-                }
-                else
-                {
-                    if (IsTargetsFilterCompliant(targetOrId, t.target) is false)
-                        continue;
-                }
+                if (IsTargetsFilterCompliant(target, t.target) is false)
+                    continue;
 
                 switch (operationType)
                 {

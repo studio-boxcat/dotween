@@ -505,7 +505,7 @@ namespace DG.Tweening
         /// and returns the total number of tweens killed.
         /// </summary>
         /// <param name="complete">If TRUE completes the tween before killing it</param>
-        public static void DOKill(this object target, bool complete = false)
+        public static void DOKill(this Object target, bool complete = false)
         {
             if (complete) TweenManager.ExecuteOperation(OperationType.Complete, target, true, 0);
             TweenManager.ExecuteOperation(OperationType.Despawn, target, false, 0);

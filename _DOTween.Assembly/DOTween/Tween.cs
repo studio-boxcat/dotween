@@ -7,6 +7,7 @@
 // ReSharper disable InconsistentNaming
 
 #nullable enable
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace DG.Tweening
@@ -27,7 +28,7 @@ namespace DG.Tweening
         /// Default is -999 so avoid using an ID like that or it will capture all unset intIds</summary>
         public int id = invalidId;
         /// <summary>Tween target (usable for filtering with DOTween static methods). Automatically set by tween creation shortcuts</summary>
-        public object? target; // Automatically set by DO shortcuts using SetTarget extension. Also used during Tweener.DoStartup in some special cases
+        public Object? target; // Automatically set by DO shortcuts using SetTarget extension. Also used during Tweener.DoStartup in some special cases
         /// <summary>Called the moment the tween reaches completion (loops included)</summary>
         public TweenCallback? onComplete;
         /// <summary>Called the moment the tween is killed</summary>
