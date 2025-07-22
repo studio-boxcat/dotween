@@ -61,6 +61,7 @@ namespace DG.Tweening
             {
                 AnimationMode.StopAnimationMode();
                 EditorApplication.update -= _update;
+                EditorApplication.playModeStateChanged -= (_onPlayModeStateChanged ??= OnPlayModeStateChanged);
             }
         }
 
