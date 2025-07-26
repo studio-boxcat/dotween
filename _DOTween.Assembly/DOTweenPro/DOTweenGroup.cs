@@ -66,11 +66,19 @@ namespace DG.Tweening
         private void PlayPreview()
         {
             GetComponents(_animBuf);
+
+            // kill in reverse order to restore the original value correctly.
+            for (var i = _animBuf.Count - 1; i >= 0; i--)
+            {
+                var previewId = _animBuf[i].GetInstanceID();
+                DOTweenPreviewManager.TryStopPreview(previewId);
+            }
+
             foreach (var anim in _animBuf)
             {
                 var previewId = anim.GetInstanceID();
-                DOTweenPreviewManager.TryStopPreview(previewId);
-                DOTweenPreviewManager.StartPreview(anim.CreateTween(play: false).SetId(previewId));
+                DOTweenPreviewManager.StartPreview(
+                    anim.CreateTween(play: false).SetId(previewId));
             }
         }
 

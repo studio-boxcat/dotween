@@ -294,11 +294,14 @@ namespace DG.Tweening
         #endregion
 
 #if UNITY_EDITOR
-        internal static void Editor_DetachAllTweens()
+        [PlayModeGate]
+        internal static void DetachAllTweens()
         {
+            L.I("[DOTween] Detach All Tweens");
             var tweens = Tweens.StartIterate();
-            foreach (var t in tweens) DetachTween(t);
+            foreach (var t in tweens) DetachTween(t); // no kill to avoid OnKill() callbacks.
             Tweens.EndIterate();
+            TweenPool.Clear();
         }
 #endif
     }

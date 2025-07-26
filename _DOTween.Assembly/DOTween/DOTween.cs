@@ -60,15 +60,6 @@ namespace DG.Tweening
             static void Update() => TweenManager.Update(Time.deltaTime);
         }
 
-#if UNITY_EDITOR
-        public static void Editor_Clear()
-        {
-            L.I("[DOTween] Clear");
-            TweenManager.Editor_DetachAllTweens();
-            TweenPool.Editor_Clear();
-        }
-#endif
-
         #endregion
 
         // ===================================================================================

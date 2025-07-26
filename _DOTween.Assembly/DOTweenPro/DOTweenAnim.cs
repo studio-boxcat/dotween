@@ -145,6 +145,7 @@ namespace DG.Tweening
             float optionalFloat0,
             int optionalInt0)
         {
+            Assert.IsTrue(animType != DOTweenAnimType.None, "Animation type cannot be None");
             Assert.IsTrue(duration > 0, "Duration must be greater than 0");
 
             return animType switch

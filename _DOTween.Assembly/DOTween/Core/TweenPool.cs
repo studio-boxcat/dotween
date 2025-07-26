@@ -153,7 +153,7 @@ namespace DG.Tweening
             return _sequence.Count;
         }
 
-        public static void Editor_Clear()
+        internal static void Clear()
         {
             _float.Clear();
             _int.Clear();
