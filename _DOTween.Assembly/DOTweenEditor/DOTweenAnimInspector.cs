@@ -99,6 +99,7 @@ namespace DG.DOTweenEditor
             EditorGUILayout.BeginHorizontal();
             _src.duration = EditorGUILayout.FloatField("Duration", _src.duration);
             if (_src.duration < 0) _src.duration = 0;
+            GUILayout.Space(4);
             _src.delay = EditorGUILayout.FloatField("Delay", _src.delay);
             if (_src.delay < 0) _src.delay = 0;
             EditorGUILayout.EndHorizontal();
