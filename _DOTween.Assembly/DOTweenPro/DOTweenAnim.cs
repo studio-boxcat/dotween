@@ -81,7 +81,7 @@ namespace DG.Tweening
             if (tween != null)
             {
                 if (tween.active)
-                    tween.Kill();
+                    tween.KillRewind();
                 tween = null;
             }
         }
