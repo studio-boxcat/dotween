@@ -62,15 +62,6 @@ namespace DG.Tweening
             if (animationType is DOTweenAnimType.None)
                 result.AddError("AnimationType must be set to a valid value");
 
-            if (animationType
-                is DOTweenAnimType.Move
-                or DOTweenAnimType.PunchPos
-                or DOTweenAnimType.ShakePos)
-            {
-                if (optionalBool0)
-                    result.AddError("Snapping is not supported anymore.");
-            }
-
             if (animationType is DOTweenAnimType.Rotate)
             {
                 if (endValueV3.x != 0 || endValueV3.y != 0)

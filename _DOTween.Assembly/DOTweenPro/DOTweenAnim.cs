@@ -54,7 +54,9 @@ namespace DG.Tweening
         public bool autoPlay = true;
 
         public Vector3 endValueV3;
+#if UNITY_EDITOR // uniform scale is editor only property.
         public bool optionalBool0;
+#endif
         public float optionalFloat0;
         public int optionalInt0;
 
