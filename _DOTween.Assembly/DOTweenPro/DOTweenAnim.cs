@@ -141,8 +141,8 @@ namespace DG.Tweening
 
             return animType switch
             {
-                DOTweenAnimType.MoveY => transform.DOLocalMoveY(endValueV3.y, duration),
                 DOTweenAnimType.Move => transform.DOLocalMove(endValueV3, duration),
+                DOTweenAnimType.MoveY => transform.DOLocalMoveY(endValueV3.y, duration),
                 DOTweenAnimType.Rotate => transform.DOLocalRotateZ(endValueV3.z, duration),
                 DOTweenAnimType.Scale => transform.DOScale(endValueV3, duration),
                 DOTweenAnimType.Fade => target switch

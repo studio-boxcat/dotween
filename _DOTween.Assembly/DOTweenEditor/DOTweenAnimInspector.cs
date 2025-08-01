@@ -170,7 +170,7 @@ namespace DG.DOTweenEditor
         private static bool CanBeRelative(DOTweenAnimType type)
         {
             return type
-                is DOTweenAnimType.MoveY or DOTweenAnimType.Move
+                is DOTweenAnimType.Move or DOTweenAnimType.MoveY
                 or DOTweenAnimType.Rotate or DOTweenAnimType.Scale;
         }
 
@@ -179,8 +179,8 @@ namespace DG.DOTweenEditor
             return type switch
             {
                 DOTweenAnimType.None => ValueType.Float, // placeholder
-                DOTweenAnimType.MoveY => ValueType.Y,
                 DOTweenAnimType.Move => ValueType.XY,
+                DOTweenAnimType.MoveY => ValueType.Y,
                 DOTweenAnimType.Scale => optionalBool0 ? ValueType.Float : ValueType.XY, // uniform scale
                 DOTweenAnimType.Fade => ValueType.Float,
                 DOTweenAnimType.PunchPos or DOTweenAnimType.PunchScale
@@ -196,8 +196,8 @@ namespace DG.DOTweenEditor
         private static readonly Dictionary<DOTweenAnimType, Type[]> _eligibleTargetTypes = new()
         {
             { DOTweenAnimType.None, new[] { typeof(Transform) } }, // placeholder.
-            { DOTweenAnimType.MoveY, new[] { typeof(Transform) } },
             { DOTweenAnimType.Move, new[] { typeof(Transform) } },
+            { DOTweenAnimType.MoveY, new[] { typeof(Transform) } },
             { DOTweenAnimType.Rotate, new[] { typeof(Transform) } },
             { DOTweenAnimType.Scale, new[] { typeof(Transform) } },
             { DOTweenAnimType.Fade, new[] { typeof(CanvasGroup), typeof(Graphic), typeof(SpriteRenderer), typeof(Renderer) } },
