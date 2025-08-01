@@ -1,8 +1,11 @@
 ﻿#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
+using UnityEngine;
 using UnityEngine.Assertions;
+using Object = UnityEngine.Object;
 
 namespace DG.Tweening
 {
@@ -12,7 +15,7 @@ namespace DG.Tweening
         private static float _lastUpdateTime;
 
         public static bool IsPreviewing(int id, out Tweener t) => _tweens.TryGetValue(id, out t);
-        public static bool IsPreviewing(UnityEngine.Object obj, out Tweener t) => IsPreviewing(obj.GetInstanceID(), out t);
+        public static bool IsPreviewing(Object obj, out Tweener t) => IsPreviewing(obj.GetInstanceID(), out t);
 
         public static void StartPreview(Tweener t)
         {
@@ -22,6 +25,8 @@ namespace DG.Tweening
 
             if (_tweens.Count is 0)
             {
+                L.I("[DOTweenPreviewManager] Starting AnimationMode");
+
                 AnimationMode.StartAnimationMode(); // for screen refresh.
                 _lastUpdateTime = (float) EditorApplication.timeSinceStartup;
                 EditorApplication.update += (_update ??= Update);
@@ -59,9 +64,16 @@ namespace DG.Tweening
 
             if (_tweens.Count is 0)
             {
+                L.I("[DOTweenPreviewManager] Stopping AnimationMode");
+
                 AnimationMode.StopAnimationMode();
                 EditorApplication.update -= _update;
                 EditorApplication.playModeStateChanged -= (_onPlayModeStateChanged ??= OnPlayModeStateChanged);
+
+                // XXX: force refresh the Scene (or PrefabStage).
+                // Canvas.ForceUpdateCanvases(), InternalEditorUtility.RepaintAllViews() or EditorApplication.QueuePlayerLoopUpdate() does not work.
+                var cr = Resources.FindObjectsOfTypeAll<CanvasRenderer>().FirstOrDefault();
+                if (cr) EditorUtility.SetDirty(cr);
             }
         }
 
