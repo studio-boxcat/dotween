@@ -174,14 +174,14 @@ namespace DG.DOTweenEditor
                 or DOTweenAnimType.Rotate or DOTweenAnimType.Scale;
         }
 
-        private static ValueType GetValueType(DOTweenAnimType type, bool optionalBool0)
+        private static ValueType GetValueType(DOTweenAnimType type, bool uniformScale)
         {
             return type switch
             {
                 DOTweenAnimType.None => ValueType.Float, // placeholder
                 DOTweenAnimType.Move => ValueType.XY,
                 DOTweenAnimType.MoveY => ValueType.Y,
-                DOTweenAnimType.Scale => optionalBool0 ? ValueType.Float : ValueType.XY, // uniform scale
+                DOTweenAnimType.Scale => uniformScale ? ValueType.Float : ValueType.XY, // uniform scale
                 DOTweenAnimType.Fade => ValueType.Float,
                 DOTweenAnimType.PunchPos or DOTweenAnimType.PunchScale
                     or DOTweenAnimType.ShakePos or DOTweenAnimType.ShakeScale

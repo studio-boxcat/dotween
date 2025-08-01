@@ -6,7 +6,6 @@ using JetBrains.Annotations;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
@@ -40,7 +39,6 @@ namespace DG.Tweening
         [Required, ChildGameObjectsOnly]
         public Component target = null!;
 
-        [FormerlySerializedAs("animationType")]
         public DOTweenAnimType animType;
 
         [MinValue(0.0001f)]
@@ -58,16 +56,11 @@ namespace DG.Tweening
         public bool autoPlay = true;
         public bool autoKill = true;
 
-        [FormerlySerializedAs("endValueV3")]
         public Vector3 endValue;
-        [FormerlySerializedAs("optionalFloat0")]
         public float optionalFloat; // elasticity (Punch), randomness (Shake)
-        [FormerlySerializedAs("optionalInt0")]
         public int optionalInt; // vibrato (Punch, Shake)
 
 #if UNITY_EDITOR // uniform scale is editor only property.
-        [FormerlySerializedAs("optionalBool")]
-        [FormerlySerializedAs("optionalBool0")]
         public bool uniformScale;
 #endif
 
