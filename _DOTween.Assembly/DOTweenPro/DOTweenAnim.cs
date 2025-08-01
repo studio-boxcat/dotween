@@ -14,11 +14,10 @@ namespace DG.Tweening
     public enum DOTweenAnimType : byte
     {
         None = 0,
-        MoveY = 3,
         Move = 2,
+        MoveY = 3,
         Rotate = 4,
         Scale = 5,
-        Color = 6,
         Fade = 7,
         PunchPos = 9,
         PunchRot = 10,
@@ -55,8 +54,6 @@ namespace DG.Tweening
         public bool autoPlay = true;
 
         public Vector3 endValueV3;
-        public Color endValueColor = new Color(1, 1, 1, 1);
-
         public bool optionalBool0;
         public float optionalFloat0;
         public int optionalInt0;
@@ -113,8 +110,7 @@ namespace DG.Tweening
             // Create tween.
             var t = CreateTween(
                 target, transform, animationType, duration,
-                endValueV3, endValueColor,
-                optionalFloat0, optionalInt0);
+                endValueV3, optionalFloat0, optionalInt0);
 
             // Set from or relative.
             if (isFrom) t.From(isRelative);
@@ -137,7 +133,6 @@ namespace DG.Tweening
             DOTweenAnimType animType,
             float duration,
             Vector3 endValueV3,
-            Color endValueColor,
             float optionalFloat0,
             int optionalInt0)
         {
@@ -150,13 +145,6 @@ namespace DG.Tweening
                 DOTweenAnimType.Move => transform.DOLocalMove(endValueV3, duration),
                 DOTweenAnimType.Rotate => transform.DOLocalRotateZ(endValueV3.z, duration),
                 DOTweenAnimType.Scale => transform.DOScale(endValueV3, duration),
-                DOTweenAnimType.Color => target switch
-                {
-                    Graphic t => t.DOColor(endValueColor, duration),
-                    SpriteRenderer t => t.DOColor(endValueColor, duration),
-                    Renderer t => t.material.DOColor(endValueColor, duration),
-                    _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)
-                },
                 DOTweenAnimType.Fade => target switch
                 {
                     CanvasGroup t => t.DOFade(endValueV3.x, duration),

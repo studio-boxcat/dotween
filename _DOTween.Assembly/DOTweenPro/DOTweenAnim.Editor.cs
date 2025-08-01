@@ -103,7 +103,6 @@ namespace DG.Tweening
 
             if (animationType
                 is DOTweenAnimType.Fade
-                or DOTweenAnimType.Color
                 or DOTweenAnimType.PunchPos
                 or DOTweenAnimType.PunchRot
                 or DOTweenAnimType.PunchScale

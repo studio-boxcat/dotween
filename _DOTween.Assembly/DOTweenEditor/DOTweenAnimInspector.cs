@@ -54,7 +54,6 @@ namespace DG.DOTweenEditor
             {
                 // Set default optional values based on animation type
                 _src.endValueV3 = default;
-                _src.endValueColor = Color.white;
                 _src.optionalBool0 = false;
                 _src.optionalFloat0 = 0;
                 _src.optionalInt0 = 0;
@@ -183,7 +182,6 @@ namespace DG.DOTweenEditor
                 DOTweenAnimType.MoveY => ValueType.Y,
                 DOTweenAnimType.Move => ValueType.XY,
                 DOTweenAnimType.Scale => optionalBool0 ? ValueType.Float : ValueType.XY, // uniform scale
-                DOTweenAnimType.Color => ValueType.Color,
                 DOTweenAnimType.Fade => ValueType.Float,
                 DOTweenAnimType.PunchPos or DOTweenAnimType.PunchScale
                     or DOTweenAnimType.ShakePos or DOTweenAnimType.ShakeScale
@@ -202,7 +200,6 @@ namespace DG.DOTweenEditor
             { DOTweenAnimType.Move, new[] { typeof(Transform) } },
             { DOTweenAnimType.Rotate, new[] { typeof(Transform) } },
             { DOTweenAnimType.Scale, new[] { typeof(Transform) } },
-            { DOTweenAnimType.Color, new[] { typeof(Graphic), typeof(SpriteRenderer), typeof(Renderer), } },
             { DOTweenAnimType.Fade, new[] { typeof(CanvasGroup), typeof(Graphic), typeof(SpriteRenderer), typeof(Renderer) } },
             { DOTweenAnimType.PunchPos, new[] { typeof(Transform) } },
             { DOTweenAnimType.PunchRot, new[] { typeof(Transform) } },
@@ -251,9 +248,6 @@ namespace DG.DOTweenEditor
                 case ValueType.Float:
                     _src.endValueV3.x = EditorGUILayout.FloatField(_src.endValueV3.x);
                     break;
-                case ValueType.Color:
-                    _src.endValueColor = EditorGUILayout.ColorField(_src.endValueColor);
-                    break;
                 case ValueType.XY:
                     _src.endValueV3.AssignXY(EditorGUILayout.Vector2Field("", _src.endValueV3));
                     break;
@@ -290,7 +284,6 @@ namespace DG.DOTweenEditor
         private enum ValueType
         {
             Float,
-            Color,
             XY,
             Y,
             Z,
