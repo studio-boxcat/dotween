@@ -5,7 +5,6 @@ using DG.Tweening;
 using Sirenix.Utilities.Editor;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace DG.DOTweenEditor
 {
@@ -13,10 +12,12 @@ namespace DG.DOTweenEditor
     public class DOTweenAnimInspector : Editor
     {
         private DOTweenAnim _src = null!;
+        private SerializedProperty _endValueProp = null!;
 
         private void OnEnable()
         {
             _src = (DOTweenAnim) target;
+            _endValueProp = serializedObject.FindProperty("endValue");
         }
 
         public override void OnInspectorGUI()
@@ -58,9 +59,11 @@ namespace DG.DOTweenEditor
                 _src.optionalInt = 0;
                 _src.uniformScale = false;
 
+                // set default value.
                 switch (type)
                 {
                     case DOTweenAnimType.Scale:
+                        _src.endValue = _src.isRelative ? default : Vector3.one;
                         _src.uniformScale = true; // uniform scale
                         break;
                     case DOTweenAnimType.PunchPos:
@@ -181,7 +184,7 @@ namespace DG.DOTweenEditor
                 DOTweenAnimType.None => ValueType.Float, // placeholder
                 DOTweenAnimType.Move => ValueType.XY,
                 DOTweenAnimType.MoveY => ValueType.Y,
-                DOTweenAnimType.Scale => uniformScale ? ValueType.Float : ValueType.XY, // uniform scale
+                DOTweenAnimType.Scale => uniformScale ? ValueType.Uniform : ValueType.XY,
                 DOTweenAnimType.Fade => ValueType.Float,
                 DOTweenAnimType.PunchPos or DOTweenAnimType.PunchScale
                     or DOTweenAnimType.ShakePos or DOTweenAnimType.ShakeScale
@@ -193,23 +196,6 @@ namespace DG.DOTweenEditor
             };
         }
 
-        private static readonly Dictionary<DOTweenAnimType, Type[]> _eligibleTargetTypes = new()
-        {
-            { DOTweenAnimType.None, new[] { typeof(Transform) } }, // placeholder.
-            { DOTweenAnimType.Move, new[] { typeof(Transform) } },
-            { DOTweenAnimType.MoveY, new[] { typeof(Transform) } },
-            { DOTweenAnimType.Rotate, new[] { typeof(Transform) } },
-            { DOTweenAnimType.Scale, new[] { typeof(Transform) } },
-            { DOTweenAnimType.Fade, new[] { typeof(CanvasGroup), typeof(Graphic), typeof(SpriteRenderer), typeof(Renderer) } },
-            { DOTweenAnimType.PunchPos, new[] { typeof(Transform) } },
-            { DOTweenAnimType.PunchRot, new[] { typeof(Transform) } },
-            { DOTweenAnimType.PunchScale, new[] { typeof(Transform) } },
-            { DOTweenAnimType.ShakePos, new[] { typeof(Transform) } },
-            { DOTweenAnimType.ShakeRot, new[] { typeof(Transform) } },
-            { DOTweenAnimType.ShakeScale, new[] { typeof(Transform) } },
-            { DOTweenAnimType.UIAnchors, new[] { typeof(RectTransform) } },
-        };
-
         private static readonly List<Component> _targetBuf = new();
 
         private static Component GUI_ComponentSelector(
@@ -218,7 +204,7 @@ namespace DG.DOTweenEditor
             _targetBuf.Clear();
 
             // collect targets
-            var types = _eligibleTargetTypes[animType];
+            var types = DOTweenAnim.GetEligibleTargetTypes(animType);
             foreach (var t in types)
             {
                 if (go.TryGetComponent(t, out var targetComp))
@@ -242,24 +228,34 @@ namespace DG.DOTweenEditor
 
         private void GUI_Value(ValueType valueType)
         {
-            EditorGUILayout.PrefixLabel("Value");
+            var r = EditorGUILayout.GetControlRect();
+            var label = EditorGUI.BeginProperty(r, new GUIContent("Value"), _endValueProp);
+            r = EditorGUI.PrefixLabel(r, label);
+
+            ref var v = ref _src.endValue;
             switch (valueType)
             {
                 case ValueType.Float:
-                    _src.endValue.x = EditorGUILayout.FloatField(_src.endValue.x);
+                case ValueType.Uniform:
+                    v.x = EditorGUI.FloatField(r, v.x);
                     break;
                 case ValueType.XY:
-                    _src.endValue.AssignXY(EditorGUILayout.Vector2Field("", _src.endValue));
+                    v.AssignXY(EditorGUI.Vector2Field(r, GUIContent.none, v));
                     break;
                 case ValueType.Y:
-                    _src.endValue.y = EditorGUILayout.FloatField(_src.endValue.y);
+                    v.y = EditorGUI.FloatField(r, v.y);
                     break;
                 case ValueType.Z:
-                    _src.endValue.z = EditorGUILayout.FloatField(_src.endValue.z);
+                    v.z = EditorGUI.FloatField(r, v.z);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(valueType), valueType, null);
             }
+
+            if (valueType is ValueType.Uniform)
+                v = new Vector3(v.x, v.x, 1); // uniform scale
+
+            EditorGUI.EndProperty();
         }
 
         private void GUI_FromTo(float width)
@@ -287,6 +283,7 @@ namespace DG.DOTweenEditor
             XY,
             Y,
             Z,
+            Uniform,
         }
     }
 }
