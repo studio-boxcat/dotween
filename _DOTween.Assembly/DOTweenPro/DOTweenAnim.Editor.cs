@@ -3,6 +3,7 @@
 
 #nullable enable
 using Sirenix.OdinInspector;
+using UnityEditor;
 using UnityEngine;
 
 namespace DG.Tweening
@@ -13,6 +14,40 @@ namespace DG.Tweening
     [ExecuteAlways]
     public sealed partial class DOTweenAnim : ISelfValidator
     {
+        private void OnValidate()
+        {
+            var dirty = true;
+
+            /*
+            if (animationType is DOTweenAnimType.Fade
+                && endValueFloat != 0)
+            {
+                endValueV3 = new Vector3(endValueFloat, 0, 0);
+                endValueFloat = 0;
+                dirty = true;
+            }
+
+            if (animationType is DOTweenAnimType.Scale
+                && optionalBool0
+                && endValueFloat != 0)
+            {
+                endValueV3 = new Vector3(endValueFloat, endValueFloat, endValueFloat);
+                endValueFloat = 0;
+                dirty = true;
+            }
+
+            if (animationType is DOTweenAnimType.Scale
+                && !optionalBool0) // non-uniform scale, unused.
+            {
+                endValueFloat = 0;
+                dirty = true;
+            }
+            */
+
+            if (dirty)
+                EditorUtility.SetDirty(this);
+        }
+
         void ISelfValidator.Validate(SelfValidationResult result)
         {
             if (animationType is DOTweenAnimType.None)

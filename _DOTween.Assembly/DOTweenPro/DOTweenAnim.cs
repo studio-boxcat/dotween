@@ -54,7 +54,6 @@ namespace DG.Tweening
         public DOTweenAnimType animationType;
         public bool autoPlay = true;
 
-        public float endValueFloat;
         public Vector3 endValueV3;
         public Color endValueColor = new Color(1, 1, 1, 1);
 
@@ -114,8 +113,8 @@ namespace DG.Tweening
             // Create tween.
             var t = CreateTween(
                 target, transform, animationType, duration,
-                endValueFloat, endValueV3, endValueColor,
-                optionalBool0, optionalBool1, optionalFloat0, optionalInt0);
+                endValueV3, endValueColor,
+                optionalBool1, optionalFloat0, optionalInt0);
 
             // Set from or relative.
             if (isFrom) t.From(isRelative);
@@ -137,10 +136,8 @@ namespace DG.Tweening
             Object target, Transform transform,
             DOTweenAnimType animType,
             float duration,
-            float endValueFloat,
             Vector3 endValueV3,
             Color endValueColor,
-            bool optionalBool0,
             bool optionalBool1,
             float optionalFloat0,
             int optionalInt0)
@@ -153,7 +150,7 @@ namespace DG.Tweening
                 DOTweenAnimType.MoveY => transform.DOLocalMoveY(endValueV3.y, duration),
                 DOTweenAnimType.Move => transform.DOLocalMove(endValueV3, duration),
                 DOTweenAnimType.Rotate => transform.DOLocalRotateZ(endValueV3.z, duration),
-                DOTweenAnimType.Scale => transform.DOScale(optionalBool0 ? new Vector3(endValueFloat, endValueFloat, endValueFloat) : endValueV3, duration),
+                DOTweenAnimType.Scale => transform.DOScale(endValueV3, duration),
                 DOTweenAnimType.Color => target switch
                 {
                     Graphic t => t.DOColor(endValueColor, duration),
@@ -163,10 +160,10 @@ namespace DG.Tweening
                 },
                 DOTweenAnimType.Fade => target switch
                 {
-                    CanvasGroup t => t.DOFade(endValueFloat, duration),
-                    Graphic t => t.DOFade(endValueFloat, duration),
-                    SpriteRenderer t => t.DOFade(endValueFloat, duration),
-                    Renderer t => t.material.DOFade(endValueFloat, duration),
+                    CanvasGroup t => t.DOFade(endValueV3.x, duration),
+                    Graphic t => t.DOFade(endValueV3.x, duration),
+                    SpriteRenderer t => t.DOFade(endValueV3.x, duration),
+                    Renderer t => t.material.DOFade(endValueV3.x, duration),
                     _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)
                 },
                 DOTweenAnimType.PunchPos => target switch

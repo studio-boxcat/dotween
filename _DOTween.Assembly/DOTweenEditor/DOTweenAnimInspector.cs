@@ -53,7 +53,6 @@ namespace DG.DOTweenEditor
             if (prevType != _src.animationType)
             {
                 // Set default optional values based on animation type
-                _src.endValueFloat = 0;
                 _src.endValueV3 = default;
                 _src.endValueColor = Color.white;
                 _src.optionalBool0 = false;
@@ -116,7 +115,7 @@ namespace DG.DOTweenEditor
                     _src.optionalBool0 = GUI_PushToggle("Uni", _src.optionalBool0, width: 38); // uniform scale
                     break;
                 case DOTweenAnimType.Fade:
-                    if (_src.endValueFloat < 0) _src.endValueFloat = 0;
+                    if (_src.endValueV3.x < 0) _src.endValueV3.x = 0; // lower bound 0
                     break;
                 case DOTweenAnimType.PunchPos:
                 case DOTweenAnimType.PunchRot:
@@ -253,7 +252,7 @@ namespace DG.DOTweenEditor
             switch (valueType)
             {
                 case ValueType.Float:
-                    _src.endValueFloat = EditorGUILayout.FloatField(_src.endValueFloat);
+                    _src.endValueV3.x = EditorGUILayout.FloatField(_src.endValueV3.x);
                     break;
                 case ValueType.Color:
                     _src.endValueColor = EditorGUILayout.ColorField(_src.endValueColor);
