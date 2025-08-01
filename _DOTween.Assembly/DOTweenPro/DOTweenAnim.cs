@@ -148,7 +148,6 @@ namespace DG.Tweening
                     CanvasGroup t => t.DOFade(endValue.x, duration),
                     Graphic t => t.DOFade(endValue.x, duration),
                     SpriteRenderer t => t.DOFade(endValue.x, duration),
-                    Renderer t => t.material.DOFade(endValue.x, duration),
                     _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)
                 },
                 DOTweenAnimType.PunchPos => target switch
