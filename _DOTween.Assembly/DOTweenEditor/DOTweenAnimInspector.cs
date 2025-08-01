@@ -48,37 +48,37 @@ namespace DG.DOTweenEditor
                 Undo.RecordObject(_src, "DOTween Animation");
 
             // Reset properties if the animation type changed.
-            var prevType = _src.animationType;
-            var type = _src.animationType = (DOTweenAnimType) EditorGUILayout.EnumPopup("Type", _src.animationType);
-            if (prevType != _src.animationType)
+            var prevType = _src.animType;
+            var type = _src.animType = (DOTweenAnimType) EditorGUILayout.EnumPopup("Type", _src.animType);
+            if (prevType != _src.animType)
             {
                 // Set default optional values based on animation type
-                _src.endValueV3 = default;
-                _src.optionalBool0 = false;
-                _src.optionalFloat0 = 0;
-                _src.optionalInt0 = 0;
+                _src.endValue = default;
+                _src.optionalFloat = 0;
+                _src.optionalInt = 0;
+                _src.uniformScale = false;
 
                 switch (type)
                 {
                     case DOTweenAnimType.Scale:
-                        _src.optionalBool0 = true; // uniform scale
+                        _src.uniformScale = true; // uniform scale
                         break;
                     case DOTweenAnimType.PunchPos:
                     case DOTweenAnimType.PunchRot:
                     case DOTweenAnimType.PunchScale:
-                        _src.endValueV3 = type == DOTweenAnimType.PunchRot ? new Vector3(0, 180, 0) : Vector3.one;
-                        _src.optionalFloat0 = 1;
-                        _src.optionalInt0 = 10;
+                        _src.endValue = type == DOTweenAnimType.PunchRot ? new Vector3(0, 180, 0) : Vector3.one;
+                        _src.optionalFloat = 1;
+                        _src.optionalInt = 10;
                         break;
                     case DOTweenAnimType.ShakePos:
                     case DOTweenAnimType.ShakeRot:
                     case DOTweenAnimType.ShakeScale:
-                        _src.endValueV3 = type is DOTweenAnimType.ShakeRot ? new Vector3(90, 90, 90) : Vector3.one;
-                        _src.optionalInt0 = 10;
-                        _src.optionalFloat0 = 90;
+                        _src.endValue = type is DOTweenAnimType.ShakeRot ? new Vector3(90, 90, 90) : Vector3.one;
+                        _src.optionalInt = 10;
+                        _src.optionalFloat = 90;
                         break;
                     case DOTweenAnimType.UIAnchors:
-                        _src.endValueV3 = new Vector3(0.5f, 0.5f, 0);
+                        _src.endValue = new Vector3(0.5f, 0.5f, 0);
                         break;
                 }
 
@@ -103,28 +103,28 @@ namespace DG.DOTweenEditor
 
             // Draw the value, relative, from/to.
             EditorGUILayout.BeginHorizontal();
-            GUI_Value(GetValueType(type, _src.optionalBool0));
+            GUI_Value(GetValueType(type, _src.uniformScale));
 
             // type specific options
             switch (type)
             {
                 case DOTweenAnimType.Scale:
-                    _src.optionalBool0 = GUI_PushToggle("Uni", _src.optionalBool0, width: 38); // uniform scale
+                    _src.uniformScale = GUI_PushToggle("Uni", _src.uniformScale, width: 38); // uniform scale
                     break;
                 case DOTweenAnimType.Fade:
-                    if (_src.endValueV3.x < 0) _src.endValueV3.x = 0; // lower bound 0
+                    if (_src.endValue.x < 0) _src.endValue.x = 0; // lower bound 0
                     break;
                 case DOTweenAnimType.PunchPos:
                 case DOTweenAnimType.PunchRot:
                 case DOTweenAnimType.PunchScale:
-                    _src.optionalInt0 = EditorGUILayout.IntSlider(new GUIContent("V", "Vibrato"), _src.optionalInt0, 1, 50);
-                    _src.optionalFloat0 = EditorGUILayout.Slider(new GUIContent("E", "Elasticity"), _src.optionalFloat0, 0, 1);
+                    _src.optionalInt = EditorGUILayout.IntSlider(new GUIContent("V", "Vibrato"), _src.optionalInt, 1, 50);
+                    _src.optionalFloat = EditorGUILayout.Slider(new GUIContent("E", "Elasticity"), _src.optionalFloat, 0, 1);
                     break;
                 case DOTweenAnimType.ShakePos:
                 case DOTweenAnimType.ShakeRot:
                 case DOTweenAnimType.ShakeScale:
-                    _src.optionalInt0 = EditorGUILayout.IntSlider(new GUIContent("V", "Vibrato"), _src.optionalInt0, 1, 50);
-                    _src.optionalFloat0 = EditorGUILayout.Slider(new GUIContent("R", "Randomness"), _src.optionalFloat0, 0, 90);
+                    _src.optionalInt = EditorGUILayout.IntSlider(new GUIContent("V", "Vibrato"), _src.optionalInt, 1, 50);
+                    _src.optionalFloat = EditorGUILayout.Slider(new GUIContent("R", "Randomness"), _src.optionalFloat, 0, 90);
                     break;
             }
 
@@ -246,16 +246,16 @@ namespace DG.DOTweenEditor
             switch (valueType)
             {
                 case ValueType.Float:
-                    _src.endValueV3.x = EditorGUILayout.FloatField(_src.endValueV3.x);
+                    _src.endValue.x = EditorGUILayout.FloatField(_src.endValue.x);
                     break;
                 case ValueType.XY:
-                    _src.endValueV3.AssignXY(EditorGUILayout.Vector2Field("", _src.endValueV3));
+                    _src.endValue.AssignXY(EditorGUILayout.Vector2Field("", _src.endValue));
                     break;
                 case ValueType.Y:
-                    _src.endValueV3.y = EditorGUILayout.FloatField(_src.endValueV3.y);
+                    _src.endValue.y = EditorGUILayout.FloatField(_src.endValue.y);
                     break;
                 case ValueType.Z:
-                    _src.endValueV3.z = EditorGUILayout.FloatField(_src.endValueV3.z);
+                    _src.endValue.z = EditorGUILayout.FloatField(_src.endValue.z);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(valueType), valueType, null);

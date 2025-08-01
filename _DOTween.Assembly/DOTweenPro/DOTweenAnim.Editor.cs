@@ -3,74 +3,25 @@
 
 #nullable enable
 using Sirenix.OdinInspector;
-using UnityEditor;
-using UnityEngine;
 
 namespace DG.Tweening
 {
-    /// <summary>
-    /// Attach this to a GameObject to create a tween
-    /// </summary>
-    [ExecuteAlways]
     public sealed partial class DOTweenAnim : ISelfValidator
     {
-        private void OnValidate()
-        {
-            var dirty = false;
-
-            /*
-            if (animationType is DOTweenAnimType.Rotate or DOTweenAnimType.Scale
-                && optionalBool1)
-            {
-                optionalBool1 = false; // optionalBool1 is not valid for Rotate or Scale.
-                dirty = true;
-            }
-            */
-
-            /*
-            if (animationType is DOTweenAnimType.Fade
-                && endValueFloat != 0)
-            {
-                endValueV3 = new Vector3(endValueFloat, 0, 0);
-                endValueFloat = 0;
-                dirty = true;
-            }
-
-            if (animationType is DOTweenAnimType.Scale
-                && optionalBool0
-                && endValueFloat != 0)
-            {
-                endValueV3 = new Vector3(endValueFloat, endValueFloat, endValueFloat);
-                endValueFloat = 0;
-                dirty = true;
-            }
-
-            if (animationType is DOTweenAnimType.Scale
-                && !optionalBool0) // non-uniform scale, unused.
-            {
-                endValueFloat = 0;
-                dirty = true;
-            }
-            */
-
-            if (dirty)
-                EditorUtility.SetDirty(this);
-        }
-
         void ISelfValidator.Validate(SelfValidationResult result)
         {
-            if (animationType is DOTweenAnimType.None)
+            if (animType is DOTweenAnimType.None)
                 result.AddError("AnimationType must be set to a valid value");
 
-            if (animationType is DOTweenAnimType.Rotate)
+            if (animType is DOTweenAnimType.Rotate)
             {
-                if (endValueV3.x != 0 || endValueV3.y != 0)
+                if (endValue.x != 0 || endValue.y != 0)
                     result.AddError("Rotate can only rotate on the Z axis");
                 if (isRelative is false)
                     result.AddError("Rotate must be relative. Otherwise, it would result unexpected rotation.");
             }
 
-            if (animationType
+            if (animType
                 is DOTweenAnimType.PunchPos
                 or DOTweenAnimType.PunchRot
                 or DOTweenAnimType.PunchScale)
@@ -81,7 +32,7 @@ namespace DG.Tweening
                     result.AddError("Punch cannot be from.");
             }
 
-            if (animationType
+            if (animType
                 is DOTweenAnimType.ShakePos
                 or DOTweenAnimType.ShakeRot
                 or DOTweenAnimType.ShakeScale)
@@ -92,7 +43,7 @@ namespace DG.Tweening
                     result.AddError("Shake cannot be from.");
             }
 
-            if (animationType
+            if (animType
                 is DOTweenAnimType.Fade
                 or DOTweenAnimType.PunchPos
                 or DOTweenAnimType.PunchRot
@@ -103,7 +54,7 @@ namespace DG.Tweening
                 or DOTweenAnimType.UIAnchors)
             {
                 if (isRelative)
-                    result.AddError(animationType + " cannot be relative.");
+                    result.AddError(animType + " cannot be relative.");
             }
         }
     }
