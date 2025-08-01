@@ -62,17 +62,19 @@ namespace DG.Tweening
         }
 
 #if UNITY_EDITOR
-        [ContextMenu("Play Preview _p"), Button(DirtyOnClick = false)]
-        private void PlayPreview()
+        [ContextMenu("Toggle Preview _p"), Button(DirtyOnClick = false)]
+        private void TogglePreview()
         {
             GetComponents(_animBuf);
 
             // kill in reverse order to restore the original value correctly.
+            var anyStopped = false;
             for (var i = _animBuf.Count - 1; i >= 0; i--)
             {
                 var previewId = _animBuf[i].GetInstanceID();
-                DOTweenPreviewManager.TryStopPreview(previewId);
+                anyStopped |= DOTweenPreviewManager.TryStopPreview(previewId);
             }
+            if (anyStopped) return; // if any stopped, then we were in preview mode.
 
             foreach (var anim in _animBuf)
             {
