@@ -62,7 +62,7 @@ namespace DG.Tweening
         public float optionalFloat0;
         public int optionalInt0;
 
-        private void Awake()
+        private void OnEnable()
         {
 #if UNITY_EDITOR
             if (Editing.Yes(this)) return; // [ExecuteAlways] by DOTweenAnim.Editor.cs
@@ -72,7 +72,7 @@ namespace DG.Tweening
                 PopulateTween(play: autoPlay);
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
 #if UNITY_EDITOR
             if (Editing.Yes(this)) return; // [ExecuteAlways] by DOTweenAnim.Editor.cs
