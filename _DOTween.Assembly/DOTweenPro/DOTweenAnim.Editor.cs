@@ -16,7 +16,16 @@ namespace DG.Tweening
     {
         private void OnValidate()
         {
-            var dirty = true;
+            var dirty = false;
+
+            /*
+            if (animationType is DOTweenAnimType.Rotate or DOTweenAnimType.Scale
+                && optionalBool1)
+            {
+                optionalBool1 = false; // optionalBool1 is not valid for Rotate or Scale.
+                dirty = true;
+            }
+            */
 
             /*
             if (animationType is DOTweenAnimType.Fade

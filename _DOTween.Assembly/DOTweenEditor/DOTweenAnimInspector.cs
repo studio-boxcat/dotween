@@ -56,7 +56,6 @@ namespace DG.DOTweenEditor
                 _src.endValueV3 = default;
                 _src.endValueColor = Color.white;
                 _src.optionalBool0 = false;
-                _src.optionalBool1 = false;
                 _src.optionalFloat0 = 0;
                 _src.optionalInt0 = 0;
 
@@ -78,7 +77,6 @@ namespace DG.DOTweenEditor
                         _src.endValueV3 = type is DOTweenAnimType.ShakeRot ? new Vector3(90, 90, 90) : Vector3.one;
                         _src.optionalInt0 = 10;
                         _src.optionalFloat0 = 90;
-                        _src.optionalBool1 = true;
                         break;
                     case DOTweenAnimType.UIAnchors:
                         _src.endValueV3 = new Vector3(0.5f, 0.5f, 0);
@@ -128,7 +126,6 @@ namespace DG.DOTweenEditor
                 case DOTweenAnimType.ShakeScale:
                     _src.optionalInt0 = EditorGUILayout.IntSlider(new GUIContent("V", "Vibrato"), _src.optionalInt0, 1, 50);
                     _src.optionalFloat0 = EditorGUILayout.Slider(new GUIContent("R", "Randomness"), _src.optionalFloat0, 0, 90);
-                    _src.optionalBool1 = EditorGUILayout.Toggle(new GUIContent("F", "FadeOut"), _src.optionalBool1);
                     break;
             }
 

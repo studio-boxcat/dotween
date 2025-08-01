@@ -57,7 +57,7 @@ namespace DG.Tweening
         public Vector3 endValueV3;
         public Color endValueColor = new Color(1, 1, 1, 1);
 
-        public bool optionalBool0, optionalBool1;
+        public bool optionalBool0;
         public float optionalFloat0;
         public int optionalInt0;
 
@@ -114,7 +114,7 @@ namespace DG.Tweening
             var t = CreateTween(
                 target, transform, animationType, duration,
                 endValueV3, endValueColor,
-                optionalBool1, optionalFloat0, optionalInt0);
+                optionalFloat0, optionalInt0);
 
             // Set from or relative.
             if (isFrom) t.From(isRelative);
@@ -138,7 +138,6 @@ namespace DG.Tweening
             float duration,
             Vector3 endValueV3,
             Color endValueColor,
-            bool optionalBool1,
             float optionalFloat0,
             int optionalInt0)
         {
@@ -176,12 +175,12 @@ namespace DG.Tweening
                 DOTweenAnimType.PunchRot => transform.DOPunchRotation(endValueV3, duration, vibrato: optionalInt0, elasticity: optionalFloat0),
                 DOTweenAnimType.ShakePos => target switch
                 {
-                    RectTransform t => t.DOShakeAnchorPos(duration, endValueV3, vibrato: optionalInt0, randomness: optionalFloat0, fadeOut: optionalBool1),
-                    Transform t => t.DOShakePosition(duration, endValueV3, vibrato: optionalInt0, randomness: optionalFloat0, fadeOut: optionalBool1),
+                    RectTransform t => t.DOShakeAnchorPos(duration, endValueV3, vibrato: optionalInt0, randomness: optionalFloat0, fadeOut: false),
+                    Transform t => t.DOShakePosition(duration, endValueV3, vibrato: optionalInt0, randomness: optionalFloat0, fadeOut: false),
                     _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)
                 },
-                DOTweenAnimType.ShakeScale => transform.DOShakeScale(duration, endValueV3, vibrato: optionalInt0, randomness: optionalFloat0, fadeOut: optionalBool1),
-                DOTweenAnimType.ShakeRot => transform.DOShakeRotation(duration, endValueV3, vibrato: optionalInt0, randomness: optionalFloat0, fadeOut: optionalBool1),
+                DOTweenAnimType.ShakeScale => transform.DOShakeScale(duration, endValueV3, vibrato: optionalInt0, randomness: optionalFloat0, fadeOut: false),
+                DOTweenAnimType.ShakeRot => transform.DOShakeRotation(duration, endValueV3, vibrato: optionalInt0, randomness: optionalFloat0, fadeOut: false),
                 DOTweenAnimType.UIAnchors => DOTween.To(
                     () => ((RectTransform) target).anchorMin,
                     x => ((RectTransform) target).anchorMin = ((RectTransform) target).anchorMax = x,
