@@ -253,7 +253,7 @@ namespace DG.DOTweenEditor
             }
 
             if (valueType is ValueType.Uniform)
-                v = new Vector3(v.x, v.x, 1); // uniform scale
+                v = new Vector3(v.x, v.x, v.z); // uniform scale, keep z as is.
 
             EditorGUI.EndProperty();
         }
