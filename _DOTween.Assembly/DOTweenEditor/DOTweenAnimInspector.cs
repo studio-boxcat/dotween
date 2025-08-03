@@ -12,11 +12,15 @@ namespace DG.DOTweenEditor
     public class DOTweenAnimInspector : Editor
     {
         private DOTweenAnim _src = null!;
+        private SerializedProperty _durationProp = null!;
+        private SerializedProperty _delayProp = null!;
         private SerializedProperty _endValueProp = null!;
 
         private void OnEnable()
         {
             _src = (DOTweenAnim) target;
+            _durationProp = serializedObject.FindProperty("duration");
+            _delayProp = serializedObject.FindProperty("delay");
             _endValueProp = serializedObject.FindProperty("endValue");
         }
 
@@ -96,11 +100,9 @@ namespace DG.DOTweenEditor
 
             // Draw Duration & Delay.
             EditorGUILayout.BeginHorizontal();
-            _src.duration = EditorGUILayout.FloatField("Duration", _src.duration);
-            if (_src.duration < 0) _src.duration = 0;
+            EditorGUILayout.PropertyField(_durationProp);
             GUILayout.Space(4);
-            _src.delay = EditorGUILayout.FloatField("Delay", _src.delay);
-            if (_src.delay < 0) _src.delay = 0;
+            EditorGUILayout.PropertyField(_delayProp);
             EditorGUILayout.EndHorizontal();
 
 
@@ -167,7 +169,10 @@ namespace DG.DOTweenEditor
             GUIHelper.PopLabelWidth();
 
             if (EditorGUI.EndChangeCheck())
+            {
+                serializedObject.ApplyModifiedProperties();
                 EditorUtility.SetDirty(_src);
+            }
         }
 
         private static bool CanBeRelative(DOTweenAnimType type)
