@@ -318,23 +318,19 @@ namespace DG.Tweening
         /// In case of Sequences behaves the same as <see cref="PrependInterval"/>,
         /// which means the delay will repeat in case of loops (while with tweens it's ignored after the first loop cycle).<para/>
         /// Has no effect if the tween has already started</summary>
-        public static T SetDelay<T>(this T t, float delay) where T : Tween
+        public static T SetDelay<T>(this T t, float delay) where T : Tweener
         {
             if (t is not { active: true } || t.creationLocked) return t;
 
-            if (t is Sequence s) {
-                s.PrependInterval(delay);
-            } else {
-                t.delay = delay;
-                t.delayComplete = delay <= 0;
-            }
+            t.delay = delay;
+            t.delayComplete = delay <= 0;
             return t;
         }
 
         /// <summary>Sets the tween as relative
         /// (the endValue will be calculated as <code>startValue + endValue</code> instead than being used directly).
         /// <para>Has no effect on Sequences or if the tween has already started</para></summary>
-        public static T SetRelative<T>(this T t) where T : Tween
+        public static T SetRelative<T>(this T t) where T : Tweener
         {
             if (t is not { active: true } || t.creationLocked || t.isFrom) return t;
 
@@ -344,7 +340,7 @@ namespace DG.Tweening
         /// <summary>If isRelative is TRUE sets the tween as relative
         /// (the endValue will be calculated as <code>startValue + endValue</code> instead than being used directly).
         /// <para>Has no effect on Sequences or if the tween has already started</para></summary>
-        public static T SetRelative<T>(this T t, bool isRelative) where T : Tween
+        public static T SetRelative<T>(this T t, bool isRelative) where T : Tweener
         {
             if (t is not { active: true } || t.creationLocked || t.isFrom) return t;
 
