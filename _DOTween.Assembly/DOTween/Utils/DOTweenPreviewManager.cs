@@ -95,6 +95,9 @@ namespace DG.Tweening
 
             foreach (var tween in tweenToKill)
                 StopPreview(tween);
+
+            // force repaint the SceneView. Without this, the SceneView renders occasionally.
+            SceneView.RepaintAll();
         }
 
         private static Action<PlayModeStateChange> _onPlayModeStateChanged;
