@@ -27,7 +27,8 @@ namespace DG.Tweening
             { DOTweenAnimType.ShakePos, new[] { typeof(Transform) } },
             { DOTweenAnimType.ShakeRot, new[] { typeof(Transform) } },
             { DOTweenAnimType.ShakeScale, new[] { typeof(Transform) } },
-            { DOTweenAnimType.UIAnchors, new[] { typeof(RectTransform) } },
+            { DOTweenAnimType.AnchorPos, new[] { typeof(RectTransform) } },
+            { DOTweenAnimType.Anchor, new[] { typeof(RectTransform) } },
         };
 
         public static Type[] GetEligibleTargetTypes(DOTweenAnimType animType) => _eligibleTargetTypes[animType];
@@ -83,7 +84,7 @@ namespace DG.Tweening
                      or DOTweenAnimType.ShakePos
                      or DOTweenAnimType.ShakeRot
                      or DOTweenAnimType.ShakeScale
-                     or DOTweenAnimType.UIAnchors)
+                     or DOTweenAnimType.Anchor)
             {
                 if (isRelative)
                     result.AddError(animType + " cannot be relative.");

@@ -84,7 +84,10 @@ namespace DG.DOTweenEditor
                         _src.optionalInt = 10;
                         _src.optionalFloat = 90;
                         break;
-                    case DOTweenAnimType.UIAnchors:
+                    case DOTweenAnimType.AnchorPos:
+                        _src.endValue = new Vector3(0, 0, 0);
+                        break;
+                    case DOTweenAnimType.Anchor:
                         _src.endValue = new Vector3(0.5f, 0.5f, 0);
                         break;
                 }
@@ -196,7 +199,7 @@ namespace DG.DOTweenEditor
                     => ValueType.XY,
                 DOTweenAnimType.Rotate or DOTweenAnimType.PunchRot or DOTweenAnimType.ShakeRot
                     => ValueType.Z,
-                DOTweenAnimType.UIAnchors => ValueType.XY,
+                DOTweenAnimType.Anchor => ValueType.XY,
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
             };
         }

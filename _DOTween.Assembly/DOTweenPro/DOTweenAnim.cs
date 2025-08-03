@@ -25,7 +25,8 @@ namespace DG.Tweening
         ShakePos = 12,
         ShakeRot = 13,
         ShakeScale = 14,
-        UIAnchors = 22,
+        AnchorPos = 21,
+        Anchor = 22,
     }
 
     /// <summary>
@@ -166,7 +167,12 @@ namespace DG.Tweening
                 },
                 DOTweenAnimType.ShakeScale => transform.DOShakeScale(duration, endValue, vibrato: optionalInt, randomness: optionalFloat, fadeOut: false),
                 DOTweenAnimType.ShakeRot => transform.DOShakeRotation(duration, endValue, vibrato: optionalInt, randomness: optionalFloat, fadeOut: false),
-                DOTweenAnimType.UIAnchors => DOTween.To(
+                DOTweenAnimType.AnchorPos => target switch
+                {
+                    RectTransform t => t.DOAnchorPos(endValue, duration),
+                    _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)
+                },
+                DOTweenAnimType.Anchor => DOTween.To(
                     () => ((RectTransform) target).anchorMin,
                     x => ((RectTransform) target).anchorMin = ((RectTransform) target).anchorMax = x,
                     (Vector2) endValue, duration),
