@@ -182,7 +182,8 @@ namespace DG.DOTweenEditor
         {
             return type
                 is DOTweenAnimType.Move or DOTweenAnimType.MoveY
-                or DOTweenAnimType.Rotate or DOTweenAnimType.Scale;
+                or DOTweenAnimType.Rotate or DOTweenAnimType.Scale
+                or DOTweenAnimType.AnchorPos;
         }
 
         private static ValueType GetValueType(DOTweenAnimType type, bool uniformScale)
@@ -199,7 +200,8 @@ namespace DG.DOTweenEditor
                     => ValueType.XY,
                 DOTweenAnimType.Rotate or DOTweenAnimType.PunchRot or DOTweenAnimType.ShakeRot
                     => ValueType.Z,
-                DOTweenAnimType.Anchor => ValueType.XY,
+                DOTweenAnimType.AnchorPos or DOTweenAnimType.Anchor
+                    => ValueType.XY,
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
             };
         }
