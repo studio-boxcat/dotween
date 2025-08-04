@@ -27,27 +27,20 @@ namespace DG.Tweening
                 Assert.AreEqual(0, _tweens!.Count);
             }
 
-            var id = GetInstanceID();
             GetComponents(_animBuf);
             foreach (var anim in _animBuf)
             {
                 var tween = anim.CreateTween(play: true);
-                tween.id = id;
+                Assert.IsTrue(tween.target is null, "Tween target should be null, it might be accidentally killed by transform.DOKill() or similar.");
+                Assert.IsFalse(tween.autoKill, "Tween should not be auto-killed, it is managed by DOTweenGroup.");
                 _tweens!.Add(tween);
             }
         }
 
         private void OnDisable()
         {
-            var id = GetInstanceID();
-
             foreach (var tween in _tweens!)
-            {
-                // XXX: Even if AutoKill is set to false, tween can be killed accidentally, like transform.DOKill().
-                if (tween.id == id)
-                    tween.KillRewind();
-            }
-
+                tween.KillRewind();
             _tweens.Clear();
         }
 
