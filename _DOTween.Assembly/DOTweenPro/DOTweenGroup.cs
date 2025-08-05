@@ -89,12 +89,16 @@ namespace DG.Tweening
 
             foreach (var anim in _animBuf)
             {
-                if (anim.autoGenerate)
-                    result.AddError("매니저가 있는 경우 autoGenerate 가 비활성화되어있어야합니다.").WithFix(() => anim.autoGenerate = false);
-                if (anim.autoPlay)
-                    result.AddError("매니저가 있는 경우 autoPlay 가 비활성화되어있어야합니다.").WithFix(() => anim.autoPlay = false);
-                if (anim.autoKill)
-                    result.AddError("매니저가 있는 경우 autoKill 이 비활성화되어있어야합니다.").WithFix(() => anim.autoKill = false);
+                if (anim.enabled is false)
+                    result.AddError($"{anim.animType} 애니메이션이 비활성화되어 있습니다.").WithFix(() => anim.enabled = true);
+
+                if (anim.autoGenerate || anim.autoPlay || anim.autoKill)
+                    result.AddError("매니저가 있는 경우 autoGenerate, autoPlay, autoKill 가 비활성화되어있어야합니다.").WithFix(() =>
+                    {
+                        anim.autoGenerate = false;
+                        anim.autoPlay = false;
+                        anim.autoKill = false;
+                    });
             }
         }
 #endif

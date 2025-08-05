@@ -114,6 +114,8 @@ namespace DG.DOTweenEditor
             GUI_Value(GetValueType(type, _src.uniformScale));
 
             // type specific options
+            GUIHelper.PushLabelWidth(14);
+            var layoutOpts = new[] { GUILayout.Width(44) };
             switch (type)
             {
                 case DOTweenAnimType.Scale:
@@ -125,16 +127,19 @@ namespace DG.DOTweenEditor
                 case DOTweenAnimType.PunchPos:
                 case DOTweenAnimType.PunchRot:
                 case DOTweenAnimType.PunchScale:
-                    _src.optionalInt = EditorGUILayout.IntSlider(new GUIContent("V", "Vibrato"), _src.optionalInt, 1, 50);
-                    _src.optionalFloat = EditorGUILayout.Slider(new GUIContent("E", "Elasticity"), _src.optionalFloat, 0, 1);
+                    GUILayout.Space(4);
+                    _src.optionalInt = EditorGUILayout.IntField(new GUIContent("V", "Vibrato"), _src.optionalInt, layoutOpts);
+                    _src.optionalFloat = EditorGUILayout.FloatField(new GUIContent("E", "Elasticity"), _src.optionalFloat, layoutOpts);
                     break;
                 case DOTweenAnimType.ShakePos:
                 case DOTweenAnimType.ShakeRot:
                 case DOTweenAnimType.ShakeScale:
-                    _src.optionalInt = EditorGUILayout.IntSlider(new GUIContent("V", "Vibrato"), _src.optionalInt, 1, 50);
-                    _src.optionalFloat = EditorGUILayout.Slider(new GUIContent("R", "Randomness"), _src.optionalFloat, 0, 90);
+                    GUILayout.Space(4);
+                    _src.optionalInt = EditorGUILayout.IntField(new GUIContent("V", "Vibrato"), _src.optionalInt, layoutOpts);
+                    _src.optionalFloat = EditorGUILayout.FloatField(new GUIContent("R", "Randomness"), _src.optionalFloat, layoutOpts);
                     break;
             }
+            GUIHelper.PopLabelWidth();
 
             GUILayout.Space(4);
             GUI_FromTo(width: 38);
