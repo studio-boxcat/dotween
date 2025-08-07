@@ -41,8 +41,7 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Sets an int ID for the tween (<see cref="Tween.id"/>), which can then be used as a filter with DOTween's static methods.<para/>
-        /// Filtering via int is 4X faster than via object, 2X faster than via string (using the alternate object/string overloads)</summary>
+        /// <summary>Sets an int ID for the tween (<see cref="Tween.id"/>).</summary>
         /// <param name="intId">The int ID to assign to this tween.</param>
         public static T SetId<T>(this T t, int intId) where T : Tween
         {
@@ -182,7 +181,16 @@ namespace DG.Tweening
         /// Called the first time the tween is set in a playing state, after any eventual delay</summary>
         public static T OnStart<T>(this T t, TweenCallback? action) where T : Tween
         {
-            if (t is not { active: true }) return t;
+            if (!t.active)
+            {
+                L.E($"[DOTween] OnStart() on an inactive/killed tween: {t}");
+                return t;
+            }
+
+#if DEBUG
+            if (t.onStart is not null)
+                L.W($"[DOTween] Overriding previous onStart callback for tween: {t}");
+#endif
 
             t.onStart = action;
             return t;
@@ -192,7 +200,16 @@ namespace DG.Tweening
         /// Called the moment the tween reaches its final forward position, loops included</summary>
         public static T OnComplete<T>(this T t, TweenCallback? action) where T : Tween
         {
-            if (t is not { active: true }) return t;
+            if (!t.active)
+            {
+                L.E($"[DOTween] OnComplete() on an inactive/killed tween: {t}");
+                return t;
+            }
+
+#if DEBUG
+            if (t.onComplete is not null)
+                L.W($"[DOTween] Overriding previous onComplete callback for tween: {t}");
+#endif
 
             t.onComplete = action;
             return t;
@@ -202,7 +219,16 @@ namespace DG.Tweening
         /// Called the moment the tween is killed</summary>
         public static T OnKill<T>(this T t, TweenCallback? action) where T : Tween
         {
-            if (t is not { active: true }) return t;
+            if (!t.active)
+            {
+                L.E($"[DOTween] OnKill() on an inactive/killed tween: {t}");
+                return t;
+            }
+
+#if DEBUG
+            if (t.onKill is not null)
+                L.W($"[DOTween] Overriding previous onKill callback for tween: {t}");
+#endif
 
             t.onKill = action;
             return t;

@@ -1,11 +1,9 @@
 ﻿#if UNITY_EDITOR
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Object = UnityEngine.Object;
 
 namespace DG.Tweening
 {
@@ -14,8 +12,8 @@ namespace DG.Tweening
         private static readonly Dictionary<int, Tweener> _tweens = new();
         private static float _lastUpdateTime;
 
+        public static bool IsPreviewing(int id) => _tweens.ContainsKey(id);
         public static bool IsPreviewing(int id, out Tweener t) => _tweens.TryGetValue(id, out t);
-        public static bool IsPreviewing(Object obj, out Tweener t) => IsPreviewing(obj.GetInstanceID(), out t);
 
         public static void StartPreview(Tweener t)
         {
@@ -30,7 +28,6 @@ namespace DG.Tweening
                 AnimationMode.StartAnimationMode(); // for screen refresh.
                 _lastUpdateTime = (float) EditorApplication.timeSinceStartup;
                 EditorApplication.update += (_update ??= Update);
-                EditorApplication.playModeStateChanged += (_onPlayModeStateChanged ??= OnPlayModeStateChanged);
             }
 
             _tweens.Add(t.id, t);
@@ -68,7 +65,6 @@ namespace DG.Tweening
 
                 AnimationMode.StopAnimationMode();
                 EditorApplication.update -= _update;
-                EditorApplication.playModeStateChanged -= (_onPlayModeStateChanged ??= OnPlayModeStateChanged);
 
                 // XXX: force refresh the Scene (or PrefabStage).
                 // Canvas.ForceUpdateCanvases(), InternalEditorUtility.RepaintAllViews() or EditorApplication.QueuePlayerLoopUpdate() does not work.
@@ -100,10 +96,10 @@ namespace DG.Tweening
             SceneView.RepaintAll();
         }
 
-        private static Action<PlayModeStateChange> _onPlayModeStateChanged;
-        private static void OnPlayModeStateChanged(PlayModeStateChange state)
+        [PlayModeGate]
+        private static void StopAllPreviews()
         {
-            while (_tweens.Count is not 0)
+            while (_tweens.NotEmpty())
                 StopPreview(_tweens[0]);
         }
     }
