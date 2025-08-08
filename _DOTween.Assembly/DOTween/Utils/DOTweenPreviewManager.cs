@@ -1,8 +1,6 @@
 ﻿#if UNITY_EDITOR
 using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
-using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace DG.Tweening
@@ -25,7 +23,7 @@ namespace DG.Tweening
             {
                 L.I("[DOTweenPreviewManager] Starting AnimationMode");
 
-                AnimationMode.StartAnimationMode(); // for screen refresh.
+                AnimationModeManager.Start();
                 _lastUpdateTime = (float) EditorApplication.timeSinceStartup;
                 EditorApplication.update += (_update ??= Update);
             }
@@ -63,13 +61,8 @@ namespace DG.Tweening
             {
                 L.I("[DOTweenPreviewManager] Stopping AnimationMode");
 
-                AnimationMode.StopAnimationMode();
+                AnimationModeManager.Stop();
                 EditorApplication.update -= _update;
-
-                // XXX: force refresh the Scene (or PrefabStage).
-                // Canvas.ForceUpdateCanvases(), InternalEditorUtility.RepaintAllViews() or EditorApplication.QueuePlayerLoopUpdate() does not work.
-                var cr = Resources.FindObjectsOfTypeAll<CanvasRenderer>().FirstOrDefault();
-                if (cr) EditorUtility.SetDirty(cr);
             }
         }
 
