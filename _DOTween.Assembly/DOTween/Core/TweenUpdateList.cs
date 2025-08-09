@@ -1,9 +1,10 @@
+#nullable enable
 using System.Collections.Generic;
 using UnityEngine.Assertions;
 
 namespace DG.Tweening
 {
-    public struct TweenUpdateList
+    internal struct TweenUpdateList
     {
         private readonly List<Tween> _list;
         private readonly List<int> _reservedToRemove;
@@ -66,7 +67,7 @@ namespace DG.Tweening
             // L.I($"[DOTween] Update list: {string.Join(", ", _list.Select(x => (int) x.updateId))}");
 
             // Reorder list.
-            Tween lastTween = null;
+            Tween? lastTween = null;
             var lastIndex = listCount;
             foreach (var removeIndex in _reservedToRemove)
             {
@@ -141,7 +142,7 @@ namespace DG.Tweening
             tween.updateId = TweenUpdateId.Invalid;
         }
 
-        public struct TweenEnumerable
+        internal readonly struct TweenEnumerable
         {
             private readonly List<Tween> _list;
             private readonly TweenUpdateId _lastUpdateId;
@@ -152,7 +153,7 @@ namespace DG.Tweening
                 _lastUpdateId = lastUpdateId;
             }
 
-            public TweenEnumerator GetEnumerator() => new TweenEnumerator(_list, _lastUpdateId);
+            public TweenEnumerator GetEnumerator() => new(_list, _lastUpdateId);
 
             public struct TweenEnumerator
             {

@@ -1,20 +1,13 @@
 namespace DG.Tweening
 {
-    public enum TweenUpdateId
+    internal enum TweenUpdateId
     {
         Invalid = -1,
     }
 
-    public static class TweenUpdateIdExtensions
+    internal static class TweenUpdateIdExtensions
     {
-        public static bool IsValid(this TweenUpdateId id)
-        {
-            return id is not TweenUpdateId.Invalid;
-        }
-
-        public static bool IsInvalid(this TweenUpdateId id)
-        {
-            return id is TweenUpdateId.Invalid;
-        }
+        public static bool IsValid(this TweenUpdateId id) => id is not TweenUpdateId.Invalid;
+        public static bool IsInvalid(this TweenUpdateId id) => id is TweenUpdateId.Invalid;
     }
 }
