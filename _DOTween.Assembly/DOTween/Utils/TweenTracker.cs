@@ -26,7 +26,7 @@ namespace DG.Tweening
             return false;
         }
 
-        public void KillAll()
+        public void KillAll(bool complete = false)
         {
             if (_tweens == null) return;
 
@@ -36,7 +36,7 @@ namespace DG.Tweening
             {
                 var (tween, id) = _tweens[i];
                 if (tween.id != id) continue; // tween has been modified. (mostly by auto kill)
-                tween.Kill();
+                tween.Kill(complete: complete);
                 killed++;
             }
 
