@@ -21,7 +21,7 @@ namespace DG.Tweening
             for (var i = 0; i < count; i++)
             {
                 var (tween, id) = _tweens[i];
-                if (tween.id == id) continue; // tween has been modified. (mostly by auto kill)
+                if (tween.id != id) continue; // tween has been modified. (mostly by auto kill)
                 tween.Kill();
             }
 
