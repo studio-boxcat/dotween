@@ -30,6 +30,7 @@ namespace DG.Tweening
             _iterateDepth--;
             Assert.IsTrue(_iterateDepth >= 0, "Iterate depth is below 0");
 
+            // ignore if there another iteration is in progress (skip pruning)
             if (_iterateDepth is not 0)
                 return;
 

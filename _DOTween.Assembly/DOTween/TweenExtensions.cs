@@ -70,7 +70,11 @@ namespace DG.Tweening
         public static void Kill(this Tween t, bool complete = false)
         {
             if (t is not { active: true })
+            {
+                Debugger.LogInvalidTween(t);
                 return;
+            }
+
             if (t.isSequenced) {
                 Debugger.LogNestedTween(t);
                 return;

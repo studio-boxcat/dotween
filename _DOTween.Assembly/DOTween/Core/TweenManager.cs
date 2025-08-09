@@ -54,6 +54,9 @@ namespace DG.Tweening
             if (t is Tweener tweener)
             {
                 if (tweener.updateId.IsValid()) DetachTween(t);
+                // returned tween could be added to TweenUpdateList again,
+                // but it's safe since we are tracking _lastUpdateId. (count of tweens at the beginning of the update)
+                // the new tween will have a updateId greater than the _lastUpdateId.
                 TweenPool.ReturnTweener(tweener);
                 return;
             }
