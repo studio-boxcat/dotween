@@ -13,6 +13,19 @@ namespace DG.Tweening
         private TweenTracker(List<(Tweener, TweenId)>? tweens) =>
             _tweens = tweens;
 
+        public bool AnyActive()
+        {
+            if (_tweens is null)
+                return false;
+
+            foreach (var (tween, id) in _tweens)
+            {
+                if (tween.id == id && tween.active)
+                    return true;
+            }
+            return false;
+        }
+
         public void KillAll()
         {
             if (_tweens == null) return;
