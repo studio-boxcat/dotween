@@ -119,7 +119,7 @@ namespace DG.Tweening
 
         #endregion
 
-        internal override void Reset()
+        protected override void Reset()
         {
             base.Reset();
 

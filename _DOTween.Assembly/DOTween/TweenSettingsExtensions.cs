@@ -41,16 +41,6 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Sets an int ID for the tween (<see cref="Tween.id"/>).</summary>
-        /// <param name="intId">The int ID to assign to this tween.</param>
-        public static T SetId<T>(this T t, int intId) where T : Tween
-        {
-            Assert.IsNotNull(t);
-            Assert.IsTrue(t.active);
-            t.id = intId;
-            return t;
-        }
-
         /// <summary>Sets the target for the tween, which can then be used as a filter with DOTween's static methods.
         /// <para>IMPORTANT: use it with caution. If you just want to set an ID for the tween use <code>SetId</code> instead.</para>
         /// When using shorcuts the shortcut target is already assigned as the tween's target,

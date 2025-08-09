@@ -72,8 +72,7 @@ namespace DG.Tweening
             foreach (var anim in _animBuf)
             {
                 var previewId = anim.GetInstanceID();
-                DOTweenPreviewManager.StartPreview(
-                    anim.CreateTween(play: false).SetId(previewId));
+                DOTweenPreviewManager.StartPreview(previewId, anim.CreateTween(play: false));
             }
         }
 

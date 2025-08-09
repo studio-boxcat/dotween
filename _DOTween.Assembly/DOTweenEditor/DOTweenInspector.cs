@@ -117,8 +117,7 @@ namespace DG.DOTweenEditor.UI
                 _sb.Append("[SEQUENCE] ");
             if (string.IsNullOrEmpty(t.debugHint) == false)
                 _sb.Append(t.debugHint).Append(';');
-            if (t.id != Tween.invalidId)
-                _sb.Append(t.id).Append(";");
+            _sb.Append(t.id.Str()).Append(";");
             _sb.Append(t.target.SafeName());
             var str = _sb.ToString();
             _sb.Clear();

@@ -10,14 +10,13 @@ namespace DG.Tweening
         private static readonly Dictionary<int, Tweener> _tweens = new();
         private static float _lastUpdateTime;
 
-        public static bool IsPreviewing(int id) => _tweens.ContainsKey(id);
-        public static bool IsPreviewing(int id, out Tweener t) => _tweens.TryGetValue(id, out t);
+        public static bool IsPreviewing(int driver) => _tweens.ContainsKey(driver);
 
-        public static void StartPreview(Tweener t)
+        public static void StartPreview(int driver, Tweener t)
         {
             L.I("[DOTweenPreviewManager] Start previewing tween: " + t);
 
-            Assert.AreNotEqual(Tween.invalidId, t.id, "Tween to preview must have a valid id");
+            Assert.IsTrue(t.active, "Tween to preview must be active");
 
             if (_tweens.Count is 0)
             {
@@ -28,7 +27,7 @@ namespace DG.Tweening
                 EditorApplication.update += (_update ??= Update);
             }
 
-            _tweens.Add(t.id, t);
+            _tweens.Add(driver, t);
 
             TweenManager.DetachTween(t); // detach from update loop.
             t.SetAutoKill(true); // to make ForceUpdate() return true when the tween needs to be killed.
@@ -36,20 +35,25 @@ namespace DG.Tweening
             t.Play();
         }
 
-        public static bool TryStopPreview(int id)
+        public static bool TryStopPreview(int driver)
         {
-            if (_tweens.Remove(id, out var t) is false)
+            if (_tweens.Remove(driver, out var t) is false)
                 return false;
             Internal_StopPreview(t);
             return true;
         }
 
-        public static void StopPreview(Tweener t)
+        private static void StopPreview(Tweener t)
         {
-            var removed = _tweens.Remove(t.id, out var oldTween);
-            Assert.IsTrue(removed, "Tween to stop preview not found");
-            Assert.AreEqual(t, oldTween, "Tween to stop preview is not the same as the one playing");
-            Internal_StopPreview(t);
+            foreach (var (driver, someTween) in _tweens)
+            {
+                if (t != someTween) continue;
+                _tweens.Remove(driver); // dictionary will be changed but it's okay since we will exit immediately.
+                Internal_StopPreview(t);
+                break;
+            }
+
+            L.E("[DOTweenPreviewManager] Given tween is not previewing: " + t);
         }
 
         private static void Internal_StopPreview(Tweener t)

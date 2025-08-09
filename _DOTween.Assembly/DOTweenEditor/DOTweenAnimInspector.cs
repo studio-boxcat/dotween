@@ -30,18 +30,18 @@ namespace DG.DOTweenEditor
 
             // Preview in editor
             var previewId = _src.GetInstanceID();
-            var wasPreviewing = DOTweenPreviewManager.IsPreviewing(previewId, out var previewingTween);
+            var wasPreviewing = DOTweenPreviewManager.IsPreviewing(previewId);
             if (Editing.Yes(_src) && _src.NoComponent<DOTweenGroup>())
             {
                 if (wasPreviewing is false)
                 {
                     if (GUILayout.Button("► Play"))
-                        DOTweenPreviewManager.StartPreview(_src.CreateTween(play: true).SetId(previewId));
+                        DOTweenPreviewManager.StartPreview(previewId, _src.CreateTween(play: true));
                 }
                 else
                 {
                     if (GUILayout.Button("■ Stop"))
-                        DOTweenPreviewManager.StopPreview(previewingTween);
+                        DOTweenPreviewManager.TryStopPreview(previewId);
                 }
 
                 EditorGUILayout.Space(6);

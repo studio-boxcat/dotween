@@ -24,7 +24,7 @@ namespace DG.Tweening
         internal bool hasManuallySetStartValue;
         internal bool isFromAllowed = true; // if FALSE from tweens won't be allowed. Reset by Tweener<T>
 
-        internal override void Reset()
+        protected override void Reset()
         {
             base.Reset();
             hasManuallySetStartValue = false;
@@ -80,7 +80,7 @@ namespace DG.Tweening
         }
 
         // _tweenPlugin is not reset since it's useful to keep it as a reference
-        internal sealed override void Reset()
+        protected sealed override void Reset()
         {
             base.Reset();
 

@@ -17,16 +17,11 @@ namespace DG.Tweening
     /// </summary>
     public abstract class Tween : ABSSequentiable
     {
-        public const int invalidId = -999;
-
         // OPTIONS ///////////////////////////////////////////////////
 
         // Modifiable at runtime
         /// <summary>If TRUE the tween will play backwards</summary>
         public bool isBackwards;
-        /// <summary>Int ID (usable for filtering with DOTween static methods). 4X faster than using an object id, 2X faster than using a string id.
-        /// Default is -999 so avoid using an ID like that or it will capture all unset intIds</summary>
-        public int id = invalidId;
         /// <summary>Tween target (usable for filtering with DOTween static methods). Automatically set by tween creation shortcuts</summary>
         public Object? target; // Automatically set by DO shortcuts using SetTarget extension. Also used during Tweener.DoStartup in some special cases
         /// <summary>Called the moment the tween reaches completion (loops included)</summary>
@@ -35,6 +30,7 @@ namespace DG.Tweening
         public TweenCallback? onKill;
 
         // Fixed after creation
+        public TweenId id { get; private set; }
         internal bool isFrom; // Used to prevent settings like isRelative from being applied on From tweens
         internal bool autoKill;
         internal float duration;
@@ -58,7 +54,7 @@ namespace DG.Tweening
         // SETUP DATA ////////////////////////////////////////////////
 
         /// <summary>FALSE when tween is (or should be) despawned - set only by TweenManager</summary>
-        public bool active { get; internal set; } // Required by Modules
+        public bool active { get; private set; } // Required by Modules
         internal bool isSequenced; // Set by Sequence when adding a Tween to it
         internal TweenUpdateId updateId = TweenUpdateId.Invalid; // Index inside its active list (touched only by TweenManager)
 
@@ -90,14 +86,42 @@ namespace DG.Tweening
 #endif
         }
 
+        internal void Activate(TweenId newId)
+        {
+            Assert.IsFalse(active, "Activate called on a tween that is already active");
+            Assert.IsTrue(id.IsInvalid(), "Activate called on a tween that already has an id");
+            active = true;
+            id = newId;
+        }
+
+        internal void DeactivateAndReset()
+        {
+            Assert.IsTrue(active, "DeactivateAndReset called on a tween that is not active");
+            Assert.IsTrue(id.IsValid(), "DeactivateAndReset called on a tween that has an invalid id");
+            active = false;
+            id = TweenId.Invalid;
+            Reset();
+        }
+
+        public void SetId(TweenId newId)
+        {
+            Assert.IsTrue(active, "SetId called on a tween that is not active");
+            Assert.IsTrue(id.IsValid(), "SetId called on a tween that has an invalid id");
+            Assert.IsTrue(newId.IsValid(), "SetId called with an invalid id");
+            Assert.IsTrue(TweenIdIssuer.IsValidFixedId(newId), "Given id is not a valid fixed id");
+            id = newId;
+        }
+
         #region Abstracts + Overrideables
 
         // Doesn't reset active state, activeId and despawned, since those are only touched by TweenManager
         // Doesn't reset default values since those are set when Tweener.Setup is called
-        internal virtual void Reset()
+        protected virtual void Reset()
         {
+            Assert.IsFalse(active, "Reset called on a tween that is active");
+            Assert.IsTrue(id.IsInvalid(), "Reset called on a tween that has a valid id");
+
             isBackwards = false;
-            id = invalidId;
             onStart = onComplete = onKill = null;
 
 #if DEBUG
