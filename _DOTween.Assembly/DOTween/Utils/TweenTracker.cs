@@ -18,6 +18,7 @@ namespace DG.Tweening
             if (_tweens == null) return;
 
             var count = _tweens.Count; // OnKill callback could be invoked.
+            L.I("[DOTween] TweenTracker.KillAll(): count=" + count.Strm());
             for (var i = 0; i < count; i++)
             {
                 var (tween, id) = _tweens[i];
