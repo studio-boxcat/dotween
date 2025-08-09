@@ -92,7 +92,7 @@ namespace DG.Tweening
         {
             if (t is not { active: true })
             {
-                L.E("Tween is not active.");
+                Debugger.LogInvalidTween(t);
                 return;
             }
 

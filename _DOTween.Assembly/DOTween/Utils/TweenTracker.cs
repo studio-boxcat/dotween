@@ -18,16 +18,27 @@ namespace DG.Tweening
             if (_tweens == null) return;
 
             var count = _tweens.Count; // OnKill callback could be invoked.
-            L.I("[DOTween] TweenTracker.KillAll(): count=" + count.Strm());
+            var killed = 0;
             for (var i = 0; i < count; i++)
             {
                 var (tween, id) = _tweens[i];
                 if (tween.id != id) continue; // tween has been modified. (mostly by auto kill)
                 tween.Kill();
+                killed++;
             }
 
-            if (count == _tweens.Count) _tweens.Clear();
-            else _tweens.RemoveRange(0, count); // rare case.
+            if (count == _tweens.Count)
+            {
+                _tweens.Clear();
+            }
+            else
+            {
+                L.W("[DOTween] TweenTracker.KillAll(): some tweens have been added while killing.");
+                _tweens.RemoveRange(0, count); // rare case.
+            }
+
+            if (killed is not 0)
+                L.I("[DOTween] TweenTracker.KillAll(): killed=" + killed.Strm());
         }
 
         [MustUseReturnValue]
