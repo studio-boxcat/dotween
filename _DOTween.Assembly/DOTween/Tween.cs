@@ -103,17 +103,6 @@ namespace DG.Tweening
             Reset();
         }
 
-        public void SetId(TweenId newId)
-        {
-            Assert.IsTrue(active, "SetId called on a tween that is not active");
-            Assert.IsTrue(id.IsValid(), "SetId called on a tween that has an invalid id");
-            Assert.IsTrue(newId.IsValid(), "SetId called with an invalid id");
-            Assert.IsTrue(TweenIdIssuer.IsValidFixedId(newId), "Given id is not a valid fixed id");
-            Assert.IsFalse(creationLocked || startupDone,
-                "SetId called on a tween that is already locked (e.g. after it has been updated the first time or added to a Sequence)");
-            id = newId;
-        }
-
         #region Abstracts + Overrideables
 
         // Doesn't reset active state, activeId and despawned, since those are only touched by TweenManager

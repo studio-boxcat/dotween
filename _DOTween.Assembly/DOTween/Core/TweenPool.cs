@@ -45,7 +45,7 @@ namespace DG.Tweening
 
             Assert.IsFalse(tweener.active, "Polled tweener is still active");
             Assert.IsTrue(tweener.updateId.IsInvalid(), "Polled tweener has a valid updateId");
-            tweener.Activate(newId: TweenIdIssuer.IssueActivationId());
+            tweener.Activate(newId: TweenIdIssuer.Issue());
             return (Tweener<T>) tweener;
         }
 
@@ -75,7 +75,7 @@ namespace DG.Tweening
 
             Assert.IsFalse(sequence.active, "Polled tweener is still active");
             Assert.IsTrue(sequence.updateId.IsInvalid(), "Polled tweener has a valid updateId");
-            sequence.Activate(TweenIdIssuer.IssueActivationId());
+            sequence.Activate(newId: TweenIdIssuer.Issue());
             return sequence;
         }
 
