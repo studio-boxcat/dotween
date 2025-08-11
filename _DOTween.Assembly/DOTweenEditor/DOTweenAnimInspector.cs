@@ -73,7 +73,7 @@ namespace DG.DOTweenEditor
                     case DOTweenAnimType.PunchPos:
                     case DOTweenAnimType.PunchRot:
                     case DOTweenAnimType.PunchScale:
-                        _src.endValue = type == DOTweenAnimType.PunchRot ? new Vector3(0, 180, 0) : Vector3.one;
+                        _src.endValue = type == DOTweenAnimType.PunchRot ? new Vector3(0, 0, 0) : Vector3.one;
                         _src.optionalFloat = 1;
                         _src.optionalInt = 10;
                         break;

@@ -89,6 +89,16 @@ namespace DG.Tweening
                 if (isRelative)
                     result.AddError(animType + " cannot be relative.");
             }
+
+            if (animType
+                is DOTweenAnimType.PunchRot
+                or DOTweenAnimType.ShakeRot)
+            {
+                if (endValue.x != 0 || endValue.y != 0)
+                    result.AddError("Rotation X and Y values must be 0 for " + animType);
+                if (endValue.z == 0)
+                    result.AddError("Rotation Z value must be set for " + animType);
+            }
         }
     }
 }
