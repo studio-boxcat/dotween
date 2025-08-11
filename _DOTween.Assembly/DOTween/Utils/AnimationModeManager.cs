@@ -59,11 +59,16 @@ public static class AnimationModeManager
             AnimationMode.StopAnimationMode(); // for screen refresh.
             EditorSettings.prefabModeAllowAutoSave = true;
 
-            // XXX: force refresh the Scene (or PrefabStage).
-            // Canvas.ForceUpdateCanvases(), InternalEditorUtility.RepaintAllViews() or EditorApplication.QueuePlayerLoopUpdate() does not work.
-            var cr = Resources.FindObjectsOfTypeAll<CanvasRenderer>().FirstOrDefault();
-            if (cr) EditorUtility.SetDirty(cr);
+            ForceRefreshScene();
         };
+    }
+
+    public static void ForceRefreshScene()
+    {
+        // XXX: force refresh the Scene (or PrefabStage).
+        // Canvas.ForceUpdateCanvases(), InternalEditorUtility.RepaintAllViews() or EditorApplication.QueuePlayerLoopUpdate() does not work.
+        var cr = Resources.FindObjectsOfTypeAll<CanvasRenderer>().FirstOrDefault();
+        if (cr) EditorUtility.SetDirty(cr);
     }
 }
 #endif
