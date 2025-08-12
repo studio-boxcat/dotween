@@ -83,7 +83,7 @@ namespace DG.Tweening
             }
 
             if (tweensToKill is not 0)
-                KillRange(swapPtr, tweensToKill, rewind);
+                KillRange(count - tweensToKill, tweensToKill, rewind);
         }
 
         private static void KillTween(Tweener tweener, bool rewind)
