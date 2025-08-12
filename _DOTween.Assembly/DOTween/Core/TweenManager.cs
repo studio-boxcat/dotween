@@ -58,15 +58,19 @@ namespace DG.Tweening
                 // but it's safe since we are tracking _lastUpdateId. (count of tweens at the beginning of the update)
                 // the new tween will have a updateId greater than the _lastUpdateId.
                 TweenPool.ReturnTweener(tweener);
+                Assert.IsFalse(tweener.active, "Tween is still active after being killed");
                 return;
             }
 
-            var s = (Sequence) t;
-            var len = s.sequencedTweens.Count;
-            for (var i = len - 1; i >= 0; --i)
-                KillTween(s.sequencedTweens[i]);
-            if (s.updateId.IsValid()) DetachTween(t);
-            TweenPool.ReturnSequence(s);
+            {
+                var s = (Sequence) t;
+                var len = s.sequencedTweens.Count;
+                for (var i = len - 1; i >= 0; --i)
+                    KillTween(s.sequencedTweens[i]);
+                if (s.updateId.IsValid()) DetachTween(t);
+                TweenPool.ReturnSequence(s);
+                Assert.IsFalse(s.active, "Tween is still active after being killed");
+            }
         }
 
         internal static void Update(float deltaTime)
@@ -120,6 +124,7 @@ namespace DG.Tweening
                 {
                     if (!t.startupDone) ForceInit(t); // necessary?
                     Complete(t, updateMode: UpdateMode.Goto);
+                    if (t.active is false) continue; // already killed by Complete()
                 }
 
                 KillTween(t);
@@ -143,7 +148,14 @@ namespace DG.Tweening
 
         internal static void Complete(Tween t, UpdateMode updateMode = UpdateMode.Goto)
         {
-            if (t.loops is -1) return;
+            Assert.IsTrue(t.active, "Tween is not active");
+
+            if (t.loops is -1)
+            {
+                L.W("[TweenManager] Complete called on a tween with infinite loops. This is not allowed.");
+                return;
+            }
+
             if (t.isComplete) return;
 
             t.ForceGoto(t.duration, t.loops, updateMode);

@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using UnityEngine;
+using UnityEngine.Assertions;
 
 #pragma warning disable 1573
 namespace DG.Tweening
@@ -85,6 +86,7 @@ namespace DG.Tweening
                 if (t.autoKill && t.loops >= 0) return; // Already killed by Complete, so no need to go on
             }
 
+            Assert.IsTrue(t.active, "Tween to kill must be active");
             TweenManager.KillTween(t);
         }
 

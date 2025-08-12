@@ -58,8 +58,9 @@ namespace DG.Tweening
 
         private static void Internal_StopPreview(Tweener t)
         {
-            TweenManager.RestoreToOriginal(t);
-            TweenManager.KillTween(t);
+            Assert.IsTrue(t.active, "Tween must be active.");
+
+            t.KillRewind();
 
             if (_tweens.Count is 0)
             {
