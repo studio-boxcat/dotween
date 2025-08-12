@@ -50,7 +50,7 @@ namespace DG.Tweening
                 if (t != someTween) continue;
                 _tweens.Remove(driver); // dictionary will be changed but it's okay since we will exit immediately.
                 Internal_StopPreview(t);
-                break;
+                return;
             }
 
             L.E("[DOTweenPreviewManager] Given tween is not previewing: " + t);
