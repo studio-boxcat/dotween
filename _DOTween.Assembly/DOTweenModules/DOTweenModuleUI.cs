@@ -118,7 +118,7 @@ namespace DG.Tweening
         public static Tweener<Vector2> DOAnchorPosX(this RectTransform target, float endValue, float duration)
         {
             var t = DOTween.To(() => target.anchoredPosition, x => target.anchoredPosition = x, new Vector2(endValue, 0), duration);
-            t.SetOptions(AxisConstraint.X).SetTarget(target);
+            t.SetOptions_ControlX().SetTarget(target);
             return t;
         }
         /// <summary>Tweens a RectTransform's anchoredPosition Y to the given value.
@@ -127,7 +127,7 @@ namespace DG.Tweening
         public static Tweener<Vector2> DOAnchorPosY(this RectTransform target, float endValue, float duration)
         {
             var t = DOTween.To(() => target.anchoredPosition, x => target.anchoredPosition = x, new Vector2(0, endValue), duration);
-            t.SetOptions(AxisConstraint.Y).SetTarget(target);
+            t.SetOptions_ControlY().SetTarget(target);
             return t;
         }
 

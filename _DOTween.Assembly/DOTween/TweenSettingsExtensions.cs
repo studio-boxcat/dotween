@@ -6,8 +6,6 @@
 
 #nullable enable
 using System.Diagnostics;
-using DOVector2 = UnityEngine.Vector2;
-using DOVector3 = UnityEngine.Vector3;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -160,7 +158,7 @@ namespace DG.Tweening
         [Conditional("DEBUG")]
         private static void ValidateEase(Tween t)
         {
-            if (t is Tweener<DOVector3> { plugin: Vector3ArrayPlugin }
+            if (t is Tweener<Vector3> { plugin: Vector3ArrayPlugin }
                 && t.easeType is not (Ease.Linear or Ease.OutQuad))
             {
                 L.W("Vector3ArrayPlugin only supports Linear and OutQuad ease types", t);
@@ -368,23 +366,35 @@ namespace DG.Tweening
 
         #region Tweeners Extra Options
 
-        /// <summary>Options for Vector2 tweens</summary>
-        /// <param name="axisConstraint">Selecting an axis will tween the vector only on that axis, leaving the others untouched</param>
-        public static Tweener SetOptions(this Tweener<DOVector2> t, AxisConstraint axisConstraint)
+        public static Tweener<Vector2> SetOptions_ControlX(this Tweener<Vector2> t)
         {
-            if (t is not { active: true }) return t;
-
-            VectorOptions.SetAxisConstraint(t, axisConstraint);
+            Assert.IsTrue(t.active, "You can't set options on an inactive/killed tween");
+            Assert.IsNull(t.plugOptions, "You can't set options on a tween that already has plugOptions set");
+            t.plugOptions = VectorOptions.ControlX;
             return t;
         }
 
-        /// <summary>Options for Vector3 tweens</summary>
-        /// <param name="axisConstraint">Selecting an axis will tween the vector only on that axis, leaving the others untouched</param>
-        public static Tweener SetOptions(this Tweener<DOVector3> t, AxisConstraint axisConstraint)
+        public static Tweener<Vector2> SetOptions_ControlY(this Tweener<Vector2> t)
         {
-            if (t is not { active: true }) return t;
+            Assert.IsTrue(t.active, "You can't set options on an inactive/killed tween");
+            Assert.IsNull(t.plugOptions, "You can't set options on a tween that already has plugOptions set");
+            t.plugOptions = VectorOptions.ControlY;
+            return t;
+        }
+        
+        public static Tweener<Vector3> SetOptions_ControlX(this Tweener<Vector3> t)
+        {
+            Assert.IsTrue(t.active, "You can't set options on an inactive/killed tween");
+            Assert.IsNull(t.plugOptions, "You can't set options on a tween that already has plugOptions set");
+            t.plugOptions = VectorOptions.ControlX;
+            return t;
+        }
 
-            VectorOptions.SetAxisConstraint(t, axisConstraint);
+        public static Tweener<Vector3> SetOptions_ControlY(this Tweener<Vector3> t)
+        {
+            Assert.IsTrue(t.active, "You can't set options on an inactive/killed tween");
+            Assert.IsNull(t.plugOptions, "You can't set options on a tween that already has plugOptions set");
+            t.plugOptions = VectorOptions.ControlY;
             return t;
         }
 

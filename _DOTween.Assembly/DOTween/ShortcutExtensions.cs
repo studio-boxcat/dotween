@@ -137,7 +137,7 @@ namespace DG.Tweening
         public static Tweener<Vector3> DOMoveX(this Transform target, float endValue, float duration)
         {
             var t = DOTween.To(() => target.position, x => target.position = x, new Vector3(endValue, 0, 0), duration);
-            t.SetOptions(AxisConstraint.X).SetTarget(target);
+            t.SetOptions_ControlX().SetTarget(target);
             return t;
         }
 
@@ -147,7 +147,7 @@ namespace DG.Tweening
         public static Tweener<Vector3> DOMoveY(this Transform target, float endValue, float duration)
         {
             var t = DOTween.To(() => target.position, x => target.position = x, new Vector3(0, endValue, 0), duration);
-            t.SetOptions(AxisConstraint.Y).SetTarget(target);
+            t.SetOptions_ControlY().SetTarget(target);
             return t;
         }
 
@@ -167,7 +167,7 @@ namespace DG.Tweening
         public static Tweener<Vector3> DOLocalMoveX(this Transform target, float endValue, float duration)
         {
             var t = DOTween.To(() => target.localPosition, x => target.localPosition = x, new Vector3(endValue, 0, 0), duration);
-            t.SetOptions(AxisConstraint.X).SetTarget(target);
+            t.SetOptions_ControlX().SetTarget(target);
             return t;
         }
 
@@ -177,7 +177,7 @@ namespace DG.Tweening
         public static Tweener<Vector3> DOLocalMoveY(this Transform target, float endValue, float duration)
         {
             var t = DOTween.To(() => target.localPosition, x => target.localPosition = x, new Vector3(0, endValue, 0), duration);
-            t.SetOptions(AxisConstraint.Y).SetTarget(target);
+            t.SetOptions_ControlY().SetTarget(target);
             return t;
         }
 
@@ -217,8 +217,7 @@ namespace DG.Tweening
         public static Tweener<Vector3> DOScaleX(this Transform target, float endValue, float duration)
         {
             var t =  DOTween.To(() => target.localScale, x => target.localScale = x, new Vector3(endValue, 0, 0), duration);
-            t.SetOptions(AxisConstraint.X)
-                .SetTarget(target);
+            t.SetOptions_ControlX().SetTarget(target);
             return t;
         }
 
@@ -228,8 +227,7 @@ namespace DG.Tweening
         public static Tweener<Vector3> DOScaleY(this Transform target, float endValue, float duration)
         {
             var t = DOTween.To(() => target.localScale, x => target.localScale = x, new Vector3(0, endValue, 0), duration);
-            t.SetOptions(AxisConstraint.Y)
-                .SetTarget(target);
+            t.SetOptions_ControlY().SetTarget(target);
             return t;
         }
 

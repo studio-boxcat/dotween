@@ -8,6 +8,7 @@
 #nullable enable
 using System;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.LowLevel;
 using Object = UnityEngine.Object;
 
@@ -70,6 +71,7 @@ namespace DG.Tweening
         private static Tweener<T> To<T>(DOGetter<T> getter, DOSetter<T> setter, T endValue, float duration, TweenPlugin<T> plugin) where T : struct
         {
             var t = TweenManager.GetTweener<T>();
+            Assert.IsTrue(t.active, "Tweener is not active.");
             t.Setup(getter, setter, endValue, duration, plugin);
             return t;
         }

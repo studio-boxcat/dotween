@@ -14,7 +14,7 @@ namespace DG.Tweening
     /// <summary>
     /// Used in place of <c>System.Action</c>.
     /// </summary>
-    public delegate void DOSetter<in T>(T pNewValue);
+    public delegate void DOSetter<in T>(T value);
 
     /// <summary>
     /// Used for custom and animationCurve-based ease functions. Must return a value between 0 and 1.
