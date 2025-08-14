@@ -14,6 +14,8 @@ namespace DG.Tweening
         private TweenTracker(List<(Tweener, TweenId)>? tweens) =>
             _tweens = tweens;
 
+        public bool AnyTracking() => _tweens is not null && _tweens.NotEmpty();
+
         private TweenTracker Add(Tweener tweener)
         {
             Assert.IsTrue(tweener.id.IsValid(), "Tweener must have a valid ID before adding to TweenTracker.");
