@@ -17,12 +17,12 @@ namespace DG.Tweening
         {
             if (isRelative)
             {
-                float currVal = t.getter();
+                float currVal = t.getter!();
                 t.endValue += currVal;
                 fromValue += currVal;
             }
             t.startValue = fromValue;
-            if (setImmediately) t.setter(fromValue);
+            if (setImmediately) t.setter!(fromValue);
         }
 
         public override void SetRelativeEndValue(Tweener<float> t)
